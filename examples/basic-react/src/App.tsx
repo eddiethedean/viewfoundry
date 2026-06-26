@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { createDocument } from '@viewfoundry/core';
+import { createDocument, validateDocument } from '@viewfoundry/core';
 import type { ViewDocument } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '@viewfoundry/editor';
 import { generateTsx } from '@viewfoundry/codegen';
@@ -12,7 +12,11 @@ const STORAGE_KEY = 'viewfoundry-basic-react-document';
 function loadDocument(): ViewDocument {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as ViewDocument;
+    if (raw) {
+      const parsed = JSON.parse(raw) as ViewDocument;
+      const validation = validateDocument(parsed, demoRegistry, { allowMissingComponents: false });
+      if (validation.valid) return parsed;
+    }
   } catch {
     // ignore
   }

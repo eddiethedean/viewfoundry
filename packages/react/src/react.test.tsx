@@ -105,6 +105,46 @@ describe('ViewRenderer', () => {
     expect(screen.getByText('Unknown')).toBeInTheDocument();
   });
 
+  it('applies grid placement wrapper in preview mode', () => {
+    const registryWithGrid = createRegistry([
+      {
+        type: 'Grid',
+        component: ({
+          children,
+          style,
+        }: {
+          children?: React.ReactNode;
+          style?: React.CSSProperties;
+        }) => (
+          <div data-testid="grid" style={style}>
+            {children}
+          </div>
+        ),
+        acceptsChildren: true,
+      },
+      { type: 'Button', component: Button, acceptsChildren: true },
+    ]);
+
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode('Button', { children: 'Grid child' }, [], 'btn1', {
+      grid: { column: 2, row: 1 },
+    });
+    grid.children = [button];
+    doc.root.children = [grid];
+
+    const { container } = render(
+      <ViewFoundryProvider document={doc} registry={registryWithGrid} mode="preview">
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    const placement = container.querySelector('.vf-grid-placement');
+    expect(placement).not.toBeNull();
+    expect(placement).toHaveStyle({ gridColumn: '2', gridRow: '1' });
+    expect(screen.getByRole('button')).toHaveTextContent('Grid child');
+  });
+
   it('renders preview mode without editor wrappers', () => {
     const doc = createDocument();
     doc.root.children = [createNode('Button', { children: 'Live click' }, [], 'b1')];

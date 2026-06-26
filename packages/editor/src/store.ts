@@ -22,6 +22,7 @@ import {
   sortChildrenByGridOrder,
   undo,
   type ApplyCommandOptions,
+  type CommandResult,
   type ComponentRegistry,
   type GridPlacement,
   type HistoryState,
@@ -47,8 +48,11 @@ export type EditorStore = {
   paletteFilter: string;
   studioMode: StudioMode;
   editSubMode: EditSubMode;
+  lastError: string | null;
   setRegistry: (registry: ComponentRegistry) => void;
   setDocument: (document: ViewDocument) => void;
+  syncDocument: (document: ViewDocument) => void;
+  revertDocument: (document: ViewDocument) => void;
   setStudioMode: (mode: StudioMode) => void;
   selectNode: (nodeId: string | null) => void;
   clearSelection: () => void;
@@ -77,22 +81,46 @@ function applyDocument(
   });
 }
 
+function handleCommandResult(
+  set: (partial: Partial<EditorStore> | ((state: EditorStore) => Partial<EditorStore>)) => void,
+  get: () => EditorStore,
+  result: CommandResult<unknown>,
+  onChange: ((document: ViewDocument) => void) | undefined,
+  onSuccess?: () => Partial<EditorStore>,
+): boolean {
+  if (result.ok) {
+    applyDocument(set, get, result.document);
+    onChange?.(result.document);
+    set({ lastError: null, ...(onSuccess?.() ?? {}) });
+    return true;
+  }
+  set({ lastError: result.error });
+  return false;
+}
+
 export function resolveInsertParentId(
   document: ViewDocument,
   registry: ComponentRegistry,
   selection: SelectionState,
   parentId?: string,
 ): string {
-  let targetParentId = parentId ?? 'root';
+  if (parentId) return parentId;
+
   const selectedId = getPrimarySelection(selection);
-  if (!parentId && selectedId) {
+  if (selectedId) {
     const selected = findNode(document.root, selectedId);
     const selectedDef = selected ? registry.get(selected.type) : undefined;
     if (selected && selectedDef?.acceptsChildren) {
-      targetParentId = selectedId;
+      return selectedId;
     }
   }
-  return targetParentId;
+
+  const rootChildren = document.root.children ?? [];
+  if (rootChildren.length === 1 && isGridContainer(rootChildren[0].type)) {
+    return rootChildren[0].id;
+  }
+
+  return 'root';
 }
 
 function computeMoveIndex(parent: ViewNode, layout: GridPlacement, node: ViewNode): number {
@@ -132,6 +160,7 @@ export function createEditorStore(
     paletteFilter: '',
     studioMode: defaultStudioMode,
     editSubMode: 'component',
+    lastError: null,
 
     setRegistry: (registry) => set({ registry }),
 
@@ -142,8 +171,27 @@ export function createEditorStore(
     },
 
     setDocument: (document) => {
-      set({ document, history: createHistory(document), selection: createSelection() });
+      set({
+        document,
+        history: createHistory(document),
+        selection: createSelection(),
+        lastError: null,
+      });
       onChange?.(document);
+    },
+
+    syncDocument: (document) => {
+      const state = get();
+      if (JSON.stringify(state.document) === JSON.stringify(document)) return;
+      set({
+        document,
+        history: { ...state.history, present: document },
+        lastError: null,
+      });
+    },
+
+    revertDocument: (document) => {
+      set({ document });
     },
 
     selectNode: (nodeId) => {
@@ -160,8 +208,7 @@ export function createEditorStore(
       if (!def) return;
 
       let workingDoc = document;
-      let targetParentId =
-        options?.parentId ?? resolveInsertParentId(document, registry, selection);
+      let targetParentId = resolveInsertParentId(document, registry, selection, options?.parentId);
       let layout = options?.layout;
 
       const isEmpty = !workingDoc.root.children || workingDoc.root.children.length === 0;
@@ -173,7 +220,10 @@ export function createEditorStore(
           registry,
           createApplyOptions(registry),
         );
-        if (!gridResult.ok) return;
+        if (!gridResult.ok) {
+          set({ lastError: gridResult.error });
+          return;
+        }
         workingDoc = gridResult.document;
         targetParentId = gridNode.id;
         layout = layout ?? { column: 1, row: 1, colSpan: 1, rowSpan: 1 };
@@ -185,20 +235,21 @@ export function createEditorStore(
       }
 
       const node = createNode(type, { ...(def.defaultProps ?? {}) });
-      const result = applyCommand(
-        workingDoc,
-        {
-          type: 'insertNode',
-          payload: { parentId: targetParentId, node, layout },
-        },
-        registry,
-        createApplyOptions(registry),
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          workingDoc,
+          {
+            type: 'insertNode',
+            payload: { parentId: targetParentId, node, layout },
+          },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
+        () => ({ selection: selectNode(createSelection(), node.id) }),
       );
-      if (result.ok) {
-        applyDocument(set, get, result.document);
-        set({ selection: selectNode(createSelection(), node.id) });
-        onChange?.(result.document);
-      }
     },
 
     moveNodeToCell: (nodeId, parentId, layout) => {
@@ -209,31 +260,33 @@ export function createEditorStore(
       if (!location || !parent || !isGridContainer(parent.type)) return;
 
       if (location.parent?.id === parentId) {
-        const result = applyCommand(
-          document,
-          { type: 'setNodeLayout', payload: { nodeId, layout } },
-          registry,
-          createApplyOptions(registry),
+        handleCommandResult(
+          set,
+          get,
+          applyCommand(
+            document,
+            { type: 'setNodeLayout', payload: { nodeId, layout } },
+            registry,
+            createApplyOptions(registry),
+          ),
+          onChange,
         );
-        if (result.ok) {
-          applyDocument(set, get, result.document);
-          onChange?.(result.document);
-        }
         return;
       }
 
       const index = computeMoveIndex(parent, layout, location.node);
-      const result = applyCommand(
-        document,
-        { type: 'moveNode', payload: { nodeId, parentId, index, layout } },
-        registry,
-        createApplyOptions(registry),
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          { type: 'moveNode', payload: { nodeId, parentId, index, layout } },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
+        () => ({ selection: selectNode(get().selection, nodeId) }),
       );
-      if (result.ok) {
-        applyDocument(set, get, result.document);
-        set({ selection: selectNode(get().selection, nodeId) });
-        onChange?.(result.document);
-      }
     },
 
     nudgeNodeLayout: (nodeId, delta) => {
@@ -251,44 +304,46 @@ export function createEditorStore(
       const tracks = resolveGridTracks(location.parent);
       if (!isPlacementInBounds(next, tracks)) return;
 
-      const result = applyCommand(
-        document,
-        {
-          type: 'setNodeLayout',
-          payload: {
-            nodeId,
-            layout: {
-              column: next.column,
-              row: next.row,
-              colSpan: next.colSpan,
-              rowSpan: next.rowSpan,
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          {
+            type: 'setNodeLayout',
+            payload: {
+              nodeId,
+              layout: {
+                column: next.column,
+                row: next.row,
+                colSpan: next.colSpan,
+                rowSpan: next.rowSpan,
+              },
             },
           },
-        },
-        registry,
-        createApplyOptions(registry),
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
       );
-      if (result.ok) {
-        applyDocument(set, get, result.document);
-        onChange?.(result.document);
-      }
     },
 
     deleteSelected: () => {
       const nodeId = getPrimarySelection(get().selection);
       if (!nodeId || nodeId === 'root') return;
       const { registry, document } = get();
-      const result = applyCommand(
-        document,
-        { type: 'deleteNode', payload: { nodeId } },
-        registry,
-        createApplyOptions(registry),
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          { type: 'deleteNode', payload: { nodeId } },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
+        () => ({ selection: clearSelection() }),
       );
-      if (result.ok) {
-        applyDocument(set, get, result.document);
-        set({ selection: clearSelection() });
-        onChange?.(result.document);
-      }
     },
 
     duplicateSelected: () => {
@@ -304,6 +359,13 @@ export function createEditorStore(
       if (result.ok) {
         applyDocument(set, get, result.document);
         onChange?.(result.document);
+        const duplicateId = typeof result.data === 'string' ? result.data : undefined;
+        set({
+          lastError: null,
+          ...(duplicateId ? { selection: selectNode(get().selection, duplicateId) } : {}),
+        });
+      } else {
+        set({ lastError: result.error });
       }
     },
 
@@ -311,23 +373,24 @@ export function createEditorStore(
       const nodeId = getPrimarySelection(get().selection);
       if (!nodeId) return;
       const { registry, document } = get();
-      const result = applyCommand(
-        document,
-        { type: 'setNodeProp', payload: { nodeId, key, value } },
-        registry,
-        createApplyOptions(registry),
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          { type: 'setNodeProp', payload: { nodeId, key, value } },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
       );
-      if (result.ok) {
-        applyDocument(set, get, result.document);
-        onChange?.(result.document);
-      }
     },
 
     undo: () => {
       const { history } = get();
       if (!canUndo(history)) return;
       const next = undo(history);
-      set({ history: next, document: next.present, selection: clearSelection() });
+      set({ history: next, document: next.present, selection: clearSelection(), lastError: null });
       onChange?.(next.present);
     },
 
@@ -335,7 +398,7 @@ export function createEditorStore(
       const { history } = get();
       if (!canRedo(history)) return;
       const next = redo(history);
-      set({ history: next, document: next.present, selection: clearSelection() });
+      set({ history: next, document: next.present, selection: clearSelection(), lastError: null });
       onChange?.(next.present);
     },
 

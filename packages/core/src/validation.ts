@@ -142,6 +142,20 @@ export function validateDocument(
     }
   });
 
+  if (registry) {
+    walkNodes(document.root, (node, parent) => {
+      if (!parent || parent.type === 'Root') return;
+      const parentDef = registry.get(parent.type);
+      if (parentDef && parentDef.acceptsChildren === false && node.type !== 'Root') {
+        issues.push({
+          path: `node:${node.id}`,
+          message: `Component "${parent.type}" does not accept children`,
+          code: 'PARENT_REJECTS_CHILDREN',
+        });
+      }
+    });
+  }
+
   const gridResult = validateGridLayout(document, registry);
   issues.push(...gridResult.issues);
 

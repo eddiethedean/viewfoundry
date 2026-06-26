@@ -81,6 +81,21 @@ export function removeNodeFromTree(root: ViewNode, nodeId: string): ViewNode {
   };
 }
 
+/** Returns true if `nodeId` is the same as or nested under `ancestorId`. */
+export function isDescendant(root: ViewNode, ancestorId: string, nodeId: string): boolean {
+  if (ancestorId === nodeId) return true;
+  const ancestor = findNode(root, ancestorId);
+  if (!ancestor) return false;
+
+  function contains(node: ViewNode): boolean {
+    if (node.id === nodeId) return true;
+    if (!node.children) return false;
+    return node.children.some(contains);
+  }
+
+  return contains(ancestor);
+}
+
 export function insertNodeInTree(
   root: ViewNode,
   parentId: string,
@@ -89,7 +104,8 @@ export function insertNodeInTree(
 ): ViewNode {
   if (root.id === parentId) {
     const children = [...(root.children ?? [])];
-    const insertAt = index ?? children.length;
+    const rawIndex = index ?? children.length;
+    const insertAt = Math.max(0, Math.min(rawIndex, children.length));
     children.splice(insertAt, 0, node);
     return { ...root, children };
   }

@@ -27,6 +27,8 @@ export function GridCellDroppable({
       ref={setNodeRef}
       className={`vf-grid-cell-drop${active || isOver ? ' vf-grid-drop-target' : ''}`}
       style={{ pointerEvents: disabled ? 'none' : 'auto' }}
+      role="button"
+      aria-label={`Drop at row ${row}, column ${column}`}
       data-grid-row={row}
       data-grid-column={column}
     />

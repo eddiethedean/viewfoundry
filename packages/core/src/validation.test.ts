@@ -76,4 +76,20 @@ describe('validateDocument', () => {
     const result = validateDocument(doc, registry);
     expect(result.valid).toBe(true);
   });
+
+  it('detects children under parents that reject children', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', {}, [createNode('Text', {}, [], 't1')], 'btn1')];
+    const registry = createRegistry([
+      {
+        type: 'Button',
+        component: () => null,
+        acceptsChildren: false,
+      },
+      { type: 'Text', component: () => null },
+    ]);
+    const result = validateDocument(doc, registry);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'PARENT_REJECTS_CHILDREN')).toBe(true);
+  });
 });

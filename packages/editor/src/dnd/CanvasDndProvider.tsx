@@ -38,7 +38,7 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
 
   const handleDragCancel = useCallback(() => {
     if (snapshotRef.current) {
-      store.getState().setDocument(snapshotRef.current);
+      store.getState().revertDocument(snapshotRef.current);
     }
     setActiveId(null);
     snapshotRef.current = null;

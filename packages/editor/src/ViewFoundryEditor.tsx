@@ -32,7 +32,7 @@ function KeyboardShortcuts() {
       if (e.key === 'Escape') {
         store.getState().clearSelection();
       }
-      if ((e.key === 'Delete' || e.key === 'Backspace') && !isInputTarget(e.target)) {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && !isKeyboardShortcutBlocked(e.target)) {
         e.preventDefault();
         store.getState().deleteSelected();
       }
@@ -48,7 +48,7 @@ function KeyboardShortcuts() {
         e.preventDefault();
         store.getState().duplicateSelected();
       }
-      if (!isInputTarget(e.target) && !mod) {
+      if (!isKeyboardShortcutBlocked(e.target) && !mod) {
         const nodeId = store.getState().selection.selectedNodeIds[0];
         if (!nodeId) return;
         const { document } = store.getState();
@@ -79,10 +79,13 @@ function KeyboardShortcuts() {
   return null;
 }
 
-function isInputTarget(target: EventTarget | null): boolean {
+function isKeyboardShortcutBlocked(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable) {
+    return true;
+  }
+  return Boolean(target.closest('.vf-toolbar'));
 }
 
 function EditorLayout({ onExport, className }: { onExport?: () => void; className?: string }) {

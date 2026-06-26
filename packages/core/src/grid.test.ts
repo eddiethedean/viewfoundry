@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createNode } from './document.js';
 import {
   autoPlaceNextCell,
+  growGridRowsIfNeeded,
   gridDropId,
   isPlacementInBounds,
   normalizePlacement,
@@ -53,6 +54,12 @@ describe('grid utilities', () => {
       colSpan: 1,
       rowSpan: 1,
     });
+  });
+
+  it('growGridRowsIfNeeded expands explicit rows when placement exceeds bounds', () => {
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const grown = growGridRowsIfNeeded(grid, 'grid1', { column: 1, row: 3 });
+    expect(grown.props?.rows).toBe(3);
   });
 
   it('resolves grid tracks from props', () => {

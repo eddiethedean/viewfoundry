@@ -64,7 +64,7 @@ function formatPropValue(value: unknown, warnings: string[], path: string): stri
   return `{${JSON.stringify(value)}}`;
 }
 
-function renderGridStyle(node: ViewNode, parent: ViewNode | null): string {
+function renderGridStyleAttr(node: ViewNode, parent: ViewNode | null): string {
   if (!parent || !isGridContainer(parent.type) || !node.layout?.grid) return '';
   const css = placementToCss(node.layout.grid);
   const entries = Object.entries(css).map(([key, value]) => `${key}: '${value}'`);
@@ -75,7 +75,7 @@ function renderProps(
   node: ViewNode,
   warnings: string[],
   hasChildNodes: boolean,
-  parent: ViewNode | null,
+  _parent: ViewNode | null,
 ): string {
   const props = { ...(node.props ?? {}) };
   if (typeof props.children === 'string' && !hasChildNodes) {
@@ -98,7 +98,7 @@ function renderProps(
     }
   }
   const base = parts.length > 0 ? ' ' + parts.join(' ') : '';
-  return base + renderGridStyle(node, parent);
+  return base;
 }
 
 function renderNode(
@@ -140,6 +140,8 @@ function renderNode(
   const propsStr = renderProps(node, warnings, hasChildNodes, parent);
   const tag = importInfo.exportName;
 
+  let rendered: string;
+
   if (hasChildNodes) {
     const childNodes = isGridContainer(node.type)
       ? sortChildrenByGridOrder(node.children!)
@@ -147,17 +149,25 @@ function renderNode(
     const children = childNodes
       .map((child) => renderNode(child, imports, warnings, indent + 1, node))
       .join('\n');
-    return `${pad}<${tag}${propsStr}>\n${children}\n${pad}</${tag}>`;
+    rendered = `${pad}<${tag}${propsStr}>\n${children}\n${pad}</${tag}>`;
+  } else if (stringChild !== null) {
+    rendered = `${pad}<${tag}${propsStr}>{${JSON.stringify(stringChild)}}</${tag}>`;
+  } else if (propsStr) {
+    rendered = `${pad}<${tag}${propsStr} />`;
+  } else {
+    rendered = `${pad}<${tag} />`;
   }
 
-  if (stringChild !== null) {
-    return `${pad}<${tag}${propsStr}>${stringChild.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</${tag}>`;
+  const gridStyle = renderGridStyleAttr(node, parent);
+  if (gridStyle) {
+    const inner = rendered
+      .split('\n')
+      .map((line) => `  ${line}`)
+      .join('\n');
+    return `${pad}<div${gridStyle}>\n${inner}\n${pad}</div>`;
   }
 
-  if (propsStr) {
-    return `${pad}<${tag}${propsStr} />`;
-  }
-  return `${pad}<${tag} />`;
+  return rendered;
 }
 
 function buildImportStatements(

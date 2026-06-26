@@ -18,7 +18,7 @@ describe('generateTsx', () => {
     const { code, warnings } = generateTsx({ document: doc, imports });
     expect(warnings).toHaveLength(0);
     expect(code).toContain("import { Button } from './components/Button';");
-    expect(code).toContain("<Button variant='primary'>Click me</Button>");
+    expect(code).toContain('<Button variant=\'primary\'>{"Click me"}</Button>');
     expect(code).toContain('export function GeneratedView()');
   });
 
@@ -34,7 +34,7 @@ describe('generateTsx', () => {
 
     const { code } = generateTsx({ document: doc, imports });
     expect(code).toContain('<Card>');
-    expect(code).toContain('<Button>Inner</Button>');
+    expect(code).toContain('<Button>{"Inner"}</Button>');
     expect(code).toContain('</Card>');
   });
 
@@ -59,7 +59,7 @@ describe('generateTsx', () => {
     const doc = createDocument();
     doc.root.children = [createNode('Button', { disabled: true, children: 'X' }, [], 'b1')];
     const { code } = generateTsx({ document: doc, imports });
-    expect(code).toContain('<Button disabled>X</Button>');
+    expect(code).toContain('<Button disabled>{"X"}</Button>');
     expect(code).not.toContain('disabled={true}');
   });
 
@@ -69,14 +69,14 @@ describe('generateTsx', () => {
       createNode('Button', { title: `O'Reilly\n"quoted"`, children: 'X' }, [], 'b1'),
     ];
     const { code } = generateTsx({ document: doc, imports });
-    expect(code).toContain("<Button title='O\\'Reilly\\n\"quoted\"'>X</Button>");
+    expect(code).toContain('<Button title=\'O\\\'Reilly\\n"quoted"\'>{"X"}</Button>');
   });
 
-  it('escapes angle brackets in string children', () => {
+  it('escapes angle brackets in string children via JSON expression', () => {
     const doc = createDocument();
     doc.root.children = [createNode('Button', { children: '<unsafe>' }, [], 'b1')];
     const { code } = generateTsx({ document: doc, imports });
-    expect(code).toContain('<Button>&lt;unsafe&gt;</Button>');
+    expect(code).toContain('<Button>{"<unsafe>"}</Button>');
   });
 
   it('warns on unsupported function props', () => {
@@ -157,8 +157,8 @@ describe('generateTsx', () => {
     const { code } = generateTsx({ document: doc, imports });
     expect(code).toContain('<>');
     expect(code).toContain('</>');
-    expect(code).toContain('<Button>A</Button>');
-    expect(code).toContain('<Button>B</Button>');
+    expect(code).toContain('<Button>{"A"}</Button>');
+    expect(code).toContain('<Button>{"B"}</Button>');
   });
 
   it('does not wrap a single root child in a fragment', () => {
@@ -166,7 +166,7 @@ describe('generateTsx', () => {
     doc.root.children = [createNode('Button', { children: 'Only' }, [], 'b1')];
     const { code } = generateTsx({ document: doc, imports });
     expect(code).not.toMatch(/<>\s*\n\s*<Button>/);
-    expect(code).toContain('<Button>Only</Button>');
+    expect(code).toContain('<Button>{"Only"}</Button>');
   });
 
   it('renders self-closing tags when there are no children', () => {
@@ -176,7 +176,14 @@ describe('generateTsx', () => {
     expect(code).toContain("<Button variant='primary' />");
   });
 
-  it('emits grid placement as inline style', () => {
+  it('escapes curly braces in string children via expression', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Hello {name}' }, [], 'b1')];
+    const { code } = generateTsx({ document: doc, imports });
+    expect(code).toContain('<Button>{"Hello {name}"}</Button>');
+  });
+
+  it('emits grid placement in a wrapper div', () => {
     const doc = createDocument();
     const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
     const button = createNode('Button', { children: 'A' }, [], 'b1', {
@@ -184,13 +191,15 @@ describe('generateTsx', () => {
     });
     grid.children = [button];
     doc.root.children = [grid];
-    const imports = {
+    const gridImports = {
       Grid: { importPath: './components', exportName: 'Grid' },
       Button: { importPath: './components', exportName: 'Button' },
     };
-    const { code } = generateTsx({ document: doc, imports });
+    const { code } = generateTsx({ document: doc, imports: gridImports });
     expect(code).toContain("gridColumn: '2 / 4'");
     expect(code).toContain("gridRow: '1'");
+    expect(code).toMatch(/<div style=\{\{ gridColumn: '2 \/ 4', gridRow: '1' \}\}>/);
+    expect(code).toContain('<Button>{"A"}</Button>');
   });
 });
 

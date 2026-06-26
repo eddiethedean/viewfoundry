@@ -169,6 +169,38 @@ describe('commands', () => {
     }
   });
 
+  it('duplicates into a full grid by growing rows', () => {
+    let doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    const placements = [
+      { column: 1, row: 1 },
+      { column: 2, row: 1 },
+      { column: 1, row: 2 },
+      { column: 2, row: 2 },
+    ];
+    for (const [index, placement] of placements.entries()) {
+      result = insertNode(doc, {
+        parentId: 'grid1',
+        node: createNode('Button', { children: `B${index + 1}` }, [], `btn${index + 1}`),
+        layout: placement,
+      });
+      if (!result.ok) throw new Error(result.error);
+      doc = result.document;
+    }
+
+    result = duplicateNode(doc, { nodeId: 'btn1' });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const gridNode = findNode(result.document.root, 'grid1');
+      expect(gridNode?.props?.rows).toBe(3);
+      expect(gridNode?.children).toHaveLength(5);
+    }
+  });
+
   it('updates node props', () => {
     const doc = makeDoc();
     const result = updateNodeProps(doc, { nodeId: 'btn1', props: { children: 'Updated' } });

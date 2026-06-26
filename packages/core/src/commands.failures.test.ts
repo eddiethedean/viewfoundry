@@ -74,6 +74,41 @@ describe('command failures', () => {
     expectCommandFailure(result, 'Parent node not found: missing');
   });
 
+  it('fails to move node into itself', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+
+    result = moveNode(result.document, {
+      nodeId: 'grid1',
+      parentId: 'grid1',
+      index: 0,
+    });
+    expectCommandFailure(result, 'Cannot move node into itself');
+  });
+
+  it('fails to move node into its own descendant', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode('Button', {}, [], 'btn1', { grid: { column: 1, row: 1 } });
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    result = insertNode(result.document, {
+      parentId: 'grid1',
+      node: button,
+      layout: { column: 1, row: 1 },
+    });
+    if (!result.ok) throw new Error(result.error);
+
+    result = moveNode(result.document, {
+      nodeId: 'grid1',
+      parentId: 'btn1',
+      index: 0,
+    });
+    expectCommandFailure(result, 'Cannot move node into its own descendant');
+  });
+
   it('fails to update props on missing node', () => {
     const doc = createDocument();
     const result = updateNodeProps(doc, {

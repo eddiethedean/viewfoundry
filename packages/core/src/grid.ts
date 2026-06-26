@@ -1,4 +1,5 @@
 import type { GridPlacement, ViewNode } from './types.js';
+import { findNode, updateNodeInTree } from './nodes.js';
 
 export const GRID_CONTAINER_TYPES = ['Grid', 'Row'] as const;
 
@@ -97,6 +98,26 @@ export function autoPlaceNextCell(existingChildren: ViewNode[], tracks: GridTrac
 
   const nextRow = tracks.rows + 1;
   return { column: 1, row: nextRow, colSpan: 1, rowSpan: 1 };
+}
+
+/** Expands a grid parent's `rows` prop when placement exceeds current track count. */
+export function growGridRowsIfNeeded(
+  root: ViewNode,
+  parentId: string,
+  placement: GridPlacement,
+): ViewNode {
+  const parent = findNode(root, parentId);
+  if (!parent || parent.type !== 'Grid') return root;
+
+  const rect = normalizePlacement(placement);
+  const neededRows = rect.row + rect.rowSpan - 1;
+  const tracks = resolveGridTracks(parent);
+  if (neededRows <= tracks.rows) return root;
+
+  return updateNodeInTree(root, parentId, (node) => ({
+    ...node,
+    props: { ...(node.props ?? {}), rows: neededRows },
+  }));
 }
 
 export function placementToCss(placement?: GridPlacement): Record<string, string> {

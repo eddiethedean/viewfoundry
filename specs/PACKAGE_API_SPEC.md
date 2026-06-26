@@ -12,7 +12,7 @@ This document describes the public API surface for ViewFoundry packages at **v0.
 Install all ViewFoundry packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0
+npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0 @viewfoundry/codegen@0.3.0 @viewfoundry/cli@0.3.0
 ```
 
 ## `@viewfoundry/core`

@@ -33,6 +33,7 @@ export function Palette(_props: PaletteProps) {
         className="vf-palette-search"
         type="search"
         placeholder="Search components..."
+        aria-label="Search components"
         value={filter}
         onChange={(e) => store.getState().setPaletteFilter(e.target.value)}
       />

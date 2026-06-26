@@ -26,6 +26,7 @@ export function Canvas(_props: CanvasProps) {
         node={node}
         canDrop={(componentType) => {
           const def = registry.get(node.type);
+          if (def?.acceptsChildren === false) return false;
           if (!def?.allowedChildren) return true;
           return def.allowedChildren.includes(componentType);
         }}

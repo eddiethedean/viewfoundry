@@ -8,7 +8,7 @@ import {
   updateNodeProps,
 } from './commands.js';
 import { isGridContainer } from './grid.js';
-import { findNode, findNodeLocation } from './nodes.js';
+import { findNode, findNodeLocation, isDescendant } from './nodes.js';
 import type {
   CommandResult,
   ComponentRegistry,
@@ -103,7 +103,7 @@ export function applyCommand(
   command: DocumentCommand,
   registry: ComponentRegistry,
   options?: ApplyCommandOptions,
-): CommandResult {
+): CommandResult<unknown> {
   switch (command.type) {
     case 'insertNode': {
       const childError = canAcceptChild(
@@ -138,12 +138,21 @@ export function applyCommand(
 
       const result = duplicateNode(document, command.payload);
       if (!result.ok) return result;
-      return validateCommandResult(result.document, registry);
+      const validated = validateCommandResult(result.document, registry);
+      if (!validated.ok) return validated;
+      return { ok: true, document: validated.document, data: result.data };
     }
     case 'moveNode': {
       const node = findNode(document.root, command.payload.nodeId);
       if (!node) {
         return { ok: false, error: `Node not found: ${command.payload.nodeId}` };
+      }
+
+      if (command.payload.nodeId === command.payload.parentId) {
+        return { ok: false, error: 'Cannot move node into itself' };
+      }
+      if (isDescendant(document.root, command.payload.nodeId, command.payload.parentId)) {
+        return { ok: false, error: 'Cannot move node into its own descendant' };
       }
 
       const childError = canAcceptChild(registry, command.payload.parentId, node.type, document);

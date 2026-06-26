@@ -21,4 +21,4 @@ npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx
 
 ## Stub notice
 
-`viewfoundry init` is not implemented in v0.2.x. Use `examples/basic-react` in the repository as a starting point until v0.5.0.
+`viewfoundry init` is not implemented in v0.3.x. Use `examples/basic-react` in the repository as a starting point until v0.5.0.

@@ -27,12 +27,22 @@ export function EditorProvider({
   const onStudioModeChangeRef = useRef(onStudioModeChange);
   onStudioModeChangeRef.current = onStudioModeChange;
 
+  const lastEmittedDocumentRef = useRef<string | null>(null);
+
   const store = useMemo(
     () =>
-      createEditorStore(registry, document, (doc) => onChangeRef.current?.(doc), {
-        defaultStudioMode,
-        onStudioModeChange: (mode) => onStudioModeChangeRef.current?.(mode),
-      }),
+      createEditorStore(
+        registry,
+        document,
+        (doc) => {
+          lastEmittedDocumentRef.current = JSON.stringify(doc);
+          onChangeRef.current?.(doc);
+        },
+        {
+          defaultStudioMode,
+          onStudioModeChange: (mode) => onStudioModeChangeRef.current?.(mode),
+        },
+      ),
     [],
   );
 
@@ -41,9 +51,10 @@ export function EditorProvider({
   }, [registry, store]);
 
   useEffect(() => {
-    if (document) {
-      store.getState().setDocument(document);
-    }
+    if (!document) return;
+    const serialized = JSON.stringify(document);
+    if (serialized === lastEmittedDocumentRef.current) return;
+    store.getState().syncDocument(document);
   }, [document, store]);
 
   return <EditorStoreContext.Provider value={store}>{children}</EditorStoreContext.Provider>;

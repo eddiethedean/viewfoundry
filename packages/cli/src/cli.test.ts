@@ -92,4 +92,21 @@ describe('runCli', () => {
     expect(error).toHaveBeenCalledWith('Unknown command: nope');
     expect(log).toHaveBeenCalled();
   });
+
+  it('errors on malformed JSON', () => {
+    const dir = makeTempDir();
+    const path = join(dir, 'bad.json');
+    writeFileSync(path, '{not json');
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = runCli(['validate', path]);
+    expect(result.exitCode).toBe(1);
+    expect(error).toHaveBeenCalled();
+  });
+
+  it('errors on missing input file', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = runCli(['validate', join(makeTempDir(), 'missing.json')]);
+    expect(result.exitCode).toBe(1);
+    expect(error).toHaveBeenCalled();
+  });
 });

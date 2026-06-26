@@ -9,6 +9,7 @@ export function Toolbar({ onExport }: ToolbarProps) {
   const studioMode = useEditorState((s) => s.studioMode);
   const canUndo = useEditorState((s) => s.canUndo());
   const canRedo = useEditorState((s) => s.canRedo());
+  const lastError = useEditorState((s) => s.lastError);
   const isEdit = studioMode === 'edit';
 
   return (
@@ -64,6 +65,12 @@ export function Toolbar({ onExport }: ToolbarProps) {
           <button type="button" onClick={onExport}>
             Export TSX
           </button>
+        </div>
+      )}
+
+      {isEdit && lastError && (
+        <div className="vf-toolbar-error" role="alert">
+          {lastError}
         </div>
       )}
     </div>

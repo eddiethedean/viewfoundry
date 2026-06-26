@@ -14,6 +14,7 @@ import type {
 import { cloneNode } from './document.js';
 import {
   autoPlaceNextCell,
+  growGridRowsIfNeeded,
   isGridContainer,
   resolveGridTracks,
   sortChildrenByGridOrder,
@@ -22,6 +23,7 @@ import {
   findNode,
   findNodeLocation,
   insertNodeInTree,
+  isDescendant,
   removeNodeFromTree,
   updateNodeInTree,
 } from './nodes.js';
@@ -30,7 +32,7 @@ function success(document: ViewDocument): CommandResult {
   return { ok: true, document };
 }
 
-function failure(error: string): CommandResult {
+function failure(error: string): CommandResult<never> {
   return { ok: false, error };
 }
 
@@ -63,13 +65,17 @@ export function insertNode(document: ViewDocument, payload: InsertNodePayload): 
   if (!parent) {
     return failure(`Parent node not found: ${payload.parentId}`);
   }
+  let root = document.root;
+  if (payload.layout && isGridContainer(parent.type)) {
+    root = growGridRowsIfNeeded(root, payload.parentId, payload.layout);
+  }
   let node = payload.node;
   if (payload.layout) {
     node = applyLayoutToNode(node, payload.layout);
   } else if (!isGridContainer(parent.type)) {
     node = clearGridLayout(node);
   }
-  const newRoot = insertNodeInTree(document.root, payload.parentId, node, payload.index);
+  const newRoot = insertNodeInTree(root, payload.parentId, node, payload.index);
   const orderedRoot = isGridContainer(parent.type)
     ? reorderParentChildren(newRoot, payload.parentId)
     : newRoot;
@@ -91,7 +97,7 @@ export function deleteNode(document: ViewDocument, payload: DeleteNodePayload): 
 export function duplicateNode(
   document: ViewDocument,
   payload: DuplicateNodePayload,
-): CommandResult {
+): CommandResult<string> {
   const location = findNodeLocation(document.root, payload.nodeId);
   if (!location) {
     return failure(`Node not found: ${payload.nodeId}`);
@@ -105,16 +111,16 @@ export function duplicateNode(
     const placement = autoPlaceNextCell(location.parent.children ?? [], tracks);
     duplicate.layout = { grid: placement };
   }
-  const newRoot = insertNodeInTree(
+  const root = growGridRowsIfNeeded(
     document.root,
     location.parent.id,
-    duplicate,
-    location.index + 1,
+    duplicate.layout?.grid ?? { column: 1, row: 1 },
   );
+  const newRoot = insertNodeInTree(root, location.parent.id, duplicate, location.index + 1);
   const orderedRoot = isGridContainer(location.parent.type)
     ? reorderParentChildren(newRoot, location.parent.id)
     : newRoot;
-  return success({ ...document, root: orderedRoot });
+  return { ok: true, document: { ...document, root: orderedRoot }, data: duplicate.id };
 }
 
 export function moveNode(document: ViewDocument, payload: MoveNodePayload): CommandResult {
@@ -129,6 +135,12 @@ export function moveNode(document: ViewDocument, payload: MoveNodePayload): Comm
   if (!parent) {
     return failure(`Parent node not found: ${payload.parentId}`);
   }
+  if (payload.nodeId === payload.parentId) {
+    return failure('Cannot move node into itself');
+  }
+  if (isDescendant(document.root, payload.nodeId, payload.parentId)) {
+    return failure('Cannot move node into its own descendant');
+  }
   let newRoot = removeNodeFromTree(document.root, payload.nodeId);
   let nodeToInsert = node;
   if (payload.layout !== undefined) {
@@ -137,6 +149,9 @@ export function moveNode(document: ViewDocument, payload: MoveNodePayload): Comm
     nodeToInsert = clearGridLayout(node);
   }
   newRoot = insertNodeInTree(newRoot, payload.parentId, nodeToInsert, payload.index);
+  if (!findNode(newRoot, payload.nodeId)) {
+    return failure('Move failed: node was lost during insertion');
+  }
   const orderedRoot = isGridContainer(parent.type)
     ? reorderParentChildren(newRoot, payload.parentId)
     : newRoot;

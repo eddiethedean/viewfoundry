@@ -46,6 +46,21 @@ function renderChildNodes(node: ViewNode, renderChildren: boolean): ReactNode {
   return children.map((child) => <ViewNodeRenderer key={child.id} node={child} parent={node} />);
 }
 
+function wrapPreviewPlacement(
+  content: ReactNode,
+  placementStyle: CSSProperties | undefined,
+  gridClass: string,
+): ReactNode {
+  if (!placementStyle || Object.keys(placementStyle).length === 0) {
+    return content;
+  }
+  return (
+    <div className={`vf-grid-placement${gridClass}`} style={placementStyle}>
+      {content}
+    </div>
+  );
+}
+
 export function ViewNodeRenderer({
   node,
   parent = null,
@@ -59,6 +74,9 @@ export function ViewNodeRenderer({
   const placementStyle = getChildPlacementStyle(parent, node);
   const gridContainerStyle = getGridContainerStyle(node);
   const childElements = renderChildNodes(node, renderChildren);
+  const hasGridPlacement = Boolean(placementStyle && Object.keys(placementStyle).length > 0);
+  const needsPlacementWrapper =
+    !isEditMode && hasGridPlacement && !isGridContainer(node.type) && node.type !== 'Root';
 
   const props = { ...(node.props ?? {}) } as Record<string, unknown>;
   if (typeof props.children === 'string' && !childElements) {
@@ -67,7 +85,7 @@ export function ViewNodeRenderer({
 
   const mergedStyle: CSSProperties = {
     ...((props.style as CSSProperties | undefined) ?? {}),
-    ...(placementStyle ?? {}),
+    ...(isEditMode || needsPlacementWrapper ? {} : (placementStyle ?? {})),
     ...(gridContainerStyle ?? {}),
   };
   if (Object.keys(mergedStyle).length > 0) {
@@ -86,9 +104,17 @@ export function ViewNodeRenderer({
       return <>{childElements}</>;
     }
     if (!Component) {
-      return <MissingComponentFallback type={node.type} nodeId={node.id} />;
+      return wrapPreviewPlacement(
+        <MissingComponentFallback type={node.type} nodeId={node.id} />,
+        placementStyle,
+        gridClass,
+      );
     }
-    return <Component {...props}>{jsxChildren}</Component>;
+    return wrapPreviewPlacement(
+      <Component {...props}>{jsxChildren}</Component>,
+      needsPlacementWrapper ? placementStyle : undefined,
+      gridClass,
+    );
   }
 
   const editWrapper = (content: ReactNode, includeGridLayer = false) => {
@@ -138,6 +164,19 @@ export function ViewNodeRenderer({
     );
   }
 
+  const componentProps = { ...props };
+  if (hasGridPlacement && componentProps.style) {
+    const componentOnlyStyle = { ...((componentProps.style as CSSProperties | undefined) ?? {}) };
+    for (const key of Object.keys(placementStyle ?? {})) {
+      delete componentOnlyStyle[key as keyof CSSProperties];
+    }
+    if (Object.keys(componentOnlyStyle).length > 0) {
+      componentProps.style = componentOnlyStyle;
+    } else {
+      delete componentProps.style;
+    }
+  }
+
   return editWrapper(
     <div
       className={`vf-node-wrapper${gridClass}${isSelected ? ' vf-node-selected' : ''}`}
@@ -149,7 +188,7 @@ export function ViewNodeRenderer({
         onSelectNode?.(node.id);
       }}
     >
-      <Component {...props}>{jsxChildren}</Component>
+      <Component {...componentProps}>{jsxChildren}</Component>
     </div>,
     isGridContainer(node.type),
   );

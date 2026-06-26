@@ -101,7 +101,7 @@ describe('createEditorStore', () => {
     expect(store.getState().document.root.id).toBe('root');
   });
 
-  it('duplicateSelected adds a sibling copy', () => {
+  it('duplicateSelected adds a sibling copy and selects the duplicate', () => {
     const doc = createDocument();
     doc.root.children = [createNode('Button', { children: 'Hi' }, [], 'btn1')];
     const store = createEditorStore(registry, doc);
@@ -112,6 +112,47 @@ describe('createEditorStore', () => {
     const children = store.getState().document.root.children ?? [];
     expect(children).toHaveLength(2);
     expect(children[0].id).not.toBe(children[1].id);
+    expect(getPrimarySelection(store.getState().selection)).toBe(children[1].id);
+  });
+
+  it('revertDocument restores document without clearing history', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    const beforeHistory = store.getState().history;
+    const snapshot = createDocument();
+
+    store.getState().revertDocument(snapshot);
+
+    expect(store.getState().document).toEqual(snapshot);
+    expect(store.getState().history).toBe(beforeHistory);
+  });
+
+  it('syncDocument updates present without resetting history or calling onChange', () => {
+    const onChange = vi.fn();
+    const store = createEditorStore(registry, createDocument(), onChange);
+    store.getState().insertComponent('Button');
+    const pastLength = store.getState().history.past.length;
+    onChange.mockClear();
+
+    const external = structuredClone(store.getState().document);
+    external.meta = { name: 'External sync' };
+    store.getState().syncDocument(external);
+
+    expect(store.getState().document.meta?.name).toBe('External sync');
+    expect(store.getState().history.past).toHaveLength(pastLength);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('insertComponent targets existing grid when nothing is selected', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    store.getState().clearSelection();
+
+    store.getState().insertComponent('Button');
+
+    const grid = store.getState().document.root.children?.[0];
+    expect(grid?.children).toHaveLength(2);
+    expect(grid?.children?.[1]?.layout?.grid).toBeTruthy();
   });
 
   it('updateProp changes selected node props', () => {

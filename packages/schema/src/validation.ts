@@ -36,7 +36,15 @@ export function validateProps(
 
     if (value === undefined || value === null) continue;
 
-    if (field.kind === 'number' && typeof value === 'number') {
+    if (field.kind === 'number') {
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        issues.push({
+          path: `props.${key}`,
+          message: `${field.label ?? key} must be a finite number`,
+          code: 'INVALID_TYPE',
+        });
+        continue;
+      }
       const min = field.min as number | undefined;
       const max = field.max as number | undefined;
       if (min !== undefined && value < min) {
@@ -55,6 +63,14 @@ export function validateProps(
       }
     }
 
+    if (field.kind === 'boolean' && typeof value !== 'boolean') {
+      issues.push({
+        path: `props.${key}`,
+        message: `${field.label ?? key} must be true or false`,
+        code: 'INVALID_TYPE',
+      });
+    }
+
     if ((field.kind === 'select' || field.kind === 'radio') && typeof value === 'string') {
       const allowed = getSelectValues(field as Parameters<typeof getSelectValues>[0]);
       if (allowed && !allowed.includes(value)) {
@@ -67,8 +83,16 @@ export function validateProps(
     }
 
     if (field.kind === 'text' || field.kind === 'url') {
+      if (typeof value !== 'string') {
+        issues.push({
+          path: `props.${key}`,
+          message: `${field.label ?? key} must be text`,
+          code: 'INVALID_TYPE',
+        });
+        continue;
+      }
       const pattern = field.pattern as string | undefined;
-      if (pattern && typeof value === 'string' && !new RegExp(pattern).test(value)) {
+      if (pattern && !new RegExp(pattern).test(value)) {
         issues.push({
           path: `props.${key}`,
           message: `Value does not match pattern`,

@@ -107,6 +107,24 @@ describe('validateProps', () => {
     const result = validateProps(schema, { title: 'Hi', variant: 'a', count: 5 });
     expect(result.valid).toBe(true);
   });
+
+  it('rejects NaN numbers', () => {
+    const result = validateProps({ count: number({ min: 0, max: 10 }) }, { count: Number.NaN });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
+
+  it('rejects wrong-type number values', () => {
+    const result = validateProps({ count: number({ min: 0, max: 10 }) }, { count: '5' });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
+
+  it('rejects wrong-type boolean values', () => {
+    const result = validateProps({ active: boolean() }, { active: 'yes' });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
 });
 
 describe('defineComponent', () => {

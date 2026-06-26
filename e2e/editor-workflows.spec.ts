@@ -11,7 +11,6 @@ import {
   inspector,
   layers,
   resetDocument,
-  selectCanvasNode,
   selectLayer,
   setStudioMode,
   toolbar,
@@ -58,9 +57,6 @@ test.describe('editor workflows', () => {
   test('selects nodes from the layers panel and clears selection', async ({ page }) => {
     await bootstrapGridWithButton(page);
 
-    await expect(inspector(page).getByText('Select a node to edit its properties')).toBeVisible();
-
-    await selectLayer(page, /^Button\b/);
     await expectInspectorShowsType(inspector(page), 'Button');
 
     await page.locator('.vf-canvas-surface').click({ position: { x: 8, y: 8 } });

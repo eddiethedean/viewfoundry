@@ -26,6 +26,7 @@ export { createDocument, createNode, cloneNode } from './document.js';
 export {
   findNode,
   findNodeLocation,
+  isDescendant,
   walkNodes,
   collectNodeIds,
   updateNodeInTree,
@@ -51,6 +52,7 @@ export {
   resolveGridTracks,
   sortChildrenByGridOrder,
   autoPlaceNextCell,
+  growGridRowsIfNeeded,
   placementToCss,
   gridContainerStyle,
   normalizePlacement,

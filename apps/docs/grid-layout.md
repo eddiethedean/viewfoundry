@@ -83,7 +83,9 @@ Core commands that understand grid placement:
 `generateTsx` emits inline styles for grid children:
 
 ```jsx
-<div style={{ gridColumn: '2 / span 2', gridRow: '1' }}>...</div>
+<div style={{ gridColumn: '2 / 4', gridRow: '1' }}>
+  <Button>...</Button>
+</div>
 ```
 
 Register grid container components in your import map like any other type.

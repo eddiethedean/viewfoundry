@@ -8,10 +8,12 @@ export function printHelp() {
 Usage:
   viewfoundry export <input.json> [output.tsx]
   viewfoundry validate <input.json>
+  viewfoundry init
 
 Commands:
   export    Generate TSX from a ViewFoundry JSON document
   validate  Check that a JSON file is a valid ViewFoundry document
+  init      Print guidance for starting a new project (stub until v0.5.0)
 `);
 }
 
@@ -35,7 +37,15 @@ export function runCli(argv: string[]): RunCliResult {
         console.error('Error: input JSON path required');
         return { exitCode: 1 };
       }
-      const document = loadDocument(inputPath);
+      let document: ViewDocument;
+      try {
+        document = loadDocument(inputPath);
+      } catch (error) {
+        console.error(
+          `Error: ${error instanceof Error ? error.message : 'Failed to read document'}`,
+        );
+        return { exitCode: 1 };
+      }
       const validation = validateDocument(document, undefined, { allowMissingComponents: true });
       if (!validation.valid) {
         console.error('Invalid ViewFoundry document:');
@@ -56,7 +66,15 @@ export function runCli(argv: string[]): RunCliResult {
         console.error('Error: input JSON path required');
         return { exitCode: 1 };
       }
-      const document = loadDocument(inputPath);
+      let document: ViewDocument;
+      try {
+        document = loadDocument(inputPath);
+      } catch (error) {
+        console.error(
+          `Error: ${error instanceof Error ? error.message : 'Failed to read document'}`,
+        );
+        return { exitCode: 1 };
+      }
       const validation = validateDocument(document, undefined, { allowMissingComponents: true });
       if (!validation.valid) {
         console.error('Invalid ViewFoundry document:');
