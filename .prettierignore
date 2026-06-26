@@ -1,0 +1,4 @@
+apps/docs/_build/
+apps/docs/_static/studio/
+**/dist/
+node_modules/

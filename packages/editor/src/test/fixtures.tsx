@@ -11,13 +11,7 @@ export function CounterButton() {
   );
 }
 
-function DemoButtonComponent({
-  children,
-  variant,
-}: {
-  children?: string;
-  variant?: string;
-}) {
+function DemoButtonComponent({ children, variant }: { children?: string; variant?: string }) {
   return (
     <button type="button" data-variant={variant}>
       {children}

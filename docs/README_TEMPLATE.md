@@ -23,8 +23,8 @@ export const ButtonDefinition = defineComponent(Button, {
   props: {
     children: text({ label: 'Text', defaultValue: 'Click me' }),
     variant: select({ label: 'Variant', options: ['primary', 'secondary'] }),
-    disabled: boolean({ label: 'Disabled' })
-  }
+    disabled: boolean({ label: 'Disabled' }),
+  },
 });
 ```
 

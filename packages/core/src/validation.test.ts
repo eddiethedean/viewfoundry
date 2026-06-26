@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  createDocument,
-  createNode,
-  createRegistry,
-  validateDocument,
-} from '../src/index.js';
+import { createDocument, createNode, createRegistry, validateDocument } from '../src/index.js';
 
 const buttonDef = {
   type: 'Button',
@@ -72,5 +67,13 @@ describe('validateDocument', () => {
     const result = validateDocument(doc, registry, { allowMissingComponents: true });
     expect(result.valid).toBe(true);
     expect(result.issues.some((i) => i.code === 'UNKNOWN_COMPONENT_TYPE')).toBe(false);
+  });
+
+  it('does not require Root to be registered', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', {}, [], 'b1')];
+    const registry = createRegistry([buttonDef]);
+    const result = validateDocument(doc, registry);
+    expect(result.valid).toBe(true);
   });
 });

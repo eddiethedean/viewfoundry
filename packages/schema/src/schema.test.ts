@@ -98,10 +98,7 @@ describe('validateProps', () => {
   });
 
   it('validates text pattern', () => {
-    const result = validateProps(
-      { slug: text({ pattern: '^[a-z]+$' }) },
-      { slug: 'Invalid-123' },
-    );
+    const result = validateProps({ slug: text({ pattern: '^[a-z]+$' }) }, { slug: 'Invalid-123' });
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'PATTERN')).toBe(true);
   });

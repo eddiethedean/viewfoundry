@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createDocument, createNode, createRegistry, createSelection, selectNode } from '@viewfoundry/core';
+import {
+  createDocument,
+  createNode,
+  createRegistry,
+  createSelection,
+  selectNode,
+} from '@viewfoundry/core';
 import {
   ViewFoundryProvider,
   ViewRenderer,
@@ -40,7 +46,9 @@ describe('ViewRenderer', () => {
 
   it('renders a document tree', () => {
     const doc = createDocument();
-    doc.root.children = [createNode('Button', { children: 'Click me', variant: 'primary' }, [], 'b1')];
+    doc.root.children = [
+      createNode('Button', { children: 'Click me', variant: 'primary' }, [], 'b1'),
+    ];
 
     render(
       <ViewFoundryProvider document={doc} registry={registry}>
@@ -54,12 +62,23 @@ describe('ViewRenderer', () => {
 
   it('renders nested children', () => {
     const registryWithCard = createRegistry([
-      { type: 'Card', component: ({ children }: { children?: React.ReactNode }) => <div data-testid="card">{children}</div>, acceptsChildren: true },
+      {
+        type: 'Card',
+        component: ({ children }: { children?: React.ReactNode }) => (
+          <div data-testid="card">{children}</div>
+        ),
+        acceptsChildren: true,
+      },
       { type: 'Button', component: Button, acceptsChildren: true },
     ]);
 
     const doc = createDocument();
-    const card = createNode('Card', {}, [createNode('Button', { children: 'Nested' }, [], 'btn')], 'card');
+    const card = createNode(
+      'Card',
+      {},
+      [createNode('Button', { children: 'Nested' }, [], 'btn')],
+      'card',
+    );
     doc.root.children = [card];
 
     render(
@@ -174,9 +193,7 @@ describe('ViewFoundryProvider hooks', () => {
 
   it('exposes document, registry, and selection via hooks', () => {
     const doc = createDocument();
-    const registry = createRegistry([
-      { type: 'Button', component: Button, acceptsChildren: true },
-    ]);
+    const registry = createRegistry([{ type: 'Button', component: Button, acceptsChildren: true }]);
     const selection = selectNode(createSelection(), 'root');
 
     render(

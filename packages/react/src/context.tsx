@@ -1,9 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type {
-  ComponentRegistry,
-  SelectionState,
-  ViewDocument,
-} from '@viewfoundry/core';
+import type { ComponentRegistry, SelectionState, ViewDocument } from '@viewfoundry/core';
 import { createSelection } from '@viewfoundry/core';
 
 export type ViewFoundryContextValue = {
@@ -34,9 +30,7 @@ export function ViewFoundryProvider({
   children,
 }: ViewFoundryProviderProps) {
   return (
-    <ViewFoundryContext.Provider
-      value={{ document, registry, selection, mode, onSelectNode }}
-    >
+    <ViewFoundryContext.Provider value={{ document, registry, selection, mode, onSelectNode }}>
       {children}
     </ViewFoundryContext.Provider>
   );

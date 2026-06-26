@@ -7,14 +7,20 @@
     "build": "pnpm -r build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "typecheck": "pnpm -r typecheck",
     "check": "pnpm build && pnpm test && pnpm typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "pnpm --filter basic-react dev"
+    "dev": "pnpm --filter basic-react dev",
+    "docs:build": "node scripts/build-docs.mjs",
+    "docs:dev": "pnpm --filter docs-studio dev",
+    "docs:preview": "python3 -m http.server 8080 --directory apps/docs/_build/html"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",

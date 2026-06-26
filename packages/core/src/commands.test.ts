@@ -103,9 +103,7 @@ describe('commands', () => {
       expect(result.document.root.children).toHaveLength(2);
       expect(result.document.root.children?.[0].type).toBe('Button');
       expect(result.document.root.children?.[1].type).toBe('Button');
-      expect(result.document.root.children?.[0].id).not.toBe(
-        result.document.root.children?.[1].id,
-      );
+      expect(result.document.root.children?.[0].id).not.toBe(result.document.root.children?.[1].id);
     }
   });
 
@@ -148,7 +146,7 @@ describe('commands', () => {
 
 describe('history', () => {
   it('supports undo and redo with command mutations', () => {
-    let doc = createDocument();
+    const doc = createDocument();
     let history = createHistory(doc);
     const button = createNode('Button', {}, [], 'b1');
 

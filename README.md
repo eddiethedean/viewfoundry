@@ -16,20 +16,27 @@ Register your real components. ViewFoundry gives you a no-code editor, canvas, p
 pnpm install
 pnpm build
 pnpm test
-pnpm dev   # runs examples/basic-react
+pnpm test:e2e   # Playwright UI smoke tests (first run: pnpm exec playwright install chromium)
+pnpm dev        # runs examples/basic-react
 ```
 
 ## Packages (0.2.0)
 
-| Package | Description |
-|---------|-------------|
-| `@viewfoundry/core` | Framework-agnostic document engine |
-| `@viewfoundry/schema` | Component definition and prop schema helpers |
-| `@viewfoundry/react` | React runtime renderer |
-| `@viewfoundry/editor` | Visual editor UI |
-| `@viewfoundry/codegen` | TSX code generation |
-| `@viewfoundry/vite` | Vite plugin stub |
-| `@viewfoundry/cli` | `viewfoundry export` / `validate` CLI |
+| Package                | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `@viewfoundry/core`    | Framework-agnostic document engine           |
+| `@viewfoundry/schema`  | Component definition and prop schema helpers |
+| `@viewfoundry/react`   | React runtime renderer                       |
+| `@viewfoundry/editor`  | Visual editor UI                             |
+| `@viewfoundry/codegen` | TSX code generation                          |
+| `@viewfoundry/vite`    | Vite plugin stub (no-op until v0.5.0)        |
+| `@viewfoundry/cli`     | `viewfoundry export` / `validate` CLI        |
+
+Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md](CHANGELOG.md) and [specs/PACKAGE_API_SPEC.md](specs/PACKAGE_API_SPEC.md).
+
+### 0.x stability
+
+ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.2.0`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
 
 ## Usage
 
@@ -39,6 +46,7 @@ import { createRegistry } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '@viewfoundry/editor';
 import { ViewRenderer } from '@viewfoundry/react';
 import '@viewfoundry/editor/styles.css';
+import '@viewfoundry/react/styles.css';
 
 const ButtonDefinition = defineComponent(Button, {
   type: 'Button',
@@ -53,15 +61,26 @@ const ButtonDefinition = defineComponent(Button, {
 
 const registry = createRegistry([ButtonDefinition]);
 
-<ViewFoundryEditor registry={registry} onChange={(doc) => save(doc)} />
+<ViewFoundryEditor registry={registry} onChange={(doc) => save(doc)} />;
+```
+
+When using `@viewfoundry/editor`, import **both** `@viewfoundry/editor/styles.css` and `@viewfoundry/react/styles.css`. The editor stylesheet covers chrome; the react stylesheet covers canvas selection overlays and missing-component fallbacks.
+
+Runtime-only apps can use `@viewfoundry/react` without the editor:
+
+```tsx
+import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
+import '@viewfoundry/react/styles.css';
 ```
 
 ## Example
 
 See `examples/basic-react` for a full demo with Button, Card, Stack, Heading, and Text components, localStorage persistence, and TSX export.
 
-## Docs
+## Documentation
 
-Planning and architecture specs live in `docs/`. The implementation follows `docs/ROADMAP.md`.
+Published docs (Read the Docs): build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. The site includes an [embedded Studio](apps/docs/studio.md) built from `apps/docs-studio`.
+
+Planning specs live in `docs/`. The implementation follows `docs/ROADMAP.md`.
 
 **Planned:** [v0.3.0](docs/ROADMAP.md#v030---grid-layout--dragdrop) grid drag/drop · [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.6.0](docs/ROADMAP.md#v060---documentation-site) Read the Docs studio. See `docs/ROADMAP.md` for the full release plan.

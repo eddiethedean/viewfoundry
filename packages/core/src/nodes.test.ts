@@ -29,7 +29,12 @@ describe('nodes', () => {
   });
 
   it('cloneNode regenerates ids', () => {
-    const node = createNode('Button', { children: 'Hi' }, [createNode('Icon', {}, [], 'icon1')], 'btn1');
+    const node = createNode(
+      'Button',
+      { children: 'Hi' },
+      [createNode('Icon', {}, [], 'icon1')],
+      'btn1',
+    );
     let counter = 0;
     const cloned = cloneNode(node, () => `new-${++counter}`);
     expect(cloned.id).toBe('new-1');

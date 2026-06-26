@@ -246,4 +246,69 @@ describe('ViewFoundryEditor', () => {
     fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
     expect(latestDocument(onChange).root.children).toHaveLength(0);
   });
+
+  it('calls the latest onChange callback after rerender', async () => {
+    const user = userEvent.setup();
+    const onChange1 = vi.fn();
+    const doc = createDocument();
+    const { rerender } = render(
+      <ViewFoundryEditor registry={registry} document={doc} onChange={onChange1} />,
+    );
+
+    const onChange2 = vi.fn();
+    rerender(<ViewFoundryEditor registry={registry} document={doc} onChange={onChange2} />);
+
+    onChange1.mockClear();
+    onChange2.mockClear();
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    expect(onChange2).toHaveBeenCalled();
+    expect(onChange1).not.toHaveBeenCalled();
+  });
+
+  it('inserts dragged components into the selected container', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Card' }));
+
+    const docWithCard = latestDocument(onChange);
+    const cardId = docWithCard.root.children?.[0].id;
+    if (!cardId) throw new Error('card missing');
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: new RegExp(cardId) }));
+
+    const buttonItem = within(palette).getByRole('button', { name: 'Button' });
+    const dataTransfer = {
+      data: {} as Record<string, string>,
+      effectAllowed: 'copy',
+      dropEffect: 'copy',
+      setData(type: string, value: string) {
+        this.data[type] = value;
+      },
+      getData(type: string) {
+        return this.data[type] ?? '';
+      },
+    };
+
+    fireEvent.dragStart(buttonItem, { dataTransfer });
+    const canvas = screen.getByText('Canvas').closest('.vf-canvas');
+    if (!canvas) throw new Error('canvas missing');
+    fireEvent.dragOver(canvas, { dataTransfer });
+    fireEvent.drop(canvas, { dataTransfer });
+
+    const finalDoc = latestDocument(onChange);
+    const card = findNode(finalDoc.root, cardId);
+    expect(card?.children).toHaveLength(1);
+    expect(card?.children?.[0].type).toBe('Button');
+    expect(finalDoc.root.children).toHaveLength(1);
+  });
 });

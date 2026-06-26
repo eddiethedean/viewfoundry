@@ -81,9 +81,26 @@ File: `packages/cli/src/cli.test.ts`
 ## Future coverage (deferred)
 
 - Canvas drag-and-drop insert (v0.3.0 grid)
-- Playwright e2e for `examples/basic-react`
 - `@viewfoundry/vite` plugin tests (v0.5.0)
 - Visual regression / layout tests
+
+## E2E tests (Playwright)
+
+Browser smoke tests for `examples/basic-react` live in `e2e/basic-react.spec.ts`.
+
+Coverage:
+
+- Edit mode chrome on load
+- Palette insert
+- Edit / Live toggle
+- TSX export drawer
+
+```bash
+pnpm build
+pnpm test:e2e
+```
+
+Playwright starts `vite preview` for `basic-react` automatically (see `playwright.config.ts`).
 
 ## CI commands
 

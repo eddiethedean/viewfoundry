@@ -12,11 +12,14 @@ export type CodegenInput = {
   imports: ComponentImportMap;
 };
 
-export type ComponentImportMap = Record<string, {
-  importPath: string;
-  exportName: string;
-  defaultImport?: boolean;
-}>;
+export type ComponentImportMap = Record<
+  string,
+  {
+    importPath: string;
+    exportName: string;
+    defaultImport?: boolean;
+  }
+>;
 ```
 
 ## Output

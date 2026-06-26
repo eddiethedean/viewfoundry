@@ -1,0 +1,20 @@
+# Read the Docs configuration
+# https://docs.readthedocs.io/en/stable/config-file/v2.html
+
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: '3.12'
+    nodejs: '20'
+  commands:
+    - corepack enable
+    - corepack prepare pnpm@9.15.9 --activate
+    - pnpm install --frozen-lockfile
+    - pip install -r apps/docs/requirements.txt
+    - node scripts/build-docs.mjs
+
+# Sphinx config path (used for RTD dashboard metadata)
+sphinx:
+  configuration: apps/docs/conf.py

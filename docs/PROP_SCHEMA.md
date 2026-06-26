@@ -33,24 +33,26 @@ export type BasePropField<TValue = unknown> = {
 ## Field examples
 
 ```ts
-text({ label: 'Title', defaultValue: 'Untitled' })
-textarea({ label: 'Body' })
-number({ label: 'Columns', min: 1, max: 12, step: 1 })
-boolean({ label: 'Disabled', defaultValue: false })
-select({ label: 'Variant', options: ['primary', 'secondary'] })
-color({ label: 'Background' })
-image({ label: 'Hero Image' })
-url({ label: 'Link' })
-json({ label: 'Advanced Config' })
+text({ label: 'Title', defaultValue: 'Untitled' });
+textarea({ label: 'Body' });
+number({ label: 'Columns', min: 1, max: 12, step: 1 });
+boolean({ label: 'Disabled', defaultValue: false });
+select({ label: 'Variant', options: ['primary', 'secondary'] });
+color({ label: 'Background' });
+image({ label: 'Hero Image' });
+url({ label: 'Link' });
+json({ label: 'Advanced Config' });
 ```
 
 ## Select options
 
 ```ts
-export type SelectOption = string | {
-  label: string;
-  value: string;
-};
+export type SelectOption =
+  | string
+  | {
+      label: string;
+      value: string;
+    };
 ```
 
 ## Inspector generation

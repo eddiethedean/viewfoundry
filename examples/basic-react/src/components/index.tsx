@@ -37,10 +37,7 @@ type StackProps = {
 
 export function Stack({ children, direction = 'vertical', gap = 12, align }: StackProps) {
   return (
-    <div
-      className={`demo-stack demo-stack--${direction}`}
-      style={{ gap, alignItems: align }}
-    >
+    <div className={`demo-stack demo-stack--${direction}`} style={{ gap, alignItems: align }}>
       {children}
     </div>
   );

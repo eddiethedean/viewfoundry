@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@demo/*": ["../../examples/basic-react/src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "../../examples/basic-react/src/definitions.ts",
+    "../../examples/basic-react/src/components"
+  ]
+}

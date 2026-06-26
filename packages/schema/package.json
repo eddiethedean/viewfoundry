@@ -20,6 +20,9 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsup --watch"
   },
+  "peerDependencies": {
+    "@viewfoundry/core": "^0.2.0"
+  },
   "dependencies": {
     "@viewfoundry/core": "workspace:*"
   },

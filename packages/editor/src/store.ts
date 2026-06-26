@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import {
+  applyCommand,
   canRedo,
   canUndo,
   clearSelection,
@@ -7,21 +8,20 @@ import {
   createHistory,
   createNode,
   createSelection,
-  deleteNode,
-  duplicateNode,
   findNode,
   getPrimarySelection,
-  insertNode,
   pushHistory,
   redo,
   selectNode,
-  setNodeProp,
   undo,
+  type ApplyCommandOptions,
   type ComponentRegistry,
   type HistoryState,
   type SelectionState,
   type ViewDocument,
+  type ViewNode,
 } from '@viewfoundry/core';
+import { validateProps } from '@viewfoundry/schema';
 
 export type StudioMode = 'edit' | 'live';
 export type EditSubMode = 'component';
@@ -60,6 +60,34 @@ function applyDocument(
     document,
     history: pushHistory(history, document),
   });
+}
+
+export function resolveInsertParentId(
+  document: ViewDocument,
+  registry: ComponentRegistry,
+  selection: SelectionState,
+  parentId?: string,
+): string {
+  let targetParentId = parentId ?? 'root';
+  const selectedId = getPrimarySelection(selection);
+  if (!parentId && selectedId) {
+    const selected = findNode(document.root, selectedId);
+    const selectedDef = selected ? registry.get(selected.type) : undefined;
+    if (selected && selectedDef?.acceptsChildren) {
+      targetParentId = selectedId;
+    }
+  }
+  return targetParentId;
+}
+
+function createApplyOptions(registry: ComponentRegistry): ApplyCommandOptions {
+  return {
+    validateNodeProps: (node: ViewNode) => {
+      const def = registry.get(node.type);
+      if (!def?.props) return { valid: true, issues: [] };
+      return validateProps(def.props, node.props ?? {});
+    },
+  };
 }
 
 export function createEditorStore(
@@ -110,18 +138,14 @@ export function createEditorStore(
       const def = registry.get(type);
       if (!def) return;
 
-      let targetParentId = parentId ?? 'root';
-      const selectedId = getPrimarySelection(selection);
-      if (!parentId && selectedId) {
-        const selected = findNode(document.root, selectedId);
-        const selectedDef = selected ? registry.get(selected.type) : undefined;
-        if (selected && selectedDef?.acceptsChildren) {
-          targetParentId = selectedId;
-        }
-      }
-
+      const targetParentId = resolveInsertParentId(document, registry, selection, parentId);
       const node = createNode(type, { ...(def.defaultProps ?? {}) });
-      const result = insertNode(document, { parentId: targetParentId, node });
+      const result = applyCommand(
+        document,
+        { type: 'insertNode', payload: { parentId: targetParentId, node } },
+        registry,
+        createApplyOptions(registry),
+      );
       if (result.ok) {
         applyDocument(set, get, result.document);
         set({ selection: selectNode(createSelection(), node.id) });
@@ -132,7 +156,13 @@ export function createEditorStore(
     deleteSelected: () => {
       const nodeId = getPrimarySelection(get().selection);
       if (!nodeId || nodeId === 'root') return;
-      const result = deleteNode(get().document, { nodeId });
+      const { registry, document } = get();
+      const result = applyCommand(
+        document,
+        { type: 'deleteNode', payload: { nodeId } },
+        registry,
+        createApplyOptions(registry),
+      );
       if (result.ok) {
         applyDocument(set, get, result.document);
         set({ selection: clearSelection() });
@@ -143,7 +173,13 @@ export function createEditorStore(
     duplicateSelected: () => {
       const nodeId = getPrimarySelection(get().selection);
       if (!nodeId || nodeId === 'root') return;
-      const result = duplicateNode(get().document, { nodeId });
+      const { registry, document } = get();
+      const result = applyCommand(
+        document,
+        { type: 'duplicateNode', payload: { nodeId } },
+        registry,
+        createApplyOptions(registry),
+      );
       if (result.ok) {
         applyDocument(set, get, result.document);
         onChange?.(result.document);
@@ -153,7 +189,13 @@ export function createEditorStore(
     updateProp: (key, value) => {
       const nodeId = getPrimarySelection(get().selection);
       if (!nodeId) return;
-      const result = setNodeProp(get().document, { nodeId, key, value });
+      const { registry, document } = get();
+      const result = applyCommand(
+        document,
+        { type: 'setNodeProp', payload: { nodeId, key, value } },
+        registry,
+        createApplyOptions(registry),
+      );
       if (result.ok) {
         applyDocument(set, get, result.document);
         onChange?.(result.document);

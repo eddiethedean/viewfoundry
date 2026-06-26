@@ -21,15 +21,18 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsup --watch"
   },
+  "peerDependencies": {
+    "@viewfoundry/core": "^0.2.0",
+    "@viewfoundry/react": "^0.2.0",
+    "@viewfoundry/schema": "^0.2.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
   "dependencies": {
     "@viewfoundry/core": "workspace:*",
     "@viewfoundry/react": "workspace:*",
     "@viewfoundry/schema": "workspace:*",
     "zustand": "^5.0.3"
-  },
-  "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
   },
   "devDependencies": {
     "@types/react": "^19.1.2",

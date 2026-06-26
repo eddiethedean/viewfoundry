@@ -22,7 +22,7 @@ export function Palette(_props: PaletteProps) {
       if (items.length > 0) acc[category] = items;
       return acc;
     },
-    {} as Record<string, typeof grouped[string]>,
+    {} as Record<string, (typeof grouped)[string]>,
   );
 
   return (
@@ -52,9 +52,7 @@ export function Palette(_props: PaletteProps) {
                 onClick={() => store.getState().insertComponent(def.type)}
               >
                 <span className="vf-palette-item-label">{def.label ?? def.type}</span>
-                {def.description && (
-                  <span className="vf-palette-item-desc">{def.description}</span>
-                )}
+                {def.description && <span className="vf-palette-item-desc">{def.description}</span>}
               </button>
             ))}
           </div>

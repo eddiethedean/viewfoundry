@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createDocument, createNode, createRegistry, findNode, getPrimarySelection } from '@viewfoundry/core';
+import {
+  createDocument,
+  createNode,
+  createRegistry,
+  findNode,
+  getPrimarySelection,
+} from '@viewfoundry/core';
 import { text } from '@viewfoundry/schema';
 import { createEditorStore } from './store.js';
 

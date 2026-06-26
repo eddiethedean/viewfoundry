@@ -113,13 +113,13 @@ Production-like view of the same document in the **same canvas area**.
 
 ### Toggle behavior
 
-| Requirement | Detail |
-|-------------|--------|
-| Single window | No side-by-side editor + preview; no dedicated preview route |
-| Same viewport | Canvas element or region reused; no full-page swap |
+| Requirement    | Detail                                                           |
+| -------------- | ---------------------------------------------------------------- |
+| Single window  | No side-by-side editor + preview; no dedicated preview route     |
+| Same viewport  | Canvas element or region reused; no full-page swap               |
 | Preserve state | Selection, scroll position, and document unchanged across toggle |
-| Fast | Instant chrome show/hide; no remount flicker where avoidable |
-| Obvious | Edit/Live control is always visible in toolbar |
+| Fast           | Instant chrome show/hide; no remount flicker where avoidable     |
+| Obvious        | Edit/Live control is always visible in toolbar                   |
 
 ### Anti-patterns (do not ship in studio / docs embed)
 
@@ -215,13 +215,13 @@ Placement may live on `ViewNode.layout` (see `docs/DOCUMENT_MODEL.md`) or on gri
 
 ### Canvas drag/drop behavior
 
-| Action | Behavior |
-|--------|----------|
-| Drag from palette | Ghost follows cursor; valid cells highlight; snap on drop |
+| Action             | Behavior                                                              |
+| ------------------ | --------------------------------------------------------------------- |
+| Drag from palette  | Ghost follows cursor; valid cells highlight; snap on drop             |
 | Drag existing node | Lift animation; source cell shows placeholder; drop updates placement |
-| Hover | Cell border glow + insertion line showing landing zone |
-| Invalid target | Disabled cursor + no snap (e.g. disallowed child type) |
-| Cancel (Escape) | Restore original position |
+| Hover              | Cell border glow + insertion line showing landing zone                |
+| Invalid target     | Disabled cursor + no snap (e.g. disallowed child type)                |
+| Cancel (Escape)    | Restore original position                                             |
 
 ### Visual feedback
 

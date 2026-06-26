@@ -1,4 +1,9 @@
-import type { ComponentRegistry, ValidationIssue, ValidationResult, ViewDocument } from './types.js';
+import type {
+  ComponentRegistry,
+  ValidationIssue,
+  ValidationResult,
+  ViewDocument,
+} from './types.js';
 import { collectNodeIds, walkNodes } from './nodes.js';
 
 export type ValidateDocumentOptions = {
@@ -43,6 +48,8 @@ export function validateDocument(
   }
 
   walkNodes(document.root, (node) => {
+    if (node.type === 'Root') return;
+
     if (registry && !options.allowMissingComponents && !registry.has(node.type)) {
       issues.push({
         path: `node:${node.id}`,

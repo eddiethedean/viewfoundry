@@ -1,6 +1,15 @@
-export { ViewFoundryProvider, useViewDocument, useViewRegistry, useViewSelection } from './context.js';
+export {
+  ViewFoundryProvider,
+  useViewDocument,
+  useViewRegistry,
+  useViewSelection,
+} from './context.js';
 export type { ViewFoundryProviderProps } from './context.js';
 export { ViewRenderer } from './ViewRenderer.js';
 export type { ViewRendererProps } from './ViewRenderer.js';
-export { ViewNodeRenderer, MissingComponentFallback, resolveComponent } from './ViewNodeRenderer.js';
+export {
+  ViewNodeRenderer,
+  MissingComponentFallback,
+  resolveComponent,
+} from './ViewNodeRenderer.js';
 export type { ViewNodeRendererProps, MissingComponentFallbackProps } from './ViewNodeRenderer.js';

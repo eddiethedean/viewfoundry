@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { generateTsx } from '@viewfoundry/codegen';
-import type { ViewDocument } from '@viewfoundry/core';
+import { validateDocument, type ViewDocument } from '@viewfoundry/core';
 
 export function printHelp() {
   console.log(`viewfoundry v0.2.0
@@ -36,6 +36,14 @@ export function runCli(argv: string[]): RunCliResult {
         return { exitCode: 1 };
       }
       const document = loadDocument(inputPath);
+      const validation = validateDocument(document, undefined, { allowMissingComponents: true });
+      if (!validation.valid) {
+        console.error('Invalid ViewFoundry document:');
+        for (const issue of validation.issues) {
+          console.error(`  ${issue.path}: ${issue.message}`);
+        }
+        return { exitCode: 1 };
+      }
       const { code, warnings } = generateTsx({ document, imports: {} });
       writeFileSync(outputPath, code);
       console.log(`Wrote ${outputPath}`);
@@ -49,15 +57,21 @@ export function runCli(argv: string[]): RunCliResult {
         return { exitCode: 1 };
       }
       const document = loadDocument(inputPath);
-      if (document.version !== '0.1' || !document.root) {
-        console.error('Invalid ViewFoundry document');
+      const validation = validateDocument(document, undefined, { allowMissingComponents: true });
+      if (!validation.valid) {
+        console.error('Invalid ViewFoundry document:');
+        for (const issue of validation.issues) {
+          console.error(`  ${issue.path}: ${issue.message}`);
+        }
         return { exitCode: 1 };
       }
       console.log('Valid ViewFoundry document');
       return { exitCode: 0 };
     }
     case 'init':
-      console.log('viewfoundry init is not yet implemented. Use examples/basic-react as a starting point.');
+      console.log(
+        'viewfoundry init is not yet implemented. Use examples/basic-react as a starting point.',
+      );
       return { exitCode: 0 };
     case '--help':
     case '-h':

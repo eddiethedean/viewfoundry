@@ -35,10 +35,10 @@ export const ButtonDefinition = defineComponent(Button, {
     variant: select({
       label: 'Variant',
       options: ['primary', 'secondary', 'ghost'],
-      defaultValue: 'primary'
+      defaultValue: 'primary',
     }),
-    disabled: boolean({ label: 'Disabled', defaultValue: false })
-  }
+    disabled: boolean({ label: 'Disabled', defaultValue: false }),
+  },
 });
 ```
 

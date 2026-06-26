@@ -32,7 +32,10 @@ export function findNodeLocation(root: ViewNode, nodeId: string): NodeLocation |
   return undefined;
 }
 
-export function walkNodes(root: ViewNode, visitor: (node: ViewNode, parent: ViewNode | null) => void): void {
+export function walkNodes(
+  root: ViewNode,
+  visitor: (node: ViewNode, parent: ViewNode | null) => void,
+): void {
   function walk(node: ViewNode, parent: ViewNode | null) {
     visitor(node, parent);
     if (node.children) {

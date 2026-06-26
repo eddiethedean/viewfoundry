@@ -11,7 +11,9 @@ const imports = {
 describe('generateTsx', () => {
   it('generates simple TSX', () => {
     const doc = createDocument();
-    doc.root.children = [createNode('Button', { variant: 'primary', children: 'Click me' }, [], 'btn1')];
+    doc.root.children = [
+      createNode('Button', { variant: 'primary', children: 'Click me' }, [], 'btn1'),
+    ];
 
     const { code, warnings } = generateTsx({ document: doc, imports });
     expect(warnings).toHaveLength(0);
@@ -22,7 +24,12 @@ describe('generateTsx', () => {
 
   it('generates nested TSX', () => {
     const doc = createDocument();
-    const card = createNode('Card', {}, [createNode('Button', { children: 'Inner' }, [], 'btn')], 'card');
+    const card = createNode(
+      'Card',
+      {},
+      [createNode('Button', { children: 'Inner' }, [], 'btn')],
+      'card',
+    );
     doc.root.children = [card];
 
     const { code } = generateTsx({ document: doc, imports });
@@ -74,9 +81,7 @@ describe('generateTsx', () => {
 
   it('warns on unsupported function props', () => {
     const doc = createDocument();
-    doc.root.children = [
-      createNode('Button', { onClick: () => {}, children: 'X' }, [], 'b1'),
-    ];
+    doc.root.children = [createNode('Button', { onClick: () => {}, children: 'X' }, [], 'b1')];
     const { code, warnings } = generateTsx({ document: doc, imports });
     expect(warnings.some((w) => w.includes('Unsupported function'))).toBe(true);
     expect(code).not.toContain('onClick');
@@ -94,6 +99,53 @@ describe('generateTsx', () => {
     doc.root.children = [createNode('Button', { children: 'A' }, [], 'b1')];
     const { code } = generateTsx({ document: doc, imports, componentName: 'MyView' });
     expect(code).toContain('export function MyView()');
+  });
+
+  it('rejects malicious component names', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'A' }, [], 'b1')];
+    const { code, warnings } = generateTsx({
+      document: doc,
+      imports,
+      componentName: 'Evil() {}\nexport function Real',
+    });
+    expect(warnings.some((w) => w.includes('Invalid component name'))).toBe(true);
+    expect(code).toContain('export function GeneratedView()');
+    expect(code).not.toContain('Evil()');
+  });
+
+  it('rejects unsafe import paths', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'A' }, [], 'b1')];
+    const { code, warnings } = generateTsx({
+      document: doc,
+      imports: {
+        Button: {
+          importPath: "'; alert(1); //",
+          exportName: 'Button',
+        },
+      },
+    });
+    expect(warnings.some((w) => w.includes('Invalid import path'))).toBe(true);
+    expect(code).not.toContain('alert(1)');
+  });
+
+  it('skips invalid prop keys', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'A', 'onClick=alert(1)': true }, [], 'b1'),
+    ];
+    const { code, warnings } = generateTsx({ document: doc, imports });
+    expect(warnings.some((w) => w.includes('invalid prop key'))).toBe(true);
+    expect(code).not.toContain('onClick=alert');
+  });
+
+  it('sanitizes component type in missing-import comments', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Bad-->Type', {}, [], 'u1')];
+    const { code } = generateTsx({ document: doc, imports: {} });
+    expect(code).not.toContain('Bad-->Type');
+    expect(code).toContain('Bad--&gt;Type');
   });
 
   it('wraps multiple root children in a fragment', () => {

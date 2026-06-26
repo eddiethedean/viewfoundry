@@ -70,7 +70,18 @@ describe('runCli', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     const result = runCli(['validate', inputPath]);
     expect(result.exitCode).toBe(1);
-    expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document');
+    expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document:');
+  });
+
+  it('fails validation for duplicate node ids', () => {
+    const doc = createDocument();
+    const child = createNode('Button', { children: 'Hi' }, [], 'dup');
+    doc.root.children = [child, { ...child }];
+    const inputPath = writeFixture('dup.json', doc);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = runCli(['validate', inputPath]);
+    expect(result.exitCode).toBe(1);
+    expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document:');
   });
 
   it('errors on unknown command', () => {

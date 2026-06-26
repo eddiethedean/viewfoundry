@@ -1,4 +1,10 @@
 import type { ViewDocument, ViewNode } from '@viewfoundry/core';
+import {
+  isValidIdentifier,
+  isValidImportPath,
+  resolveComponentName,
+  sanitizeCommentText,
+} from './sanitize.js';
 
 export type ComponentImportMap = Record<
   string,
@@ -57,11 +63,7 @@ function formatPropValue(value: unknown, warnings: string[], path: string): stri
   return `{${JSON.stringify(value)}}`;
 }
 
-function renderProps(
-  node: ViewNode,
-  warnings: string[],
-  hasChildNodes: boolean,
-): string {
+function renderProps(node: ViewNode, warnings: string[], hasChildNodes: boolean): string {
   const props = { ...(node.props ?? {}) };
   if (typeof props.children === 'string' && !hasChildNodes) {
     delete props.children;
@@ -70,6 +72,10 @@ function renderProps(
   const parts: string[] = [];
   for (const [key, value] of Object.entries(props)) {
     if (key === 'children') continue;
+    if (!isValidIdentifier(key)) {
+      warnings.push(`Skipping invalid prop key at ${node.type}.${key}`);
+      continue;
+    }
     const formatted = formatPropValue(value, warnings, `${node.type}.${key}`);
     if (formatted === null) continue;
     if (typeof value === 'boolean') {
@@ -81,12 +87,16 @@ function renderProps(
   return parts.length > 0 ? ' ' + parts.join(' ') : '';
 }
 
-function renderNode(node: ViewNode, imports: ComponentImportMap, warnings: string[], indent: number): string {
+function renderNode(
+  node: ViewNode,
+  imports: ComponentImportMap,
+  warnings: string[],
+  indent: number,
+): string {
   const pad = '  '.repeat(indent);
   const hasChildNodes = Boolean(node.children && node.children.length > 0);
-  const stringChild = typeof node.props?.children === 'string' && !hasChildNodes
-    ? node.props.children
-    : null;
+  const stringChild =
+    typeof node.props?.children === 'string' && !hasChildNodes ? node.props.children : null;
 
   if (node.type === 'Root') {
     if (!node.children || node.children.length === 0) {
@@ -104,15 +114,20 @@ function renderNode(node: ViewNode, imports: ComponentImportMap, warnings: strin
   const importInfo = imports[node.type];
   if (!importInfo) {
     warnings.push(`Missing import for component type: ${node.type}`);
-    return `${pad}{/* Missing component: ${node.type} */}`;
+    return `${pad}{/* Missing component: ${sanitizeCommentText(node.type)} */}`;
+  }
+
+  if (!isValidIdentifier(importInfo.exportName)) {
+    warnings.push(`Invalid export name for ${node.type}: ${importInfo.exportName}`);
+    return `${pad}{/* Missing component: ${sanitizeCommentText(node.type)} */}`;
   }
 
   const propsStr = renderProps(node, warnings, hasChildNodes);
   const tag = importInfo.exportName;
 
   if (hasChildNodes) {
-    const children = node.children!
-      .map((child) => renderNode(child, imports, warnings, indent + 1))
+    const children = node
+      .children!.map((child) => renderNode(child, imports, warnings, indent + 1))
       .join('\n');
     return `${pad}<${tag}${propsStr}>\n${children}\n${pad}</${tag}>`;
   }
@@ -127,12 +142,24 @@ function renderNode(node: ViewNode, imports: ComponentImportMap, warnings: strin
   return `${pad}<${tag} />`;
 }
 
-function buildImportStatements(imports: ComponentImportMap, usedTypes: Set<string>): string {
+function buildImportStatements(
+  imports: ComponentImportMap,
+  usedTypes: Set<string>,
+  warnings: string[],
+): string {
   const lines: string[] = [];
   for (const type of usedTypes) {
     if (type === 'Root') continue;
     const info = imports[type];
     if (!info) continue;
+    if (!isValidIdentifier(info.exportName)) {
+      warnings.push(`Invalid export name for ${type}: ${info.exportName}`);
+      continue;
+    }
+    if (!isValidImportPath(info.importPath)) {
+      warnings.push(`Invalid import path for ${type}: ${info.importPath}`);
+      continue;
+    }
     if (info.defaultImport) {
       lines.push(`import ${info.exportName} from '${info.importPath}';`);
     } else {
@@ -151,11 +178,11 @@ function collectTypes(node: ViewNode, types: Set<string>): void {
 
 export function generateTsx(input: CodegenInput): CodegenOutput {
   const warnings: string[] = [];
-  const componentName = input.componentName ?? 'GeneratedView';
+  const componentName = resolveComponentName(input.componentName, warnings);
   const usedTypes = new Set<string>();
   collectTypes(input.document.root, usedTypes);
 
-  const imports = buildImportStatements(input.imports, usedTypes);
+  const imports = buildImportStatements(input.imports, usedTypes, warnings);
   const body = renderNode(input.document.root, input.imports, warnings, 2);
 
   const code = [

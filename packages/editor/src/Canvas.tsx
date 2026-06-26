@@ -46,7 +46,7 @@ export function Canvas(_props: CanvasProps) {
           ? (e) => {
               e.preventDefault();
               const type = e.dataTransfer.getData('application/viewfoundry-component');
-              if (type) store.getState().insertComponent(type, 'root');
+              if (type) store.getState().insertComponent(type);
             }
           : undefined
       }

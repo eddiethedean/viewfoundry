@@ -68,7 +68,7 @@ Read the Docs HTML build
 deployed site with prose + live studio page
 ```
 
-```
+````
 
 ## Package responsibilities
 
@@ -188,7 +188,7 @@ Component Registry
 ViewDocument JSON
         ↓
 Renderer / Editor / Codegen
-```
+````
 
 ## Editor mutation flow
 

@@ -4,15 +4,15 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 
 ## Release overview
 
-| Version | Status | Theme |
-|---------|--------|-------|
-| [v0.1.0](#v010---sdk-foundation) | **Released** | Core SDK, basic editor, codegen, example app |
-| [v0.2.0](#v020---edit--live-studio) | **Released** | Single-window Edit / Live toggle |
-| [v0.3.0](#v030---grid-layout--dragdrop) | Planned | Grid system and satisfying layout drag/drop |
-| [v0.4.0](#v040---style-editor) | Planned | Style Editor sub-mode and `node.style` |
-| [v0.5.0](#v050---cli--examples) | Planned | CLI scaffolding and additional examples |
-| [v0.6.0](#v060---documentation-site) | Planned | Read the Docs site with embedded studio |
-| [v0.7.0](#v070---lessonkit-integration) | Planned | LessonKit adapter and flagship integration |
+| Version                                 | Status       | Theme                                        |
+| --------------------------------------- | ------------ | -------------------------------------------- |
+| [v0.1.0](#v010---sdk-foundation)        | **Released** | Core SDK, basic editor, codegen, example app |
+| [v0.2.0](#v020---edit--live-studio)     | **Released** | Single-window Edit / Live toggle             |
+| [v0.3.0](#v030---grid-layout--dragdrop) | Planned      | Grid system and satisfying layout drag/drop  |
+| [v0.4.0](#v040---style-editor)          | Planned      | Style Editor sub-mode and `node.style`       |
+| [v0.5.0](#v050---cli--examples)         | Planned      | CLI scaffolding and additional examples      |
+| [v0.6.0](#v060---documentation-site)    | Planned      | Read the Docs site with embedded studio      |
+| [v0.7.0](#v070---lessonkit-integration) | Planned      | LessonKit adapter and flagship integration   |
 
 ---
 

@@ -34,7 +34,9 @@ export default function App() {
       componentName: 'DemoView',
     });
     setExportedCode(
-      warnings.length > 0 ? `${code}\n// Warnings:\n${warnings.map((w) => `// ${w}`).join('\n')}` : code,
+      warnings.length > 0
+        ? `${code}\n// Warnings:\n${warnings.map((w) => `// ${w}`).join('\n')}`
+        : code,
     );
   }, [document]);
 

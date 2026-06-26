@@ -46,7 +46,10 @@ export function deleteNode(document: ViewDocument, payload: DeleteNodePayload): 
   return success({ ...document, root: newRoot });
 }
 
-export function duplicateNode(document: ViewDocument, payload: DuplicateNodePayload): CommandResult {
+export function duplicateNode(
+  document: ViewDocument,
+  payload: DuplicateNodePayload,
+): CommandResult {
   const location = findNodeLocation(document.root, payload.nodeId);
   if (!location) {
     return failure(`Node not found: ${payload.nodeId}`);

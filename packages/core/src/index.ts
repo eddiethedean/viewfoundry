@@ -41,14 +41,7 @@ export {
   updateNodeProps,
   setNodeProp,
 } from './commands.js';
-export {
-  createHistory,
-  pushHistory,
-  undo,
-  redo,
-  canUndo,
-  canRedo,
-} from './history.js';
+export { createHistory, pushHistory, undo, redo, canUndo, canRedo } from './history.js';
 export {
   createSelection,
   selectNode,
@@ -57,3 +50,5 @@ export {
   isNodeSelected,
   getPrimarySelection,
 } from './selection.js';
+export { applyCommand } from './apply-command.js';
+export type { DocumentCommand, ApplyCommandOptions } from './apply-command.js';

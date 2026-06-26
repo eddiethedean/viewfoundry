@@ -47,8 +47,7 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
   }
 
   const jsxChildren: ReactNode =
-    childElements ??
-    (typeof node.props?.children === 'string' ? node.props.children : undefined);
+    childElements ?? (typeof node.props?.children === 'string' ? node.props.children : undefined);
 
   if (!isEditMode) {
     if (node.type === 'Root') {

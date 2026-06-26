@@ -46,8 +46,8 @@ export const LessonTitleBlock = defineComponent(TitleBlock, {
   category: 'LessonKit',
   props: {
     text: text({ label: 'Title Text' }),
-    level: select({ label: 'Level', options: ['h1', 'h2', 'h3'] })
-  }
+    level: select({ label: 'Level', options: ['h1', 'h2', 'h3'] }),
+  },
 });
 ```
 
