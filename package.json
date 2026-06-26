@@ -35,5 +35,9 @@
   "packageManager": "pnpm@9.15.9",
   "engines": {
     "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eddiethedean/viewfoundry.git"
   }
 }
