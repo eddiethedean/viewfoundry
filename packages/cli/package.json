@@ -1,0 +1,25 @@
+{
+  "name": "@viewfoundry/cli",
+  "version": "0.1.0",
+  "description": "CLI for ViewFoundry scaffolding and export",
+  "type": "module",
+  "bin": {
+    "viewfoundry": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@viewfoundry/codegen": "workspace:*",
+    "@viewfoundry/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,177 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #1a202c;
+  color: #e2e8f0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #2d3748;
+  border-bottom: 1px solid #4a5568;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.app-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.app-tabs button {
+  padding: 6px 14px;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  background: transparent;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.app-tabs button.active {
+  background: #3182ce;
+  border-color: #3182ce;
+}
+
+.app-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.app-editor {
+  flex: 1;
+  padding: 16px;
+  min-height: 0;
+}
+
+.app-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  min-height: 0;
+}
+
+.preview-surface {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  overflow: auto;
+  color: #1a202c;
+}
+
+.export-panel {
+  background: #2d3748;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.export-panel h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.export-panel pre {
+  margin: 0;
+  padding: 12px;
+  background: #1a202c;
+  border-radius: 4px;
+  overflow: auto;
+  font-size: 12px;
+  max-height: 200px;
+}
+
+/* Demo component styles */
+.demo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.demo-button--primary {
+  background: #3182ce;
+  color: #fff;
+}
+
+.demo-button--secondary {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.demo-button--ghost {
+  background: transparent;
+  color: #3182ce;
+  border: 1px solid #3182ce;
+}
+
+.demo-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.demo-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+}
+
+.demo-stack {
+  display: flex;
+}
+
+.demo-stack--vertical {
+  flex-direction: column;
+}
+
+.demo-stack--horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+.demo-heading {
+  margin: 0;
+  font-weight: 700;
+}
+
+.demo-heading--h1 { font-size: 2rem; }
+.demo-heading--h2 { font-size: 1.5rem; }
+.demo-heading--h3 { font-size: 1.25rem; }
+
+.demo-text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.demo-text--sm { font-size: 0.875rem; }
+.demo-text--md { font-size: 1rem; }
+.demo-text--lg { font-size: 1.125rem; }
