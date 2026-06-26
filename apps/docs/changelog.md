@@ -2,6 +2,24 @@
 
 Package versions are lockstep-published under the same semver. The canonical changelog lives on GitHub: [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md).
 
+## [Unreleased]
+
+### Fixed
+
+- Vite plugin path containment for document reads and codegen output; HMR soft-fails on invalid JSON while serving the last valid document
+- Init template `{{ VERSION }}` token replacement; CLI help uses package version dynamically
+- `syncDocument` validates inbound documents; version-only external updates no longer reset editor history
+- `resetDocument` in examples uses HMR-updated seed via ref after document file edits
+- Codegen rejects JS reserved words as export names and absolute import paths
+- Core commands: grid auto-placement on insert, same-parent move index adjustment, grid reorder after delete, layout cleared on duplicate to non-grid parents
+- Grid move/nudge guard failures surface `lastError` in the editor store
+- Grid validation rejects containers exceeding 64 tracks
+
+### Changed
+
+- CLI errors on unknown flags; `--imports` and `--tokens` require values
+- CI fails when CLI templates drift from examples (`pnpm sync:templates`)
+
 ## [0.5.0] — June 2026
 
 CLI scaffolding, Vite document HMR, and new examples. Upgrade all `@viewfoundry/*` packages together.

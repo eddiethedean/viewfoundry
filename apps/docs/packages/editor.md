@@ -35,6 +35,20 @@ Import **both** stylesheets. See [Getting started](../getting-started.md).
 
 Controlled `document` + `onChange` preserves undo via `syncDocument`. See [Troubleshooting](../troubleshooting.md#undo-and-redo-with-controlled-document).
 
+## Errors and `syncDocument`
+
+The editor store exposes `lastError: string | null`. When an action is blocked (unknown palette type, invalid grid move, out-of-bounds nudge, etc.), the store sets `lastError` and **does not** mutate the document.
+
+`ViewFoundryEditor` shows `lastError` in the Edit-mode toolbar as a non-blocking banner. Custom shells using `createEditorStore` should read `lastError` from `useEditorState` and surface it similarly.
+
+`syncDocument(document)` merges an external controlled document without clearing undo:
+
+- **No tree change** — updates `version` / `meta` only; history unchanged.
+- **Tree change** — validates with `validateDocument` (`allowMissingComponents: false`). Invalid inbound documents are **rejected**; the current document and history stay intact and `lastError` receives the first validation message.
+- **Valid tree change** — pushes the previous present onto the undo stack, replaces the document, clears redo, and preserves selection when the selected node still exists.
+
+Successful edits clear `lastError`. See [Production patterns](../production-patterns.md#persistence) for API-backed persistence patterns.
+
 ## Composition API (experimental in 0.x)
 
 | Export                  | Purpose                          |
@@ -61,17 +75,20 @@ When using `createEditorStore` or `useEditorStore`:
 | ---------------------------------- | --------------------------------------------- |
 | `undo()` / `redo()`                | History navigation                            |
 | `canUndo()` / `canRedo()`          | History availability                          |
-| `syncDocument(document)`           | Merge external document without clearing undo |
+| `syncDocument(document)`           | Merge external document; rejects invalid JSON |
+| `moveNodeToCell(nodeId, cell)`     | Move a grid child to another cell             |
+| `nudgeNodeLayout(nodeId, dx, dy)`  | Arrow-key grid nudge                          |
 | `setEditSubMode(mode)`             | Switch Component/Style sub-mode               |
 | `setStyleProp(nodeId, key, value)` | Set one style key on a node                   |
-| `updateStyle(nodeId, style)`       | Merge style keys on a node                    |
 | `updateStyle(nodeId, partial)`     | Merge style keys on a node                    |
+
+Store state includes `lastError` — see [Errors and syncDocument](#errors-and-syncdocument) above.
 
 Style mutations flow through `@viewfoundry/core` commands (`setStyleProp`, `updateNodeStyle`).
 
 Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.5.0` for ViewFoundry packages).
 
-Full API contract: [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundryeditor).
 
 ## Related
 

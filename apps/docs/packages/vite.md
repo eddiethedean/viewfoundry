@@ -61,7 +61,21 @@ useEffect(() => {
 }, []);
 ```
 
-Invalid JSON or document validation errors fail module load with a readable error in the Vite overlay.
+Invalid JSON or document validation errors behave differently depending on when they occur:
+
+- **First load** — invalid `document.json` fails the virtual module with a readable error in the Vite overlay.
+- **While the dev server is running** — a bad save keeps serving the **last valid document** and emits `viewfoundry:document-error` over HMR so your app can show a non-blocking warning instead of breaking the page.
+
+Optional error handler:
+
+```ts
+useEffect(() => {
+  if (!import.meta.hot) return;
+  import.meta.hot.on('viewfoundry:document-error', (payload) => {
+    console.warn('Document save failed:', payload.message);
+  });
+}, []);
+```
 
 ## Options
 
@@ -78,5 +92,7 @@ Invalid JSON or document validation errors fail module load with a readable erro
 The plugin resolves `virtual:viewfoundry/document` during `vite build` as well as dev, embedding the current JSON from disk.
 
 Peer dependencies: `vite@^5.0.0 || ^6.0.0`, `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0` (codegen optional unless using `codegen` watch).
+
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundryvite).
 
 See [Integrate into an existing app](../integrate-existing-app.md) and [Migration from 0.4 → 0.5](../migration-0.4-0.5.md).

@@ -31,9 +31,11 @@ Selection is preserved when switching sub-modes.
 | `Delete` / `Backspace`             | Delete selected node                     |
 | `Cmd/Ctrl+Z`                       | Undo                                     |
 | `Cmd/Ctrl+Shift+Z` or `Cmd/Ctrl+Y` | Redo                                     |
-| `Cmd/Ctrl+C`                       | Copy selected node                       |
-| `Cmd/Ctrl+V`                       | Paste node                               |
+| `Cmd/Ctrl+D`                       | Duplicate selected node                  |
+| Arrow keys                         | Nudge grid placement (grid children only) |
 | `Escape`                           | Clear selection; cancel in-progress drag |
+
+Clipboard copy/paste shortcuts are planned for a future release — see the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CLIPBOARD_AND_BLOCKS.md).
 
 Shortcuts do not fire when typing in an input, textarea, or contenteditable field.
 
@@ -45,6 +47,7 @@ When you use `document` + `onChange`, undo history is preserved for edits that f
 
 - Drag from the **palette** onto grid cells to insert with placement.
 - Drag existing nodes between cells to reposition.
+- Use **arrow keys** to nudge the selected node within its grid parent (see [Keyboard shortcuts](#keyboard-shortcuts)).
 - Use the **Layers** panel when pointer hit-testing makes canvas selection unreliable.
 
 See [Grid layout](grid-layout.md).

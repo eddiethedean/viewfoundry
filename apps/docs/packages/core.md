@@ -28,3 +28,5 @@ const result = applyCommand(
 ```
 
 No React dependency. Safe to use on the server for validation and transforms.
+
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundrycore).

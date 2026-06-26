@@ -19,3 +19,5 @@ const { code, warnings } = generateTsx({
 Peer dependency: `@viewfoundry/core@^0.5.0`.
 
 Emits merged `style={{...}}` from `node.style` and `props.style`. Pass optional `styleTokens` to resolve token references at export time.
+
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundrycodegen).

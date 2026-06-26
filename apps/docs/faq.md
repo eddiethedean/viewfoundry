@@ -55,7 +55,7 @@ See [Troubleshooting — controlled document](troubleshooting.md#undo-and-redo-w
 
 ## Where is the full API reference?
 
-The authoritative API contract is [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) on GitHub. These docs are user guides; the spec may include details not yet mirrored here.
+The authoritative API contract is published as the [Package API spec](package-api-spec.md) on this site (synced from [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) on GitHub). Package pages are quick-reference guides; the spec includes props, commands, validation codes, and CLI exit codes.
 
 ## What are the `docs/` files in the repo?
 

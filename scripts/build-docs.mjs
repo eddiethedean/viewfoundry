@@ -28,6 +28,9 @@ function run(command) {
 console.log('Building @viewfoundry packages…');
 run('pnpm -r --filter "./packages/*" build');
 
+console.log('Syncing API spec into docs…');
+run('node scripts/sync-api-spec.mjs');
+
 console.log('Building docs studio embed…');
 run('pnpm --filter docs-studio build');
 

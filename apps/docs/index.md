@@ -4,35 +4,66 @@ ViewFoundry is an embeddable visual editor framework for React applications. Reg
 
 ```{toctree}
 :maxdepth: 2
-:caption: Guide
+:caption: Getting started
 
 getting-started
 integrate-existing-app
+studio
+examples
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Guides
+
 component-registration
 grid-layout
 editor-shortcuts
+production-patterns
+security
 architecture
-migration-0.2-0.3
-migration-0.3-0.4
-migration-0.4-0.5
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Reference
+
+packages/index
+package-api-spec
 faq
 troubleshooting
 changelog
-packages/index
-studio
 ```
+
+```{toctree}
+:maxdepth: 1
+:caption: Migrations
+
+migration-0.2-0.3
+migration-0.3-0.4
+migration-0.4-0.5
+```
+
+## I want to…
+
+| Goal | Start here |
+| ---- | ---------- |
+| Scaffold a new Vite + React app | [Getting started — Quick start (CLI)](getting-started.md#quick-start-recommended) |
+| Add ViewFoundry to an existing Vite app | [Integrate into an existing app](integrate-existing-app.md) |
+| Try the editor without installing | [Open the Studio](studio.md) |
+| Render saved JSON without the editor | [Production patterns — runtime-only](production-patterns.md#editor-vs-runtime-packages) |
+| Export or validate TSX in CI | [Production patterns — CI validation](production-patterns.md#ci-validation) |
+| Understand package vs document versioning | [FAQ](faq.md) |
+| Browse all three reference apps | [Example applications](examples.md) |
 
 ## Quick links
 
 - [Try the Studio](studio.md) — interactive editor embedded in these docs
-- [Getting started](getting-started.md) — install and embed `ViewFoundryEditor`
-- [Integrate into an existing app](integrate-existing-app.md) — Vite + React folder layout and embed patterns
-- [Grid layout](grid-layout.md) — v0.3.0 layout model and drag-and-drop
-- [Migration 0.3 → 0.4](migration-0.3-0.4.md) — Style Editor and `node.style`
-- [Migration 0.4 → 0.5](migration-0.4-0.5.md) — CLI init and Vite document HMR
-- [Package overview](packages/index.md) — `@viewfoundry/core`, `schema`, `react`, `editor`, and more
+- [Package API reference](package-api-spec.md) — full public API contract
+- [Example applications](examples.md) — basic-react, landing-page, dashboard-builder
+- [Production patterns](production-patterns.md) — ship runtime-only, lazy editor, CI validate
 - [GitHub repository](https://github.com/eddiethedean/viewfoundry)
 
 ## Status
 
-ViewFoundry **v0.5.0** is early-access software. Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for interactions, routing, and [loading existing React projects](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v160---existing-project-import) (planned v1.6.0).
+ViewFoundry **v0.5.0** is early-access software. Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for planned features.

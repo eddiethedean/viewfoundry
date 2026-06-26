@@ -26,4 +26,4 @@ Install all packages you use at the **same version** (currently `0.5.0`).
 | `@viewfoundry/cli`     | `init`, `validate`, and `export`                        |
 | `@viewfoundry/vite`    | Document HMR and validation overlay via Vite plugin     |
 
-See [PACKAGE_API_SPEC.md](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) for the full public API surface.
+See [Package API spec](../package-api-spec.md) for the full public API surface (synced from GitHub on each docs build).

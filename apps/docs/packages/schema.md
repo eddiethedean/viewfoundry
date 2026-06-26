@@ -70,7 +70,7 @@ The Style Editor uses `STYLE_FIELD_DEFS` from this package (spacing, colors, typ
 
 Peer dependency: `@viewfoundry/core@^0.5.0`.
 
-Full API contract: [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundryschema).
 
 ## Related
 

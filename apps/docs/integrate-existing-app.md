@@ -10,10 +10,10 @@ This guide walks through adding ViewFoundry to a project that already uses Vite 
 ## 1. Install packages
 
 ```bash
-npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0
+npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
 ```
 
-Optional: `@viewfoundry/cli@0.5.0` for `validate` / `export` / `init`. `@viewfoundry/vite@0.5.0` loads `viewfoundry/document.json` with dev HMR.
+Runtime-only preview apps may omit `@viewfoundry/editor`, `@viewfoundry/cli`, and `@viewfoundry/vite` — see [Production patterns](production-patterns.md).
 
 ## 2. Recommended folder layout
 

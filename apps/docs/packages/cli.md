@@ -67,4 +67,6 @@ npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --strict
 
 Peer dependencies: `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0`.
 
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundrycli).
+
 See also [Migration from 0.4 → 0.5](../migration-0.4-0.5.md).

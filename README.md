@@ -11,20 +11,33 @@ ViewFoundry is an embeddable visual editor framework for React applications. **D
 
 Register your real components. ViewFoundry gives you a no-code editor, canvas, property inspector, document model, serialization, history, and code generation.
 
+**Fastest start:**
+
+```bash
+npx @viewfoundry/cli init my-app && cd my-app && npm install && npm run dev
+```
+
+**Try without installing:** [Open the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html)
+
 ## Try it
 
 **Prerequisites:** Node.js 20+, React 18 or 19, a bundler (Vite recommended). Install all `@viewfoundry/*` packages at the same version.
 
-No clone required:
-
 1. **[Open the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html)** in your browser — Edit/Live toggle, grid layout, JSON and TSX export.
-2. **Install packages** in your app (all at the same version):
+2. **Scaffold with the CLI** (recommended):
+
+```bash
+npx @viewfoundry/cli init my-app --template default
+cd my-app && npm install && npm run dev
+```
+
+3. **Manual embed:** install packages and follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html), or [Integrate into an existing app](https://viewfoundry.readthedocs.io/en/latest/integrate-existing-app.html) for folder layout and Vite setup.
 
 ```bash
 npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
 ```
 
-3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a paste-in embed example, or [Integrate into an existing app](https://viewfoundry.readthedocs.io/en/latest/integrate-existing-app.html) for folder layout and Vite setup.
+Runtime-only preview apps may omit `@viewfoundry/editor`, `@viewfoundry/cli`, and `@viewfoundry/vite`.
 
 ## Develop the monorepo
 
@@ -65,53 +78,7 @@ ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and op
 
 ## Usage
 
-For install steps, component registration, codegen, and grid layout, see [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html).
-
-```tsx
-import { useState } from 'react';
-import { createDocument } from '@viewfoundry/core';
-import type { ViewDocument } from '@viewfoundry/core';
-import { createRegistry } from '@viewfoundry/core';
-import { defineComponent, text, select, boolean } from '@viewfoundry/schema';
-import { ViewFoundryEditor } from '@viewfoundry/editor';
-import '@viewfoundry/editor/styles.css';
-import '@viewfoundry/react/styles.css';
-
-function Button({
-  children = 'Click me',
-  variant = 'primary',
-  disabled = false,
-}: {
-  children?: string;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
-}) {
-  return (
-    <button type="button" className={`btn btn-${variant}`} disabled={disabled}>
-      {children}
-    </button>
-  );
-}
-
-const ButtonDefinition = defineComponent(Button, {
-  type: 'Button',
-  label: 'Button',
-  category: 'Controls',
-  props: {
-    children: text({ label: 'Text', defaultValue: 'Click me' }),
-    variant: select({ label: 'Variant', options: ['primary', 'secondary'] }),
-    disabled: boolean({ label: 'Disabled', defaultValue: false }),
-  },
-});
-
-const registry = createRegistry([ButtonDefinition]);
-
-export default function App() {
-  const [document, setDocument] = useState<ViewDocument>(createDocument);
-
-  return <ViewFoundryEditor registry={registry} document={document} onChange={setDocument} />;
-}
-```
+For install steps, component registration, codegen, and grid layout, see [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html). For persistence, CI validation, and runtime-only deploy, see [Production patterns](https://viewfoundry.readthedocs.io/en/latest/production-patterns.html).
 
 When using `@viewfoundry/editor`, import **both** `@viewfoundry/editor/styles.css` and `@viewfoundry/react/styles.css`. The editor stylesheet covers chrome; the react stylesheet covers canvas selection overlays and missing-component fallbacks.
 
@@ -124,14 +91,15 @@ import '@viewfoundry/react/styles.css';
 
 ## Example
 
-See [`examples/basic-react`](examples/basic-react/README.md) for a full demo with Button, Card, Stack, Grid, Row, Heading, and Text components, localStorage persistence, and TSX export. You can also [try the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html) in the browser without cloning the repo.
+See [Example applications](https://viewfoundry.readthedocs.io/en/latest/examples.html) for all three reference apps (`basic-react`, `landing-page`, `dashboard-builder`) and their `viewfoundry init` templates. Monorepo demo: [`examples/basic-react`](examples/basic-react/README.md). You can also [try the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html) in the browser without cloning the repo.
 
 ## Where to read what
 
 | Source                                                         | Audience                                   | Trust level                       |
 | -------------------------------------------------------------- | ------------------------------------------ | --------------------------------- |
 | [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/) | Adopters — install, embed, grid, FAQ       | **Primary user guides**           |
-| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)       | Integrators — full public API              | **API contract**                  |
+| [Package API spec](https://viewfoundry.readthedocs.io/en/latest/package-api-spec.html) | Integrators — full public API | **API contract** (synced from GitHub) |
+| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)       | Source of truth for API spec on GitHub     | **API contract source**           |
 | [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                       | Maintainers — studio + developer UX bars   | **Release acceptance**            |
 | [`docs/`](docs/)                                               | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**) |
 | [`CHANGELOG.md`](CHANGELOG.md)                                 | Everyone — release notes                   | Current                           |

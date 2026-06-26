@@ -58,4 +58,4 @@ Use `mode="edit"` when embedding selection overlays without the full editor chro
 
 Peer dependencies: `@viewfoundry/core@^0.5.0`, `react`, `react-dom`.
 
-Full API contract: [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).
+Full API reference: [Package API spec](../package-api-spec.md#viewfoundryreact).

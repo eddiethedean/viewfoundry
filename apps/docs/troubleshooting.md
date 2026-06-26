@@ -10,6 +10,8 @@ npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react
 
 Mixed versions (e.g. `core@0.3.0` with `editor@0.4.0`) cause peer dependency warnings and subtle runtime bugs.
 
+Runtime-only preview apps may omit `@viewfoundry/editor`, `@viewfoundry/cli`, and `@viewfoundry/vite` — see [Production patterns](production-patterns.md).
+
 ## Editor looks unstyled or selection overlays are missing
 
 Import both stylesheets:
@@ -74,7 +76,7 @@ Check the [RTD build log](https://readthedocs.org/projects/viewfoundry/builds/).
 
 - [FAQ](faq.md)
 - [GitHub issues](https://github.com/eddiethedean/viewfoundry/issues)
-- [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) for API details
+- [Package API spec](package-api-spec.md) for API details
 
 ## Undo and redo with controlled document
 
