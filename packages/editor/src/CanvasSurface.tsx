@@ -51,6 +51,7 @@ export function CanvasSurface({
       <div
         ref={surfaceRef}
         className={`vf-canvas-surface${isEdit ? '' : ' vf-canvas-surface--live'}`}
+        data-testid="vf-canvas-surface"
         onScroll={handleScroll}
       >
         {isEdit && isEmpty && (

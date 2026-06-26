@@ -36,6 +36,8 @@ Styles: `@viewfoundry/react/styles.css` (selection overlays, missing-component f
 | ---------- | -------------- | ------- | ------------------------------- |
 | `document` | `ViewDocument` | context | Override document from provider |
 
+`ViewRenderer` must be rendered inside `ViewFoundryProvider` — the provider supplies registry, mode, and selection even when you pass `document` explicitly.
+
 ## Example
 
 ```jsx

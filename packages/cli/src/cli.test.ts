@@ -142,4 +142,33 @@ describe('runCli', () => {
     expect(result.exitCode).toBe(1);
     expect(error).toHaveBeenCalled();
   });
+
+  it('exports with imports map from --imports', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Hi' }, [], 'b1')];
+    const inputPath = writeFixture('doc.json', doc);
+    const importsPath = join(makeTempDir(), 'imports.json');
+    writeFileSync(
+      importsPath,
+      JSON.stringify({
+        Button: { importPath: './components', exportName: 'Button' },
+      }),
+    );
+    const outputName = 'GeneratedView.tsx';
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const result = runCli(['export', inputPath, outputName, '--imports', importsPath]);
+    expect(result.exitCode).toBe(0);
+    expect(readFileSync(outputName, 'utf-8')).toContain("import { Button } from './components'");
+  });
+
+  it('exits non-zero with --strict when imports are missing', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Hi' }, [], 'b1')];
+    const inputPath = writeFixture('doc.json', doc);
+    const outputName = 'GeneratedView.tsx';
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = runCli(['export', inputPath, outputName, '--strict']);
+    expect(result.exitCode).toBe(1);
+  });
 });

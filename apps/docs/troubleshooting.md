@@ -78,14 +78,14 @@ Check the [RTD build log](https://readthedocs.org/projects/viewfoundry/builds/).
 
 ## Undo and redo with controlled document
 
-When you pass `document` and `onChange` to `ViewFoundryEditor`, the editor uses `syncDocument` to merge external updates without resetting the undo stack.
+When you pass `document` and `onChange` to `ViewFoundryEditor`, the editor uses `syncDocument` to merge external updates.
 
-- **Undo history is preserved** when your app re-renders with an updated document from `onChange`.
-- **The redo stack is cleared** when you push an external document that did not originate from the editor (for example loading from a server or resetting the page).
+- **Undo history is preserved** for edits that flow through `onChange`.
+- When your app pushes an **external tree update** (for example loading from a server), the editor pushes the current document onto the undo stack before applying the new tree, so Undo can restore the pre-sync state.
+- **The redo stack is cleared** on external tree sync.
+- **Meta-only updates** (`document.meta` without tree changes) sync without affecting undo/redo.
 
 Toolbar Undo/Redo works in `examples/basic-react` with standard controlled props (`useState` + `onChange`).
-
-If you replace the document on every parent render without going through `onChange`, history may reset depending on your integration.
 
 **Options:**
 

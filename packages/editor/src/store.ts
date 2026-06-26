@@ -52,6 +52,7 @@ export type EditorStore = {
   studioMode: StudioMode;
   editSubMode: EditSubMode;
   lastError: string | null;
+  isDragging: boolean;
   setRegistry: (registry: ComponentRegistry) => void;
   setDocument: (document: ViewDocument) => void;
   syncDocument: (document: ViewDocument) => void;
@@ -73,6 +74,7 @@ export type EditorStore = {
   canUndo: () => boolean;
   canRedo: () => boolean;
   setPaletteFilter: (filter: string) => void;
+  setDragging: (dragging: boolean) => void;
 };
 
 function applyDocument(
@@ -174,6 +176,7 @@ export function createEditorStore(
     studioMode: defaultStudioMode,
     editSubMode: 'component',
     lastError: null,
+    isDragging: false,
 
     setRegistry: (registry) => set({ registry }),
 
@@ -201,15 +204,25 @@ export function createEditorStore(
     syncDocument: (document) => {
       const state = get();
       if (documentTreeEqual(state.document, document)) {
-        if (JSON.stringify(state.document.meta ?? null) !== JSON.stringify(document.meta ?? null)) {
-          set({ document: { ...state.document, meta: document.meta } });
+        if (
+          state.document.version !== document.version ||
+          JSON.stringify(state.document.meta ?? null) !== JSON.stringify(document.meta ?? null)
+        ) {
+          set({
+            document: {
+              ...state.document,
+              version: document.version,
+              meta: document.meta,
+            },
+          });
         }
         return;
       }
+      const { history } = state;
       set({
         document,
         history: {
-          ...state.history,
+          past: [...history.past, history.present],
           present: document,
           future: [],
         },
@@ -238,7 +251,10 @@ export function createEditorStore(
     insertComponent: (type, options) => {
       const { registry, document, selection } = get();
       const def = registry.get(type);
-      if (!def) return;
+      if (!def) {
+        set({ lastError: `Unknown component type: ${type}` });
+        return;
+      }
 
       let workingDoc = document;
       let targetParentId = resolveInsertParentId(document, registry, selection, options?.parentId);
@@ -481,6 +497,8 @@ export function createEditorStore(
     canRedo: () => canRedo(get().history),
 
     setPaletteFilter: (filter) => set({ paletteFilter: filter }),
+
+    setDragging: (dragging) => set({ isDragging: dragging }),
   }));
 }
 

@@ -9,22 +9,45 @@ import { demoRegistry, importMap, styleTokens } from './definitions.js';
 
 const STORAGE_KEY = 'viewfoundry-basic-react-document';
 
-function loadDocument(): ViewDocument {
+type LoadResult =
+  | { ok: true; document: ViewDocument }
+  | { ok: false; message: string; raw?: string };
+
+function loadDocument(): LoadResult {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as ViewDocument;
       const validation = validateDocument(parsed, demoRegistry, { allowMissingComponents: false });
-      if (validation.valid) return parsed;
+      if (validation.valid) return { ok: true, document: parsed };
+      const firstIssue = validation.issues[0];
+      return {
+        ok: false,
+        message: firstIssue
+          ? `Saved document could not be loaded: ${firstIssue.message}`
+          : 'Saved document could not be loaded.',
+        raw,
+      };
     }
   } catch {
-    // ignore
+    const raw = localStorage.getItem(STORAGE_KEY) ?? undefined;
+    return {
+      ok: false,
+      message: 'Saved document could not be loaded: invalid JSON.',
+      raw,
+    };
   }
-  return createDocument();
+  return { ok: true, document: createDocument() };
 }
 
 export default function App() {
-  const [document, setDocument] = useState<ViewDocument>(loadDocument);
+  const initialLoad = loadDocument();
+  const [document, setDocument] = useState<ViewDocument>(
+    initialLoad.ok ? initialLoad.document : createDocument(),
+  );
+  const [loadWarning, setLoadWarning] = useState<string | null>(
+    initialLoad.ok ? null : initialLoad.message,
+  );
   const [exportedCode, setExportedCode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,11 +68,32 @@ export default function App() {
     );
   }, [document]);
 
+  const dismissLoadWarning = () => setLoadWarning(null);
+
+  const resetDocument = () => {
+    setDocument(createDocument());
+    setLoadWarning(null);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
   return (
     <div className="app">
       <header className="app-header">
         <h1>ViewFoundry 0.4.0 — Basic React</h1>
       </header>
+      {loadWarning && (
+        <div className="load-warning" role="alert" data-testid="load-warning">
+          <p>{loadWarning}</p>
+          <div className="load-warning-actions">
+            <button type="button" onClick={dismissLoadWarning}>
+              Dismiss
+            </button>
+            <button type="button" onClick={resetDocument}>
+              Reset to blank
+            </button>
+          </div>
+        </div>
+      )}
       <main className="app-main">
         <ViewFoundryEditor
           registry={demoRegistry}

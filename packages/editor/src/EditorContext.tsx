@@ -54,8 +54,15 @@ export function EditorProvider({
   useEffect(() => {
     if (!document) return;
     const state = store.getState();
-    if (JSON.stringify(document.root) === lastEmittedDocumentRef.current) return;
-    if (isStaleInboundDocument(document, state.document, state.history)) return;
+    const rootMatchesEmitted = JSON.stringify(document.root) === lastEmittedDocumentRef.current;
+    const metaOrVersionChanged =
+      document.version !== state.document.version ||
+      JSON.stringify(document.meta ?? null) !== JSON.stringify(state.document.meta ?? null);
+
+    if (rootMatchesEmitted && !metaOrVersionChanged) return;
+    if (!rootMatchesEmitted && isStaleInboundDocument(document, state.document, state.history)) {
+      return;
+    }
     store.getState().syncDocument(document);
   }, [document, store]);
 

@@ -323,6 +323,79 @@ describe('commands', () => {
       });
     }
   });
+
+  it('grows grid rows when partial setNodeLayout needs extra span rows', () => {
+    let doc = createDocument();
+    const grid = createNode('Grid', { columns: 4, rows: 6 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    const button = createNode('Button', { children: 'Tall' }, [], 'btn1', {
+      grid: { column: 1, row: 1, colSpan: 1, rowSpan: 2 },
+    });
+    result = insertNode(doc, { parentId: 'grid1', node: button, layout: button.layout?.grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    result = setNodeLayout(doc, { nodeId: 'btn1', layout: { row: 6 } });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const gridNode = findNode(result.document.root, 'grid1');
+      expect(gridNode?.props?.rows).toBe(7);
+    }
+  });
+
+  it('moveNode grows target grid when placement exceeds current rows', () => {
+    let doc = createDocument();
+    const gridA = createNode('Grid', { columns: 2, rows: 2 }, [], 'gridA');
+    const gridB = createNode('Grid', { columns: 2, rows: 2 }, [], 'gridB');
+    let result = insertNode(doc, { parentId: 'root', node: gridA });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+    result = insertNode(doc, { parentId: 'root', node: gridB });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    const button = createNode('Button', { children: 'Move me' }, [], 'btn1', {
+      grid: { column: 1, row: 1 },
+    });
+    result = insertNode(doc, { parentId: 'gridA', node: button, layout: button.layout?.grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    result = moveNode(doc, {
+      nodeId: 'btn1',
+      parentId: 'gridB',
+      index: 0,
+      layout: { column: 1, row: 3 },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const gridBNode = findNode(result.document.root, 'gridB');
+      expect(gridBNode?.props?.rows).toBe(3);
+      expect(findNode(result.document.root, 'btn1')?.layout?.grid?.row).toBe(3);
+    }
+  });
+
+  it('rejects placement beyond 64 grid tracks', () => {
+    let doc = createDocument();
+    const grid = createNode('Grid', { columns: 4, rows: 64 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    const button = createNode('Button', { children: 'Too far' }, [], 'btn1');
+    result = insertNode(doc, {
+      parentId: 'grid1',
+      node: button,
+      layout: { column: 1, row: 65 },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toContain('64');
+    }
+  });
 });
 
 describe('history', () => {

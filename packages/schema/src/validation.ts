@@ -33,7 +33,7 @@ function testPattern(
     return true;
   } catch {
     issues.push({
-      path: `schema.${path}`,
+      path,
       message: `Invalid validation pattern`,
       code: 'INVALID_PATTERN',
     });
@@ -121,7 +121,8 @@ export function validateProps(
       field.kind === 'text' ||
       field.kind === 'textarea' ||
       field.kind === 'url' ||
-      field.kind === 'color'
+      field.kind === 'color' ||
+      field.kind === 'image'
     ) {
       if (typeof value !== 'string') {
         issues.push({
@@ -138,7 +139,21 @@ export function validateProps(
     }
 
     if (field.kind === 'json') {
-      if (typeof value === 'function') {
+      if (
+        typeof value === 'function' ||
+        typeof value === 'symbol' ||
+        typeof value === 'undefined'
+      ) {
+        issues.push({
+          path,
+          message: `${field.label ?? key} must be JSON-serializable`,
+          code: 'INVALID_TYPE',
+        });
+        continue;
+      }
+      try {
+        JSON.stringify(value);
+      } catch {
         issues.push({
           path,
           message: `${field.label ?? key} must be JSON-serializable`,

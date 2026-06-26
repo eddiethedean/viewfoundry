@@ -93,4 +93,24 @@ test.describe('basic-react example', () => {
     await search.fill('');
     await expect(palette(page).getByRole('button', { name: 'Button', exact: true })).toBeVisible();
   });
+
+  test('shows warning when saved document fails validation', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate((key) => {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          version: '0.1',
+          root: {
+            id: 'root',
+            type: 'Root',
+            children: [{ id: 'bad', type: 'NotRegistered', props: {} }],
+          },
+        }),
+      );
+    }, 'viewfoundry-basic-react-document');
+    await page.reload();
+    await expect(page.getByTestId('load-warning')).toBeVisible();
+    await expect(page.getByTestId('load-warning')).toContainText('could not be loaded');
+  });
 });

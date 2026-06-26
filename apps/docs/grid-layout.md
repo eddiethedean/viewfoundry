@@ -79,6 +79,10 @@ Core commands that understand grid placement:
 
 `validateDocument()` checks out-of-bounds spans and overlapping placements within grid containers.
 
+## Grid size limit
+
+Grid containers are capped at **64 rows** and **64 columns** (including auto-grow from drag-and-drop). Placements beyond this limit are rejected with a validation error.
+
 ## Codegen
 
 `generateTsx` emits inline styles for grid children:

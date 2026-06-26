@@ -5,8 +5,10 @@ import {
   growGridRowsIfNeeded,
   gridDropId,
   isPlacementInBounds,
+  MAX_GRID_CELLS,
   normalizePlacement,
   parseGridDropId,
+  placementExceedsMaxTracks,
   placementToCss,
   rectsOverlap,
   resolveGridTracks,
@@ -125,5 +127,16 @@ describe('grid utilities', () => {
       column: 3,
     });
     expect(parseGridDropId('invalid')).toBeNull();
+  });
+
+  it('caps growGridRowsIfNeeded at MAX_GRID_CELLS', () => {
+    const grid = createNode('Grid', { columns: 4, rows: 60 }, [], 'grid1');
+    const grown = growGridRowsIfNeeded(grid, 'grid1', { column: 1, row: 70 });
+    expect(grown.props?.rows).toBe(MAX_GRID_CELLS);
+  });
+
+  it('detects placement exceeding MAX_GRID_CELLS', () => {
+    expect(placementExceedsMaxTracks('Grid', { column: 1, row: 65 })).toBe(true);
+    expect(placementExceedsMaxTracks('Grid', { column: 1, row: 64 })).toBe(false);
   });
 });

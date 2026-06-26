@@ -65,7 +65,13 @@ function formatPropValue(value: unknown, warnings: string[], path: string): stri
   }
   if (typeof value === 'string') return `'${escapeString(value)}'`;
   if (typeof value === 'boolean') return `{${value}}`;
-  if (typeof value === 'number') return `{${value}}`;
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      warnings.push(`Unsupported non-finite number at ${path}`);
+      return null;
+    }
+    return `{${value}}`;
+  }
   if (value === null) return '{null}';
   return `{${JSON.stringify(value)}}`;
 }
@@ -101,16 +107,22 @@ function renderStyleProp(
   warnings: string[],
   parent: ViewNode | null,
   styleTokens?: Record<string, string | number>,
+  foldGridPlacement = false,
 ): string | null {
   const merged = buildMergedStyleObject(node, warnings, styleTokens);
-  if (!merged) return null;
+  const styleRecord = merged ?? {};
   if (parent && isGridContainer(parent.type) && node.layout?.grid) {
-    for (const key of Object.keys(placementToCss(node.layout.grid))) {
-      delete merged[key as keyof typeof merged];
+    const placementCss = placementToCss(node.layout.grid);
+    if (foldGridPlacement) {
+      Object.assign(styleRecord, placementCss);
+    } else {
+      for (const key of Object.keys(placementCss)) {
+        delete styleRecord[key as keyof typeof styleRecord];
+      }
     }
-    if (Object.keys(merged).length === 0) return null;
   }
-  const formatted = formatPropValue(merged, warnings, `${node.type}.style`);
+  if (Object.keys(styleRecord).length === 0) return null;
+  const formatted = formatPropValue(styleRecord, warnings, `${node.type}.style`);
   if (formatted === null) return null;
   return `style=${formatted}`;
 }
@@ -129,7 +141,13 @@ function renderProps(
   delete props.style;
 
   const parts: string[] = [];
-  const styleProp = renderStyleProp(node, warnings, _parent, styleTokens);
+  const styleProp = renderStyleProp(
+    node,
+    warnings,
+    _parent,
+    styleTokens,
+    isGridContainer(node.type),
+  );
   if (styleProp) parts.push(styleProp);
 
   for (const [key, value] of Object.entries(props)) {
@@ -142,6 +160,7 @@ function renderProps(
     if (formatted === null) continue;
     if (typeof value === 'boolean') {
       if (value) parts.push(key);
+      else parts.push(`${key}={false}`);
     } else {
       parts.push(`${key}=${formatted}`);
     }
@@ -208,7 +227,9 @@ function renderNode(
     rendered = `${pad}<${tag} />`;
   }
 
-  const gridStyle = renderGridStyleAttr(node, parent);
+  const needsPlacementWrapper =
+    parent && isGridContainer(parent.type) && node.layout?.grid && !isGridContainer(node.type);
+  const gridStyle = needsPlacementWrapper ? renderGridStyleAttr(node, parent) : '';
   if (gridStyle) {
     const inner = rendered
       .split('\n')

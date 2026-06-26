@@ -5,7 +5,7 @@ export function documentTreeEqual(a: ViewDocument, b: ViewDocument): boolean {
   return a.version === b.version && JSON.stringify(a.root) === JSON.stringify(b.root);
 }
 
-/** True when the inbound prop matches a past snapshot but not the editor present (async parent lag). */
+/** True when the inbound prop matches the immediate prior snapshot but not the editor present (async parent lag). */
 export function isStaleInboundDocument(
   incoming: ViewDocument,
   present: ViewDocument,
@@ -15,5 +15,7 @@ export function isStaleInboundDocument(
   const incomingRoot = JSON.stringify(incoming.root);
   const presentRoot = JSON.stringify(present.root);
   if (incomingRoot === presentRoot) return false;
-  return history.past.some((snapshot) => JSON.stringify(snapshot.root) === incomingRoot);
+  const immediatePrior = history.past[history.past.length - 1];
+  if (!immediatePrior) return false;
+  return JSON.stringify(immediatePrior.root) === incomingRoot;
 }

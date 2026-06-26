@@ -78,6 +78,7 @@ describe('createEditorStore', () => {
     store.getState().insertComponent('Unknown');
     expect(store.getState().document.root.children).toHaveLength(0);
     expect(onChange).not.toHaveBeenCalled();
+    expect(store.getState().lastError).toContain('Unknown');
   });
 
   it('deleteSelected removes node and clears selection', () => {
@@ -159,6 +160,24 @@ describe('createEditorStore', () => {
     external.root.children = [createNode('Card', {}, [], 'card1')];
     store.getState().syncDocument(external);
     expect(store.getState().history.future).toHaveLength(0);
+  });
+
+  it('syncDocument pushes present onto past when tree changes externally', () => {
+    const onChange = vi.fn();
+    const store = createEditorStore(registry, createDocument(), onChange);
+    store.getState().insertComponent('Button');
+    const beforeSync = structuredClone(store.getState().document);
+    const pastLength = store.getState().history.past.length;
+
+    const external = createDocument();
+    external.root.children = [createNode('Card', {}, [], 'card1')];
+    store.getState().syncDocument(external);
+
+    expect(store.getState().history.past).toHaveLength(pastLength + 1);
+    expect(store.getState().history.past[pastLength]?.root).toEqual(beforeSync.root);
+
+    store.getState().undo();
+    expect(store.getState().document.root).toEqual(beforeSync.root);
   });
 
   it('syncDocument clears selection when selected node is removed', () => {

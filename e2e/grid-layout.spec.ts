@@ -38,7 +38,7 @@ test.describe('grid layout', () => {
     await expectStoredDocument(page, (doc) => {
       const button = firstGridChild(doc);
       const column = button?.layout?.grid?.column;
-      return column !== undefined && column !== initialColumn;
+      return column === (initialColumn ?? 1) + 1;
     });
   });
 
@@ -78,5 +78,16 @@ test.describe('grid layout', () => {
     expect(layerLabels).toHaveLength(2);
     expect(layerLabels[0]).toMatch(/r\d+c\d+/);
     expect(layerLabels[1]).toMatch(/r\d+c\d+/);
+  });
+
+  test('exports nested grid placement on grid container without wrapper div', async ({ page }) => {
+    await insertFromPalette(page, 'Grid');
+    await selectLayer(page, /^Grid\b/);
+    await insertFromPalette(page, 'Grid');
+
+    await toolbar(page).getByRole('button', { name: 'Export TSX' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Generated TSX' });
+    const code = await drawer.locator('pre').textContent();
+    expect(code).toMatch(/<Grid[^>]*style=\{\{[^}]*gridColumn/);
   });
 });

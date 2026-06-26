@@ -36,7 +36,7 @@ Style Editor sub-mode (Component | Style), `node.style` on documents, style comm
 
 ## Why does undo not work in my app?
 
-If you pass **controlled** `document` and `onChange` props, the editor uses `syncDocument` to merge external updates. That **preserves undo history** (past stack) but **clears the redo stack** — external sync is treated as a checkpoint, not an undo step. Replacing the document on every parent render without using `syncDocument` can still reset history depending on your integration.
+If you pass **controlled** `document` and `onChange` props, the editor uses `syncDocument` to merge external updates. That **preserves undo history** for editor-originated edits. External **tree** sync pushes the current document onto the undo stack before replacing it, and **clears the redo stack**. Meta-only parent updates sync without resetting history.
 
 **Workarounds:**
 

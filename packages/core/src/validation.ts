@@ -186,7 +186,7 @@ export function validateDocument(
     walkNodes(document.root, (node, parent) => {
       if (!parent || parent.type === 'Root') return;
       const parentDef = registry.get(parent.type);
-      if (parentDef && parentDef.acceptsChildren === false && node.type !== 'Root') {
+      if (parentDef && !parentDef.acceptsChildren) {
         issues.push({
           path: `node:${node.id}`,
           message: `Component "${parent.type}" does not accept children`,

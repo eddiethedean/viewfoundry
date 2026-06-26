@@ -93,6 +93,18 @@ describe('validateDocument', () => {
     expect(result.issues.some((i) => i.code === 'PARENT_REJECTS_CHILDREN')).toBe(true);
   });
 
+  it('detects children under parents without acceptsChildren', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Heading', {}, [createNode('Text', {}, [], 't1')], 'h1')];
+    const registry = createRegistry([
+      { type: 'Heading', component: () => null },
+      { type: 'Text', component: () => null },
+    ]);
+    const result = validateDocument(doc, registry);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'PARENT_REJECTS_CHILDREN')).toBe(true);
+  });
+
   it('rejects invalid node.style values', () => {
     const doc = createDocument();
     doc.root.children = [

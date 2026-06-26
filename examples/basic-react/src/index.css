@@ -39,6 +39,35 @@ body {
   font-weight: 600;
 }
 
+.load-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #744210;
+  border-bottom: 1px solid #975a16;
+  color: #fefcbf;
+}
+
+.load-warning p {
+  margin: 0;
+}
+
+.load-warning-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.load-warning-actions button {
+  padding: 4px 10px;
+  border: 1px solid #d69e2e;
+  border-radius: 4px;
+  background: #2d3748;
+  color: #fefcbf;
+  cursor: pointer;
+}
+
 .app-main {
   flex: 1;
   min-height: 0;

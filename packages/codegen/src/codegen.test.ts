@@ -303,6 +303,37 @@ describe('generateTsx', () => {
     expect(code).toContain('style={{"margin":4}}');
   });
 
+  it('folds grid placement into nested grid container without wrapper div', () => {
+    const doc = createDocument();
+    const outer = createNode('Grid', { columns: 4, rows: 4 }, [], 'outer');
+    const inner = createNode('Grid', { columns: 2, rows: 2 }, [], 'inner', {
+      grid: { column: 2, row: 2 },
+    });
+    outer.children = [inner];
+    doc.root.children = [outer];
+    const gridImports = {
+      Grid: { importPath: './components', exportName: 'Grid' },
+    };
+    const { code } = generateTsx({ document: doc, imports: gridImports });
+    expect(code).toContain('<Grid style={{"gridColumn":"2","gridRow":"2"}}');
+    expect(code).not.toMatch(/<div style=\{\{ gridColumn: "2", gridRow: "2" \}\}>\s*<Grid/);
+  });
+
+  it('emits explicit false for boolean props', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Off', disabled: false }, [], 'b1')];
+    const { code } = generateTsx({ document: doc, imports });
+    expect(code).toContain('disabled={false}');
+  });
+
+  it('warns on non-finite numeric props', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Bad', count: Number.NaN }, [], 'b1')];
+    const { code, warnings } = generateTsx({ document: doc, imports });
+    expect(warnings.some((w) => w.includes('non-finite'))).toBe(true);
+    expect(code).not.toContain('NaN');
+  });
+
   it('coerces invalid grid placement values to safe defaults in output', () => {
     const doc = createDocument();
     const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');

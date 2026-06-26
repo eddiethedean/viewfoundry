@@ -1,11 +1,11 @@
 import { useDndContext } from '@dnd-kit/core';
 import type { CSSProperties, ReactNode } from 'react';
 import type { ViewNode } from '@viewfoundry/core';
-import { gridContainerStyle, resolveGridTracks } from '@viewfoundry/core';
+import { gridContainerStyle, MAX_GRID_CELLS, resolveGridTracks } from '@viewfoundry/core';
 import { GridCellDroppable } from './GridCellDroppable.js';
 import { parseNodeDragId, parsePaletteDragId } from './types.js';
 
-const MAX_GRID_CELLS = 64;
+export { MAX_GRID_CELLS };
 
 export type GridDropLayerProps = {
   node: ViewNode;

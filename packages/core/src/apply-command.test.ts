@@ -182,4 +182,36 @@ describe('applyCommand', () => {
       expect(result.document.root.children?.[0]?.style).toEqual({ padding: 8 });
     }
   });
+
+  it('rejects insert when node props fail validation', () => {
+    const registryWithRequired = createRegistry([
+      {
+        type: 'Button',
+        component: () => null,
+        props: {
+          title: { kind: 'text', required: true, label: 'Title' },
+        },
+      },
+    ]);
+    const document = createDocument();
+    const node = createNode('Button', {});
+    const result = applyCommand(
+      document,
+      { type: 'insertNode', payload: { parentId: 'root', node } },
+      registryWithRequired,
+      {
+        validateNodeProps: (n) => {
+          const title = n.props?.title;
+          if (typeof title !== 'string' || title.length === 0) {
+            return {
+              valid: false,
+              issues: [{ path: 'props.title', message: 'Title is required', code: 'REQUIRED' }],
+            };
+          }
+          return { valid: true, issues: [] };
+        },
+      },
+    );
+    expect(result.ok).toBe(false);
+  });
 });

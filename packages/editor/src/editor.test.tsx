@@ -3,7 +3,9 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import userEvent from '@testing-library/user-event';
 import { createDocument, createNode, findNode } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '../src/index.js';
+import { EditorProvider, useEditorState } from '../src/EditorContext.js';
 import { createDemoRegistry } from './test/fixtures.js';
+import { useEffect } from 'react';
 
 const registry = createDemoRegistry();
 
@@ -399,5 +401,35 @@ describe('ViewFoundryEditor', () => {
     fireEvent.keyDown(marginInput, { key: 'z', ctrlKey: true });
 
     expect(findNode(latestDocument(onChange).root, 'btn1')?.style?.margin).toBe(8);
+  });
+
+  it('syncs parent meta-only updates in controlled mode', async () => {
+    const metas: Array<ReturnType<typeof createDocument>['meta']> = [];
+
+    function MetaProbe() {
+      const meta = useEditorState((s) => s.document.meta);
+      useEffect(() => {
+        metas.push(meta);
+      }, [meta]);
+      return null;
+    }
+
+    const doc = createDocument();
+    const { rerender } = render(
+      <EditorProvider registry={registry} document={doc} onChange={() => {}}>
+        <MetaProbe />
+      </EditorProvider>,
+    );
+
+    const updated = { ...structuredClone(doc), meta: { name: 'Remote title' } };
+    rerender(
+      <EditorProvider registry={registry} document={updated} onChange={() => {}}>
+        <MetaProbe />
+      </EditorProvider>,
+    );
+
+    await waitFor(() => {
+      expect(metas.at(-1)).toEqual({ name: 'Remote title' });
+    });
   });
 });

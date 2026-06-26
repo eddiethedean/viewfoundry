@@ -19,6 +19,7 @@ import {
   autoPlaceNextCell,
   growGridRowsIfNeeded,
   isGridContainer,
+  placementExceedsMaxTracks,
   resolveGridTracks,
   sortChildrenByGridOrder,
   normalizePlacement,
@@ -47,19 +48,27 @@ function reorderParentChildren(root: ViewNode, parentId: string): ViewNode {
   });
 }
 
+function resolveEffectivePlacement(node: ViewNode, partial?: GridPlacement): GridPlacement {
+  const existing = normalizePlacement(node.layout?.grid);
+  if (partial === undefined) return existing;
+  return {
+    column: partial.column ?? existing.column,
+    row: partial.row ?? existing.row,
+    colSpan: partial.colSpan ?? existing.colSpan,
+    rowSpan: partial.rowSpan ?? existing.rowSpan,
+  };
+}
+
 function applyLayoutToNode(node: ViewNode, layout?: GridPlacement): ViewNode {
   if (layout === undefined) return node;
-  const existing = normalizePlacement(node.layout?.grid);
-  const merged: GridPlacement = {
-    column: layout.column ?? existing.column,
-    row: layout.row ?? existing.row,
-    colSpan: layout.colSpan ?? existing.colSpan,
-    rowSpan: layout.rowSpan ?? existing.rowSpan,
-  };
   return {
     ...node,
-    layout: { ...node.layout, grid: merged },
+    layout: { ...node.layout, grid: resolveEffectivePlacement(node, layout) },
   };
+}
+
+function gridLimitFailure(parentType: string): CommandResult<never> {
+  return failure(`Grid placement exceeds maximum of 64 tracks for "${parentType}"`);
 }
 
 function clearGridLayout(node: ViewNode): ViewNode {
@@ -81,7 +90,11 @@ export function insertNode(document: ViewDocument, payload: InsertNodePayload): 
   }
   let root = document.root;
   if (payload.layout && isGridContainer(parent.type)) {
-    root = growGridRowsIfNeeded(root, payload.parentId, payload.layout);
+    const effective = resolveEffectivePlacement(payload.node, payload.layout);
+    if (placementExceedsMaxTracks(parent.type, effective)) {
+      return gridLimitFailure(parent.type);
+    }
+    root = growGridRowsIfNeeded(root, payload.parentId, effective);
   }
   let node = payload.node;
   if (payload.layout) {
@@ -162,6 +175,16 @@ export function moveNode(document: ViewDocument, payload: MoveNodePayload): Comm
   } else if (!isGridContainer(parent.type)) {
     nodeToInsert = clearGridLayout(node);
   }
+  if (isGridContainer(parent.type)) {
+    const effective = resolveEffectivePlacement(
+      nodeToInsert,
+      payload.layout ?? nodeToInsert.layout?.grid,
+    );
+    if (placementExceedsMaxTracks(parent.type, effective)) {
+      return gridLimitFailure(parent.type);
+    }
+    newRoot = growGridRowsIfNeeded(newRoot, payload.parentId, effective);
+  }
   newRoot = insertNodeInTree(newRoot, payload.parentId, nodeToInsert, payload.index);
   if (!findNode(newRoot, payload.nodeId)) {
     return failure('Move failed: node was lost during insertion');
@@ -183,7 +206,11 @@ export function setNodeLayout(
   const location = findNodeLocation(document.root, payload.nodeId);
   let root = document.root;
   if (location?.parent && isGridContainer(location.parent.type)) {
-    root = growGridRowsIfNeeded(root, location.parent.id, payload.layout);
+    const effective = resolveEffectivePlacement(node, payload.layout);
+    if (placementExceedsMaxTracks(location.parent.type, effective)) {
+      return gridLimitFailure(location.parent.type);
+    }
+    root = growGridRowsIfNeeded(root, location.parent.id, effective);
   }
   let newRoot = updateNodeInTree(root, payload.nodeId, (n) => applyLayoutToNode(n, payload.layout));
   if (location?.parent && isGridContainer(location.parent.type)) {

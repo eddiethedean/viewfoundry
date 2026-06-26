@@ -14,4 +14,18 @@ describe('isStaleInboundDocument', () => {
     expect(isStaleInboundDocument(empty, withButton, history)).toBe(true);
     expect(isStaleInboundDocument(withButton, withButton, history)).toBe(false);
   });
+
+  it('allows revert to an older snapshot not matching immediate prior only', () => {
+    const empty = createDocument();
+    const withButton = createDocument();
+    withButton.root.children = [createNode('Button', {}, [], 'btn1')];
+    const withCard = createDocument();
+    withCard.root.children = [createNode('Card', {}, [], 'card1')];
+
+    let history = createHistory(empty);
+    history = pushHistory(history, withButton);
+    history = pushHistory(history, withCard);
+
+    expect(isStaleInboundDocument(empty, withCard, history)).toBe(false);
+  });
 });

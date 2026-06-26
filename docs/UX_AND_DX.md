@@ -51,7 +51,7 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 | **Export TSX**         | “Export TSX” opens readable preview                                             | `generateTsx` + `importMap`; warnings array                                                      |
 | **Docs & Studio**      | Try without clone via RTD Studio                                                | `pnpm docs:build`; RTD badge; PACKAGE_API_SPEC for contract                                      |
 
-**Gaps to close in upcoming work:** controlled embed undo history; canvas click selection vs grid overlay (prefer layers panel); keyboard shortcuts listed in UI help.
+**Gaps to close in upcoming work:** canvas click selection vs grid overlay (prefer layers panel); keyboard shortcuts listed in UI help.
 
 ### v0.4 — Style Editor **(shipped)**
 

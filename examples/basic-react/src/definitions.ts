@@ -77,6 +77,7 @@ export const HeadingDefinition = defineComponent(Heading, {
   type: 'Heading',
   label: 'Heading',
   category: 'Typography',
+  acceptsChildren: false,
   props: {
     children: text({ label: 'Text', defaultValue: 'Heading' }),
     level: select({
@@ -91,6 +92,7 @@ export const TextDefinition = defineComponent(Text, {
   type: 'Text',
   label: 'Text',
   category: 'Typography',
+  acceptsChildren: false,
   props: {
     children: text({ label: 'Text', defaultValue: 'Body text' }),
     size: select({

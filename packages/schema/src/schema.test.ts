@@ -7,6 +7,8 @@ import {
   defineComponent,
   createDefaultProps,
   validateProps,
+  image,
+  json,
 } from '../src/index.js';
 
 describe('field builders', () => {
@@ -124,6 +126,23 @@ describe('validateProps', () => {
     const result = validateProps({ active: boolean() }, { active: 'yes' });
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
+
+  it('rejects non-string image values', () => {
+    const result = validateProps({ src: image({ label: 'Image' }) }, { src: 42 });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
+
+  it('rejects non-serializable json values', () => {
+    const result = validateProps({ data: json({ label: 'Data' }) }, { data: () => {} });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_TYPE')).toBe(true);
+  });
+
+  it('accepts serializable json objects', () => {
+    const result = validateProps({ data: json({ label: 'Data' }) }, { data: { ok: true } });
+    expect(result.valid).toBe(true);
   });
 });
 

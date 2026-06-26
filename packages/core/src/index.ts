@@ -70,10 +70,13 @@ export {
 export {
   isGridContainer,
   GRID_CONTAINER_TYPES,
+  MAX_GRID_CELLS,
   resolveGridTracks,
   sortChildrenByGridOrder,
   autoPlaceNextCell,
   growGridRowsIfNeeded,
+  neededGridTracks,
+  placementExceedsMaxTracks,
   placementToCss,
   gridContainerStyle,
   normalizePlacement,

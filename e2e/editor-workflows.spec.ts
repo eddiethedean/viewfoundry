@@ -62,7 +62,7 @@ test.describe('editor workflows', () => {
 
     await expectInspectorShowsType(inspector(page), 'Button');
 
-    await page.locator('.vf-canvas-surface').click({ position: { x: 8, y: 8 } });
+    await page.getByTestId('vf-canvas-surface').click({ position: { x: 8, y: 8 } });
     await expect(inspector(page).getByText('Select a node to edit its properties')).toBeVisible();
 
     await selectLayer(page, /^Grid\b/);
@@ -179,6 +179,9 @@ test.describe('editor workflows', () => {
 
     await toolbar(page).getByRole('button', { name: 'Undo' }).click();
     await expectStoredDocument(page, (doc) => firstGridChild(doc)?.style?.margin === undefined);
+
+    await toolbar(page).getByRole('button', { name: 'Redo' }).click();
+    await expectStoredDocument(page, (doc) => firstGridChild(doc)?.style?.margin === 12);
   });
 
   test('preserves selection when switching Component and Style sub-modes', async ({ page }) => {

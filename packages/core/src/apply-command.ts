@@ -123,7 +123,7 @@ export function applyCommand(
       const result = insertNode(document, command.payload);
       if (!result.ok) return result;
 
-      return validateCommandResult(result.document, registry);
+      return validateCommandResult(result.document, registry, options, command.payload.node.id);
     }
     case 'deleteNode': {
       const result = deleteNode(document, command.payload);
@@ -144,7 +144,7 @@ export function applyCommand(
 
       const result = duplicateNode(document, command.payload);
       if (!result.ok) return result;
-      const validated = validateCommandResult(result.document, registry);
+      const validated = validateCommandResult(result.document, registry, options, result.data);
       if (!validated.ok) return validated;
       return { ok: true, document: validated.document, data: result.data };
     }

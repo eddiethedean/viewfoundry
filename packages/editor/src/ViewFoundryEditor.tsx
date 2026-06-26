@@ -10,7 +10,7 @@ import { StyleInspector } from './StyleInspector.js';
 import { LayersPanel } from './LayersPanel.js';
 import { EditorDndShell } from './EditorDndShell.js';
 import { useEditorStore, useEditorState } from './EditorContext.js';
-import { findNodeLocation, isGridContainer } from '@viewfoundry/core';
+import { findNodeLocation, getPrimarySelection, isGridContainer } from '@viewfoundry/core';
 
 export type ViewFoundryEditorProps = {
   registry: ComponentRegistry;
@@ -29,30 +29,43 @@ function KeyboardShortcuts() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (store.getState().studioMode === 'live') return;
+      if (store.getState().isDragging) return;
 
       const mod = e.metaKey || e.ctrlKey;
       if (e.key === 'Escape') {
         store.getState().clearSelection();
       }
-      if ((e.key === 'Delete' || e.key === 'Backspace') && !isKeyboardShortcutBlocked(e.target)) {
+      const selectedId = getPrimarySelection(store.getState().selection);
+      if (
+        (e.key === 'Delete' || e.key === 'Backspace') &&
+        selectedId &&
+        selectedId !== 'root' &&
+        !isKeyboardShortcutBlocked(e.target)
+      ) {
         e.preventDefault();
         store.getState().deleteSelected();
       }
       if (mod && e.key === 'z' && !e.shiftKey && !isKeyboardShortcutBlocked(e.target)) {
-        e.preventDefault();
-        store.getState().undo();
+        if (store.getState().canUndo()) {
+          e.preventDefault();
+          store.getState().undo();
+        }
       }
       if (
         mod &&
         ((e.key === 'z' && e.shiftKey) || e.key === 'y') &&
         !isKeyboardShortcutBlocked(e.target)
       ) {
-        e.preventDefault();
-        store.getState().redo();
+        if (store.getState().canRedo()) {
+          e.preventDefault();
+          store.getState().redo();
+        }
       }
       if (mod && e.key === 'd' && !isKeyboardShortcutBlocked(e.target)) {
-        e.preventDefault();
-        store.getState().duplicateSelected();
+        if (selectedId && selectedId !== 'root') {
+          e.preventDefault();
+          store.getState().duplicateSelected();
+        }
       }
       if (!isKeyboardShortcutBlocked(e.target) && !mod) {
         const nodeId = store.getState().selection.selectedNodeIds[0];

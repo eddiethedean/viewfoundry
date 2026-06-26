@@ -37,6 +37,7 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
       snapshotRef.current = store.getState().document;
+      store.getState().setDragging(true);
       setActiveId(String(event.active.id));
     },
     [store],
@@ -46,6 +47,7 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
     if (snapshotRef.current) {
       store.getState().revertDocument(snapshotRef.current);
     }
+    store.getState().setDragging(false);
     setActiveId(null);
     snapshotRef.current = null;
   }, [store]);
@@ -53,6 +55,7 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
+      store.getState().setDragging(false);
       setActiveId(null);
       snapshotRef.current = null;
 

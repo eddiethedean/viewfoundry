@@ -5,6 +5,25 @@ Command-line tools for ViewFoundry documents.
 ```bash
 npx @viewfoundry/cli validate ./page.json
 npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx
+npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --imports ./import-map.json --tokens ./tokens.json
+npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --strict
+```
+
+## Export options
+
+| Flag        | Description                                                              |
+| ----------- | ------------------------------------------------------------------------ |
+| `--imports` | JSON file mapping component `type` strings to import paths (see below)   |
+| `--tokens`  | JSON file with style token definitions for codegen                       |
+| `--strict`  | Exit non-zero when warnings include missing imports or unresolved tokens |
+
+Example `import-map.json`:
+
+```json
+{
+  "Button": { "importPath": "./components/Button", "exportName": "Button" },
+  "Grid": { "importPath": "./components/Grid", "exportName": "Grid" }
+}
 ```
 
 ## Commands
@@ -23,6 +42,6 @@ npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx
 | CI validation of saved JSON | `viewfoundry validate`                                           |
 | One-off TSX file from JSON  | `viewfoundry export` (add import paths manually or post-process) |
 
-`export` uses an empty import map by default. Production TSX should use import maps from your application, matching [Component registration](../component-registration.md).
+`export` requires an import map for usable output. Pass `--imports` with a JSON map, or use `generateTsx` in app code with your import map and `styleTokens`, matching [Component registration](../component-registration.md).
 
 Peer dependency: `@viewfoundry/core@^0.4.0`.

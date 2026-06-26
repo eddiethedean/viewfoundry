@@ -3,6 +3,9 @@ import { findNode, updateNodeInTree } from './nodes.js';
 
 export const GRID_CONTAINER_TYPES = ['Grid', 'Row'] as const;
 
+/** Maximum grid tracks (rows or columns) for layout containers. */
+export const MAX_GRID_CELLS = 64;
+
 export type GridContainerType = (typeof GRID_CONTAINER_TYPES)[number];
 
 export type GridTracks = {
@@ -109,6 +112,27 @@ export function autoPlaceNextCell(existingChildren: ViewNode[], tracks: GridTrac
   return { column: 1, row: nextRow, colSpan: 1, rowSpan: 1 };
 }
 
+export function neededGridTracks(
+  parentType: GridContainerType,
+  rect: PlacementRect,
+): { rows?: number; columns?: number } {
+  if (parentType === 'Grid') {
+    return { rows: rect.row + rect.rowSpan - 1 };
+  }
+  return { columns: rect.column + rect.colSpan - 1 };
+}
+
+export function placementExceedsMaxTracks(
+  parentType: GridContainerType,
+  placement: GridPlacement,
+): boolean {
+  const rect = normalizePlacement(placement);
+  const needed = neededGridTracks(parentType, rect);
+  if (needed.rows !== undefined && needed.rows > MAX_GRID_CELLS) return true;
+  if (needed.columns !== undefined && needed.columns > MAX_GRID_CELLS) return true;
+  return false;
+}
+
 /** Expands a grid or row parent when placement exceeds current track count. */
 export function growGridRowsIfNeeded(
   root: ViewNode,
@@ -122,7 +146,7 @@ export function growGridRowsIfNeeded(
   const tracks = resolveGridTracks(parent);
 
   if (parent.type === 'Grid') {
-    const neededRows = rect.row + rect.rowSpan - 1;
+    const neededRows = Math.min(rect.row + rect.rowSpan - 1, MAX_GRID_CELLS);
     if (neededRows <= tracks.rows) return root;
     return updateNodeInTree(root, parentId, (node) => ({
       ...node,
@@ -130,7 +154,7 @@ export function growGridRowsIfNeeded(
     }));
   }
 
-  const neededColumns = rect.column + rect.colSpan - 1;
+  const neededColumns = Math.min(rect.column + rect.colSpan - 1, MAX_GRID_CELLS);
   if (neededColumns <= tracks.columns) return root;
   return updateNodeInTree(root, parentId, (node) => ({
     ...node,
