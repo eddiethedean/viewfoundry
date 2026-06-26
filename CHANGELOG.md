@@ -20,6 +20,18 @@ All notable changes to ViewFoundry packages are documented here. Package version
 
 - Undo/redo preserves selection when the selected node still exists in the restored document
 - Style mode hides the component palette; layers panel remains for selection
+- `syncDocument` clears the redo stack while preserving undo history (controlled embed contract)
+
+### Fixed
+
+- Edit-mode grid placement WYSIWYG — `gridColumn`/`gridRow` apply on the drag shell, matching Live/preview layout
+- Demo components (`Card`, `Stack`, `Heading`, `Text`) forward `style` so Style edits render on canvas
+- Style validation accepts `fontWeight` keywords, `lineHeight: normal`, and border shorthand; custom keys validated loosely
+- `setStyleProp` treats `null` as removal; `updateNodeStyle` strips `undefined`/`null` after merge
+- Undo/redo no longer fires when focus is in Style inspector inputs (Ctrl+Y redo on Windows)
+- Drag-drop preserves `colSpan`/`rowSpan`; Style inspector debounces commits and avoids token color overwrite
+- Codegen warns on unresolved style tokens; strips grid placement keys from component `style` when using wrapper divs
+- Docs Studio validates saved documents on load (matches `examples/basic-react`)
 
 ## [0.3.0] — June 2026
 

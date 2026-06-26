@@ -144,14 +144,14 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 
 ### Post-1.0 (v1.1+)
 
-| Area                   | Studio user                                          | React developer                                     |
-| ---------------------- | ---------------------------------------------------- | --------------------------------------------------- |
-| **Nested layouts**     | Route tree matches mental model of “section layouts” | Nested route codegen documented                     |
-| **Framework adapters** | —                                                    | Next.js README with RSC boundaries explicit         |
-| **Loaders**            | Loading skeletons in Live preview                    | Loader registration; binding loader fields to props |
-| **Plugins**            | Custom panels use same chrome/labels conventions     | Plugin API typed; examples in repo                  |
+| Area                   | Studio user                                          | React developer                                      |
+| ---------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| **Nested layouts**     | Route tree matches mental model of “section layouts” | Nested route codegen documented                      |
+| **Framework adapters** | —                                                    | Next.js README with RSC boundaries explicit          |
+| **Loaders**            | Loading skeletons in Live preview                    | Loader registration; binding loader fields to props  |
+| **Plugins**            | Custom panels use same chrome/labels conventions     | Plugin API typed; examples in repo                   |
 | **Existing projects**  | Palette shows familiar component names from host app | `viewfoundry import`; scan paths; registry bootstrap |
-| **Collaboration**      | Presence cursors, not raw locking jargon             | —                                                   |
+| **Collaboration**      | Presence cursors, not raw locking jargon             | —                                                    |
 
 ---
 

@@ -7,6 +7,7 @@ A minimal ViewFoundry integration: registered components, visual editor, localSt
 - **Component registration** — Button, Card, Stack, Grid, Row, Heading, Text via `@viewfoundry/schema`
 - **Edit / Live** — single-viewport studio toggle in `ViewFoundryEditor`
 - **Grid layout (v0.3.0)** — Grid and Row containers, canvas drag-and-drop, cell placement
+- **Style Editor (v0.4.0)** — Component | Style sub-mode, `node.style`, optional `styleTokens`
 - **Persistence** — document JSON saved to `localStorage`
 - **Codegen** — `generateTsx` with an import map matching `./components`
 

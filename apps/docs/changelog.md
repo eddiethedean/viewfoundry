@@ -11,6 +11,12 @@ Package versions are lockstep-published under the same semver. The canonical cha
 - Style commands, validation, and grouped Style inspector
 - Optional `styleTokens` on provider/editor; codegen inline style emission
 
+### Fixed
+
+- Edit-mode grid placement matches Live preview; demo components forward `style`
+- Style validation and command edge cases; editor keyboard/sync/drag/Style inspector polish
+- Codegen token warnings and grid key stripping; docs Studio load validation
+
 See [Migration from 0.3 → 0.4](migration-0.3-0.4.md).
 
 ## [0.3.0] — June 2026

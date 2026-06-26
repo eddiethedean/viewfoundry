@@ -30,14 +30,14 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 
 ### Post-1.0
 
-| Version                                   | Status      | Theme                             |
-| ----------------------------------------- | ----------- | --------------------------------- |
-| [v1.1.0](#v110---nested-routes--layouts)  | Planned     | Nested routes & shared layouts    |
-| [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters |
-| [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders           |
-| [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API            |
+| Version                                   | Status      | Theme                                     |
+| ----------------------------------------- | ----------- | ----------------------------------------- |
+| [v1.1.0](#v110---nested-routes--layouts)  | Planned     | Nested routes & shared layouts            |
+| [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters         |
+| [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders                   |
+| [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API                    |
 | [v1.6.0](#v160---existing-project-import) | Planned     | Load existing React projects & components |
-| [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion |
+| [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion         |
 
 See [POST_1_0.md](POST_1_0.md) for post-1.0 detail.
 

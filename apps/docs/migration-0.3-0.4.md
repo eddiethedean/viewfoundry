@@ -36,6 +36,8 @@ Nodes may now include optional presentation styles separate from schema-backed `
 - Style mode hides the palette; layers panel remains for selection.
 - Style edits share undo/redo history with structure edits.
 - Selection is preserved when switching sub-modes and when undoing style changes.
+- **Ctrl+Z / Ctrl+Y** in Style inspector inputs edit text, not document history.
+- Style text fields debounce commits (~300ms); blur flushes pending edits.
 
 ## Runtime
 
@@ -62,11 +64,15 @@ Pass optional design-token presets to the provider and editor:
 generateTsx({ document, imports, styleTokens });
 ```
 
-Grid placement wrappers are unchanged — only `gridColumn` / `gridRow` on the wrapper `<div>`.
+Grid placement wrappers are unchanged — only `gridColumn` / `gridRow` on the wrapper `<div>`. Component `style` props omit grid placement keys when a wrapper is used. Unresolved token references emit codegen warnings.
 
 ## Validation
 
-`validateDocument()` validates `node.style` values when present (colors, opacity, enums for layout properties, etc.).
+`validateDocument()` validates `node.style` values when present (colors, opacity, `fontWeight`, border shorthand, layout enums, etc.). Custom camelCase keys in Advanced mode use loose validation.
+
+## Components must forward `style`
+
+Registered components should accept `style?: CSSProperties` on their root DOM element so Style Editor changes are visible on the canvas. The demo app forwards `style` on all layout and text components.
 
 ## See also
 
