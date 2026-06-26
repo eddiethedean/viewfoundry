@@ -12,7 +12,7 @@ The document model must be:
 - suitable for JSON storage
 - suitable for TSX code generation
 
-## Current model (v0.3.0)
+## Current model (v0.4.0)
 
 ```ts
 export type ViewDocument = {
@@ -54,7 +54,7 @@ export type ViewNode = {
 };
 ```
 
-Package semver (`0.3.0`) is separate from `ViewDocument.version` (`'0.1'`). New optional fields like `layout` are added during `0.x` without bumping the document schema version.
+Package semver (`0.4.0`) is separate from `ViewDocument.version` (`'0.1'`). New optional fields like `layout` and `style` are added during `0.x` without bumping the document schema version.
 
 ## Node identity
 

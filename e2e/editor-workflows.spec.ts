@@ -173,6 +173,7 @@ test.describe('editor workflows', () => {
 
     const marginInput = styleInspector(page).getByLabel('Margin');
     await marginInput.fill('12');
+    await marginInput.blur();
 
     await expectStoredDocument(page, (doc) => firstGridChild(doc)?.style?.margin === 12);
 
@@ -189,5 +190,52 @@ test.describe('editor workflows', () => {
 
     await setEditSubMode(page, 'Component');
     await expect(inspector(page).locator('.vf-inspector-meta')).toContainText('Button');
+  });
+
+  test('shows backgroundColor on canvas and persists after reload', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await selectLayer(page, /^Button\b/);
+    await setEditSubMode(page, 'Style');
+
+    const backgroundInput = styleInspector(page).locator('#vf-style-backgroundColor-text');
+    await backgroundInput.fill('#ff0000');
+    await page.keyboard.press('Tab');
+
+    await expectStoredDocument(
+      page,
+      (doc) => firstGridChild(doc)?.style?.backgroundColor === '#ff0000',
+    );
+
+    await expect(page.locator('.vf-canvas .demo-button')).toHaveCSS(
+      'background-color',
+      'rgb(255, 0, 0)',
+    );
+
+    await page.reload();
+    await expect(page.locator('.vf-canvas .demo-button')).toHaveCSS(
+      'background-color',
+      'rgb(255, 0, 0)',
+    );
+  });
+
+  test('exports node.style in generated TSX', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await selectLayer(page, /^Button\b/);
+    await setEditSubMode(page, 'Style');
+
+    const backgroundInput = styleInspector(page).locator('#vf-style-backgroundColor-text');
+    await backgroundInput.fill('#00ff00');
+    await page.keyboard.press('Tab');
+
+    await expectStoredDocument(
+      page,
+      (doc) => firstGridChild(doc)?.style?.backgroundColor === '#00ff00',
+    );
+
+    await toolbar(page).getByRole('button', { name: 'Export TSX' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Generated TSX' });
+    const code = await drawer.locator('pre').textContent();
+    expect(code).toContain('backgroundColor');
+    expect(code).toMatch(/#00ff00|#0f0/i);
   });
 });

@@ -184,6 +184,7 @@ Owns:
 - `viewfoundry dev`
 - `viewfoundry validate` — document or site JSON
 - `viewfoundry export` — single page or multi-route site (v0.9.0)
+- `viewfoundry import` — load components from an existing React project (planned **v1.6.0**)
 
 ## Data flow
 

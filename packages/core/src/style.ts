@@ -68,6 +68,57 @@ export const BORDER_STYLE_VALUES = new Set([
 ]);
 
 const CAMEL_CASE_KEY = /^[a-z][a-zA-Z0-9]*$/;
+const FONT_WEIGHT_KEYWORDS = new Set(['normal', 'bold', 'lighter', 'bolder']);
+const BORDER_SHORTHAND_MAX_LENGTH = 200;
+
+function isValidFontWeight(value: string | number): boolean {
+  if (typeof value === 'number') return Number.isInteger(value) && value >= 100 && value <= 900;
+  const trimmed = value.trim();
+  if (FONT_WEIGHT_KEYWORDS.has(trimmed)) return true;
+  const num = Number(trimmed);
+  return Number.isInteger(num) && num >= 100 && num <= 900;
+}
+
+function isValidLineHeight(value: string | number): boolean {
+  if (typeof value === 'number') return Number.isFinite(value) && value >= 0;
+  const trimmed = value.trim();
+  if (trimmed === 'normal') return true;
+  return /^-?\d+(\.\d+)?(px|em|rem|%)?$/.test(trimmed);
+}
+
+function isValidBorderShorthand(value: string): boolean {
+  const trimmed = value.trim();
+  return trimmed.length > 0 && trimmed.length <= BORDER_SHORTHAND_MAX_LENGTH;
+}
+
+function validateLooseCustomValue(key: string, value: StyleValue, path: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  if (value === null || value === undefined) {
+    issues.push({
+      path,
+      message: `Style value for "${key}" cannot be null`,
+      code: 'INVALID_STYLE_VALUE',
+    });
+    return issues;
+  }
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      issues.push({
+        path,
+        message: `Style value for "${key}" must be a finite number`,
+        code: 'INVALID_STYLE_VALUE',
+      });
+    }
+    return issues;
+  }
+  if (typeof value === 'string' && value.trim().length > 0) return issues;
+  issues.push({
+    path,
+    message: `Style value for "${key}" must be a non-empty string or finite number`,
+    code: 'INVALID_STYLE_VALUE',
+  });
+  return issues;
+}
 const COLOR_PATTERN =
   /^(#[0-9a-fA-F]{3,8}|rgb\([^)]+\)|rgba\([^)]+\)|hsl\([^)]+\)|hsla\([^)]+\)|[a-zA-Z]+)$/;
 const TOKEN_PATTERN = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
@@ -218,6 +269,7 @@ function validateStyleValue(key: string, value: StyleValue, path: string): Valid
         });
       }
       break;
+    case 'fontSize':
     case 'margin':
     case 'padding':
     case 'gap':
@@ -225,16 +277,39 @@ function validateStyleValue(key: string, value: StyleValue, path: string): Valid
     case 'height':
     case 'minWidth':
     case 'maxWidth':
-    case 'fontSize':
-    case 'fontWeight':
-    case 'lineHeight':
-    case 'border':
     case 'borderWidth':
     case 'borderRadius':
       if (!isValidSizeValue(value)) {
         issues.push({
           path,
           message: `Invalid size value for "${key}": ${value}`,
+          code: 'INVALID_STYLE_VALUE',
+        });
+      }
+      break;
+    case 'fontWeight':
+      if (!isValidFontWeight(value)) {
+        issues.push({
+          path,
+          message: `Invalid fontWeight value: ${value}`,
+          code: 'INVALID_STYLE_VALUE',
+        });
+      }
+      break;
+    case 'lineHeight':
+      if (!isValidLineHeight(value)) {
+        issues.push({
+          path,
+          message: `Invalid lineHeight value: ${value}`,
+          code: 'INVALID_STYLE_VALUE',
+        });
+      }
+      break;
+    case 'border':
+      if (!isValidBorderShorthand(value)) {
+        issues.push({
+          path,
+          message: `Invalid border value: ${value}`,
           code: 'INVALID_STYLE_VALUE',
         });
       }
@@ -259,12 +334,9 @@ export function validateStyle(style: StyleTokenMap, pathPrefix = 'style'): Valid
       });
       continue;
     }
-    if (!KNOWN_STYLE_KEYS.has(key) && !CAMEL_CASE_KEY.test(key)) {
-      issues.push({
-        path,
-        message: `Unknown style key: ${key}`,
-        code: 'UNKNOWN_STYLE_KEY',
-      });
+    if (!KNOWN_STYLE_KEYS.has(key)) {
+      issues.push(...validateLooseCustomValue(key, value, path));
+      continue;
     }
     issues.push(...validateStyleValue(key, value, path));
   }

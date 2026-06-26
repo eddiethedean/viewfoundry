@@ -38,6 +38,18 @@ Formal extension points (architecture today is aspirational):
 - Custom interaction action types
 - Codegen plugins (per-component or per-site hooks)
 - Editor panel slots
+- **Component discovery providers** for existing React projects (see v1.6.0 in [ROADMAP.md](ROADMAP.md))
+
+## v1.6.0 — Existing project import
+
+Load an **existing React project** into ViewFoundry without registering every component by hand:
+
+- CLI workflow to scan configured paths and list exportable components
+- Generate starter `defineComponent` stubs and codegen import maps
+- Optional TypeScript-based prop schema inference (review before publish)
+- Gradual adoption — only confirmed components appear in the palette
+
+Pairs with [v1.2.0 framework adapters](#v120---framework-adapters) for Next.js and other host layouts.
 
 ## v1.5.0+ — Collaboration & advanced (exploratory)
 

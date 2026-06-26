@@ -143,6 +143,19 @@ describe('createEditorStore', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  it('syncDocument clears the redo stack', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    store.getState().undo();
+    expect(store.getState().history.future.length).toBeGreaterThan(0);
+
+    const external = structuredClone(store.getState().document);
+    external.meta = { name: 'Synced checkpoint' };
+    store.getState().syncDocument(external);
+
+    expect(store.getState().history.future).toHaveLength(0);
+  });
+
   it('insertComponent targets existing grid when nothing is selected', () => {
     const store = createEditorStore(registry, createDocument());
     store.getState().insertComponent('Button');

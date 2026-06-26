@@ -24,4 +24,4 @@ export default defineConfig({
 
 For now, use Vite normally and import `@viewfoundry/*` packages directly. See [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react).
 
-Peer dependency: `@viewfoundry/core@^0.3.0`.
+Peer dependency: `@viewfoundry/core@^0.4.0`.

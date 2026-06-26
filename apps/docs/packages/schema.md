@@ -24,4 +24,4 @@ export const ButtonDefinition = defineComponent(Button, {
 });
 ```
 
-Peer dependency: `@viewfoundry/core@^0.3.0`.
+Peer dependency: `@viewfoundry/core@^0.4.0`.

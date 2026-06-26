@@ -13,3 +13,8 @@ export {
   resolveComponent,
 } from './ViewNodeRenderer.js';
 export { resolveStyleMap, mergeStyles } from './style-utils.js';
+export {
+  getChildPlacementStyle,
+  getGridContainerStyle,
+  getGridPlacementClass,
+} from './grid-styles.js';

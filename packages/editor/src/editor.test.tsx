@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createDocument, createNode, findNode } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '../src/index.js';
@@ -338,10 +338,11 @@ describe('ViewFoundryEditor', () => {
     const marginInput = screen.getByLabelText('Margin');
     await user.clear(marginInput);
     await user.type(marginInput, '12');
+    await user.tab();
 
-    const updated = latestDocument(onChange);
-    const node = findNode(updated.root, 'btn1');
-    expect(node?.style?.margin).toBe(12);
+    await waitFor(() => {
+      expect(findNode(latestDocument(onChange).root, 'btn1')?.style?.margin).toBe(12);
+    });
   });
 
   it('undoes style changes while preserving selection', async () => {
@@ -359,9 +360,44 @@ describe('ViewFoundryEditor', () => {
     const marginInput = screen.getByLabelText('Margin');
     await user.clear(marginInput);
     await user.type(marginInput, '8');
+    await user.tab();
 
-    fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
+    await waitFor(() => {
+      expect(findNode(latestDocument(onChange).root, 'btn1')?.style?.margin).toBe(8);
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Undo' }));
     const reverted = latestDocument(onChange);
     expect(findNode(reverted.root, 'btn1')?.style?.margin).toBeUndefined();
+    expect(within(layers).getByRole('button', { name: /btn1/ })).toHaveClass(
+      'vf-layer-item-selected',
+    );
+  });
+
+  it('does not undo document when Ctrl+Z is pressed in a style input', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Styled' }, [], 'btn1')];
+    renderEditor(doc, { onChange });
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: /btn1/ }));
+    await user.click(screen.getByRole('button', { name: 'Style' }));
+
+    const marginInput = screen.getByLabelText('Margin');
+    await user.clear(marginInput);
+    await user.type(marginInput, '8');
+    await user.tab();
+
+    await waitFor(() => {
+      expect(findNode(latestDocument(onChange).root, 'btn1')?.style?.margin).toBe(8);
+    });
+
+    await user.click(marginInput);
+    fireEvent.keyDown(marginInput, { key: 'z', ctrlKey: true });
+
+    expect(findNode(latestDocument(onChange).root, 'btn1')?.style?.margin).toBe(8);
   });
 });

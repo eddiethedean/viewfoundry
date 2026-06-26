@@ -77,3 +77,4 @@ Future version can support:
 - min children
 - required child types
 - layout zones
+- **bulk import from existing React projects** — scan exports, bootstrap registry entries, and codegen import maps ([ROADMAP.md](ROADMAP.md#v160---existing-project-import))

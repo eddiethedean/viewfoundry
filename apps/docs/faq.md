@@ -2,9 +2,9 @@
 
 ## What is the difference between package version and document version?
 
-**Package semver** (e.g. `0.3.0` on npm) tracks the ViewFoundry libraries. **Document schema version** (`ViewDocument.version: '0.1'`) tracks the JSON shape of saved documents. They are independent — you can run `@viewfoundry/*@0.3.0` while documents still use `version: '0.1'`.
+**Package semver** (e.g. `0.4.0` on npm) tracks the ViewFoundry libraries. **Document schema version** (`ViewDocument.version: '0.1'`) tracks the JSON shape of saved documents. They are independent — you can run `@viewfoundry/*@0.4.0` while documents still use `version: '0.1'`.
 
-New optional fields (like `layout` in v0.3.0) are added without bumping the document schema version during `0.x`.
+New optional fields (like `layout` in v0.3.0 and `style` in v0.4.0) are added without bumping the document schema version during `0.x`.
 
 ## Do I need to clone the monorepo?
 
@@ -30,6 +30,21 @@ You provide an **import map** to `generateTsx`. Each document node `type` maps t
 
 Grid layout, canvas drag-and-drop, `layout.grid` on nodes, grid-aware codegen, and reliability fixes for Live mode layout, `moveNode`, and controlled embed history. See [Migration from 0.2 → 0.3](migration-0.2-0.3.md) and the [changelog](changelog.md).
 
+## What changed in v0.4.0?
+
+Style Editor sub-mode (Component | Style), `node.style` on documents, style commands (`setStyleProp`, `updateNodeStyle`), inline style codegen, and token-aware rendering. See [Migration from 0.3 → 0.4](migration-0.3-0.4.md) and the [changelog](changelog.md).
+
+## Why does undo not work in my app?
+
+If you pass **controlled** `document` and `onChange` props, the editor uses `syncDocument` to merge external updates. That **preserves undo history** (past stack) but **clears the redo stack** — external sync is treated as a checkpoint, not an undo step. Replacing the document on every parent render without using `syncDocument` can still reset history depending on your integration.
+
+**Workarounds:**
+
+- Let the editor own document state internally (uncontrolled), or
+- Keep history in your app and pass a restored document when the user clicks Undo in your own toolbar.
+
+See [Troubleshooting — controlled document](troubleshooting.md#undo-and-redo-with-controlled-document).
+
 ## Where is the full API reference?
 
 The authoritative API contract is [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) on GitHub. These docs are user guides; the spec may include details not yet mirrored here.
@@ -50,17 +65,6 @@ ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and op
 - **React developers** embed `ViewFoundryEditor`, register real components with `defineComponent`, persist `ViewDocument` JSON, and export TSX. Success means typed APIs, copy-pasteable examples, and codegen you would ship.
 
 Usability bars for both audiences are defined in the repo planning doc [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md) (maintainers use this for release review).
-
-## Why does undo not work in my app?
-
-If you pass **controlled** `document` and `onChange` props, each parent update replaces the editor’s internal document and **clears undo history**. That is expected today.
-
-**Workarounds:**
-
-- Let the editor own document state internally (uncontrolled), or
-- Keep history in your app and pass a restored document when the user clicks Undo in your own toolbar.
-
-See [Troubleshooting — controlled document](troubleshooting.md#undo-and-redo-with-controlled-document).
 
 ## How do I select a component on the grid canvas?
 

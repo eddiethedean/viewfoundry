@@ -221,7 +221,7 @@ export function setStyleProp(document: ViewDocument, payload: SetStylePropPayloa
   }
   const newRoot = updateNodeInTree(document.root, payload.nodeId, (n) => {
     const current = { ...(n.style ?? {}) };
-    if (payload.value === undefined) {
+    if (payload.value === undefined || payload.value === null) {
       delete current[payload.key];
     } else {
       current[payload.key] = payload.value;
@@ -241,6 +241,11 @@ export function updateNodeStyle(
   }
   const newRoot = updateNodeInTree(document.root, payload.nodeId, (n) => {
     const merged = { ...(n.style ?? {}), ...payload.style };
+    for (const [key, value] of Object.entries(merged)) {
+      if (value === undefined || value === null) {
+        delete merged[key];
+      }
+    }
     return applyStyleToNode(n, Object.keys(merged).length > 0 ? merged : undefined);
   });
   return success({ ...document, root: newRoot });

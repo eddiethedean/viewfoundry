@@ -104,4 +104,82 @@ describe('applyCommand', () => {
     const result = applyCommand(document, { type: 'deleteNode', payload: { nodeId } }, registry);
     expect(result.ok).toBe(true);
   });
+
+  it('applies setStyleProp for valid style', () => {
+    const document = createDocument({
+      root: {
+        id: 'root',
+        type: 'Root',
+        children: [createNode('Button', { children: 'Click' }, [], 'btn1')],
+      },
+    });
+    const result = applyCommand(
+      document,
+      {
+        type: 'setStyleProp',
+        payload: { nodeId: 'btn1', key: 'margin', value: 8 },
+      },
+      registry,
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.document.root.children?.[0]?.style?.margin).toBe(8);
+    }
+  });
+
+  it('rejects setStyleProp with invalid opacity', () => {
+    const document = createDocument({
+      root: {
+        id: 'root',
+        type: 'Root',
+        children: [createNode('Button', { children: 'Click' }, [], 'btn1')],
+      },
+    });
+    const result = applyCommand(
+      document,
+      {
+        type: 'setStyleProp',
+        payload: { nodeId: 'btn1', key: 'opacity', value: 2 },
+      },
+      registry,
+    );
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects setStyleProp for missing node', () => {
+    const document = createDocument();
+    const result = applyCommand(
+      document,
+      {
+        type: 'setStyleProp',
+        payload: { nodeId: 'missing', key: 'margin', value: 8 },
+      },
+      registry,
+    );
+    expect(result.ok).toBe(false);
+  });
+
+  it('applies updateNodeStyle and strips undefined keys', () => {
+    const document = createDocument({
+      root: {
+        id: 'root',
+        type: 'Root',
+        children: [
+          createNode('Button', { children: 'Click' }, [], 'btn1', undefined, { margin: 4 }),
+        ],
+      },
+    });
+    const result = applyCommand(
+      document,
+      {
+        type: 'updateNodeStyle',
+        payload: { nodeId: 'btn1', style: { margin: undefined, padding: 8 } },
+      },
+      registry,
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.document.root.children?.[0]?.style).toEqual({ padding: 8 });
+    }
+  });
 });

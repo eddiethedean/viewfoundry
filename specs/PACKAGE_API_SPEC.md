@@ -4,7 +4,7 @@ This document describes the public API surface for ViewFoundry packages at **v0.
 
 ## Versioning policy (0.x)
 
-- **Package semver** (`0.3.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
+- **Package semver** (`0.4.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
 - **Document version** (`ViewDocument.version: '0.1'`) is separate from package semver. It identifies the JSON document schema.
 - During `0.x`, minor releases may add optional document fields and APIs. Patch releases are backward compatible within the minor.
 - `1.0.0` is reserved for a stable public API after grid layout, docs site, and integrations are proven.

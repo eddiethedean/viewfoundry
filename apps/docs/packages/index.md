@@ -14,7 +14,7 @@ cli
 vite
 ```
 
-Install all packages you use at the **same version** (currently `0.3.0`).
+Install all packages you use at the **same version** (currently `0.4.0`).
 
 | Package                | Role                                                    |
 | ---------------------- | ------------------------------------------------------- |

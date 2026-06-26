@@ -7,7 +7,13 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
-import { parseGridDropId } from '@viewfoundry/core';
+import {
+  parseGridDropId,
+  findNode,
+  resolveGridTracks,
+  isPlacementInBounds,
+  normalizePlacement,
+} from '@viewfoundry/core';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useEditorStore } from '../EditorContext.js';
 import { parseNodeDragId, parsePaletteDragId } from './types.js';
@@ -67,7 +73,32 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
 
       const nodeId = parseNodeDragId(String(active.id));
       if (nodeId) {
-        store.getState().moveNodeToCell(nodeId, cell.parentId, layout);
+        const document = store.getState().document;
+        const node = findNode(document.root, nodeId);
+        const parent = findNode(document.root, cell.parentId);
+        const existingGrid = node?.layout?.grid;
+        let moveLayout = {
+          column: cell.column,
+          row: cell.row,
+          colSpan: existingGrid?.colSpan ?? 1,
+          rowSpan: existingGrid?.rowSpan ?? 1,
+        };
+        if (parent) {
+          const tracks = resolveGridTracks(parent);
+          const rect = normalizePlacement(moveLayout);
+          if (!isPlacementInBounds(rect, tracks)) {
+            moveLayout = {
+              ...moveLayout,
+              colSpan: Math.min(moveLayout.colSpan, tracks.columns),
+              rowSpan: Math.min(moveLayout.rowSpan, tracks.rows),
+            };
+            const clamped = normalizePlacement(moveLayout);
+            if (!isPlacementInBounds(clamped, tracks)) {
+              moveLayout = { column: cell.column, row: cell.row, colSpan: 1, rowSpan: 1 };
+            }
+          }
+        }
+        store.getState().moveNodeToCell(nodeId, cell.parentId, moveLayout);
       }
     },
     [store],

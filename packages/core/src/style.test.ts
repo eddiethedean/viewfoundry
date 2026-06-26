@@ -48,6 +48,26 @@ describe('validateStyle', () => {
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'INVALID_STYLE_KEY')).toBe(true);
   });
+
+  it('accepts fontWeight keywords and numeric values', () => {
+    expect(validateStyle({ fontWeight: 'bold' }).valid).toBe(true);
+    expect(validateStyle({ fontWeight: 'normal' }).valid).toBe(true);
+    expect(validateStyle({ fontWeight: 600 }).valid).toBe(true);
+  });
+
+  it('accepts lineHeight normal and unitless numbers', () => {
+    expect(validateStyle({ lineHeight: 'normal' }).valid).toBe(true);
+    expect(validateStyle({ lineHeight: 1.5 }).valid).toBe(true);
+  });
+
+  it('accepts border shorthand strings', () => {
+    expect(validateStyle({ border: '1px solid #000' }).valid).toBe(true);
+  });
+
+  it('allows custom camelCase style keys with loose validation', () => {
+    expect(validateStyle({ customProp: 'value' }).valid).toBe(true);
+    expect(validateStyle({ customProp: '' }).valid).toBe(false);
+  });
 });
 
 describe('resolveStyleValue', () => {

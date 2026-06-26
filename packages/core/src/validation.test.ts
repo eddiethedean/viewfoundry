@@ -92,4 +92,15 @@ describe('validateDocument', () => {
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'PARENT_REJECTS_CHILDREN')).toBe(true);
   });
+
+  it('rejects invalid node.style values', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Hi' }, [], 'btn1', undefined, { opacity: 2 }),
+    ];
+    const registry = createRegistry([buttonDef]);
+    const result = validateDocument(doc, registry);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'INVALID_STYLE_VALUE')).toBe(true);
+  });
 });

@@ -83,6 +83,7 @@ export function ViewNodeRenderer({
   const gridContainerStyle = getGridContainerStyle(node);
   const childElements = renderChildNodes(node, renderChildren);
   const hasGridPlacement = Boolean(placementStyle && Object.keys(placementStyle).length > 0);
+  const placementOnEditShell = isEditMode && hasGridPlacement && Boolean(wrapEditNode);
   const needsPlacementWrapper =
     !isEditMode && hasGridPlacement && !isGridContainer(node.type) && node.type !== 'Root';
 
@@ -148,7 +149,7 @@ export function ViewNodeRenderer({
     return editWrapper(
       <div
         className={`vf-node-wrapper${gridClass}${isSelected ? ' vf-node-selected' : ''}`}
-        style={placementStyle}
+        style={placementOnEditShell ? undefined : placementStyle}
         data-node-id={node.id}
         onClick={(e) => {
           e.stopPropagation();
@@ -191,7 +192,7 @@ export function ViewNodeRenderer({
   return editWrapper(
     <div
       className={`vf-node-wrapper${gridClass}${isSelected ? ' vf-node-selected' : ''}`}
-      style={placementStyle}
+      style={placementOnEditShell ? undefined : placementStyle}
       data-node-id={node.id}
       data-component-type={node.type}
       onClick={(e) => {

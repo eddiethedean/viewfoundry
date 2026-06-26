@@ -143,4 +143,4 @@ Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Sourc
 
 Planning specs in [`docs/`](docs/) describe intent and roadmap; they may lag implementation. The implementation follows [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Planned (pre-1.0):** [v0.4–v0.9](docs/ROADMAP.md) Style · CLI · Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins.
+**Planned (pre-1.0):** [v0.5–v0.9](docs/ROADMAP.md) CLI · Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Shipped:** [v0.4 Style Editor](docs/ROADMAP.md#v040---style-editor). **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins · [existing project import](docs/ROADMAP.md#v160---existing-project-import).

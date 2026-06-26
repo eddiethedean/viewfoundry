@@ -259,6 +259,32 @@ describe('commands', () => {
       expect(node?.style).toEqual({ margin: 8, padding: 16, color: '#fff' });
     }
   });
+
+  it('removes style keys when setStyleProp receives null', () => {
+    const doc = makeDoc();
+    let result = setStyleProp(doc, { nodeId: 'btn1', key: 'margin', value: 8 });
+    if (!result.ok) throw new Error(result.error);
+    result = setStyleProp(result.document, { nodeId: 'btn1', key: 'margin', value: null });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(findNode(result.document.root, 'btn1')?.style).toBeUndefined();
+    }
+  });
+
+  it('strips undefined values from updateNodeStyle merge', () => {
+    const doc = makeDoc();
+    let result = setStyleProp(doc, { nodeId: 'btn1', key: 'margin', value: 8 });
+    if (!result.ok) throw new Error(result.error);
+    result = updateNodeStyle(result.document, {
+      nodeId: 'btn1',
+      style: { margin: undefined, padding: 4 },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const node = findNode(result.document.root, 'btn1');
+      expect(node?.style).toEqual({ padding: 4 });
+    }
+  });
 });
 
 describe('history', () => {

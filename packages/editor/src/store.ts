@@ -202,7 +202,7 @@ export function createEditorStore(
       if (JSON.stringify(state.document) === JSON.stringify(document)) return;
       set({
         document,
-        history: { ...state.history, present: document },
+        history: { ...state.history, present: document, future: [] },
         lastError: null,
       });
     },

@@ -12,7 +12,7 @@ export { Inspector } from './Inspector.js';
 export type { InspectorProps } from './Inspector.js';
 export { LayersPanel } from './LayersPanel.js';
 export type { LayersPanelProps } from './LayersPanel.js';
-export { createEditorStore } from './store.js';
+export { createEditorStore, resolveInsertParentId } from './store.js';
 export type { EditorStore, EditorStoreApi, StudioMode, EditSubMode } from './store.js';
 export { StyleInspector } from './StyleInspector.js';
 export type { StyleInspectorProps } from './StyleInspector.js';

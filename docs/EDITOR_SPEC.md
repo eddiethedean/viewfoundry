@@ -82,7 +82,7 @@ Features:
 - duplicate
 - save/export hooks
 - **Edit / Live toggle** — primary mode switcher (single viewport; see below)
-- **edit sub-modes: Component Editor | Style Editor | Interactions** (Component active; Style in **v0.4.0**; Interactions in **v0.8.0**)
+- **edit sub-modes: Component Editor | Style Editor | Interactions** (Component and Style active; Interactions in **v0.8.0**)
 
 ## Edit mode and Live mode (single window)
 
@@ -161,7 +161,7 @@ Use when building layout and wiring component props.
 
 ### Style Editor mode
 
-Visual presentation editing for the selected node. Planned in **v0.4.0**.
+Visual presentation editing for the selected node. **Shipped in v0.4.0.**
 
 Features:
 

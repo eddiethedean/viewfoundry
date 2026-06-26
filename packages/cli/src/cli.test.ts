@@ -84,6 +84,18 @@ describe('runCli', () => {
     expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document:');
   });
 
+  it('fails validation for invalid node.style', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Hi' }, [], 'btn1', undefined, { opacity: 2 }),
+    ];
+    const inputPath = writeFixture('bad-style.json', doc);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = runCli(['validate', inputPath]);
+    expect(result.exitCode).toBe(1);
+    expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document:');
+  });
+
   it('errors on unknown command', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     const log = vi.spyOn(console, 'log').mockImplementation(() => {});

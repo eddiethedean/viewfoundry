@@ -247,6 +247,40 @@ describe('generateTsx', () => {
     expect(code).toContain('"color":"#336699"');
   });
 
+  it('warns on unresolved style tokens', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Token' }, [], 'b1', undefined, {
+        color: 'color.missing',
+      }),
+    ];
+    const { warnings } = generateTsx({ document: doc, imports });
+    expect(warnings.some((w) => w.includes('Unresolved style token'))).toBe(true);
+  });
+
+  it('does not duplicate grid placement keys on component style', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode(
+      'Button',
+      { children: 'Both' },
+      [],
+      'b1',
+      { grid: { column: 1, row: 1, colSpan: 2 } },
+      { margin: 4, gridColumn: '9' },
+    );
+    grid.children = [button];
+    doc.root.children = [grid];
+    const gridImports = {
+      Grid: { importPath: './components', exportName: 'Grid' },
+      Button: { importPath: './components', exportName: 'Button' },
+    };
+    const { code } = generateTsx({ document: doc, imports: gridImports });
+    expect(code).toContain("gridColumn: '1 / 3'");
+    expect(code).toContain('style={{"margin":4}}');
+    expect(code).not.toContain('"gridColumn":"9"');
+  });
+
   it('emits grid wrapper and node.style on component', () => {
     const doc = createDocument();
     const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');

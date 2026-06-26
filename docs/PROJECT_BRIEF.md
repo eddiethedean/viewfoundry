@@ -83,6 +83,7 @@ After the MVP, the editor gains explicit modes (see `docs/EDITOR_SPEC.md`):
 - **Routing** — multi-page sites (**v0.9.0**)
 - **Slots, bindings, repeat, forms, responsive** — **v0.10 – v0.15** (pre-1.0); see `docs/ROADMAP.md`
 - **Stable API** — **v1.0.0**; platform adapters and plugins — **v1.1+** ([POST_1_0.md](POST_1_0.md))
+- **Existing project import** — load components from an existing React codebase into the registry and palette — **v1.6.0**
 
 ## North star
 

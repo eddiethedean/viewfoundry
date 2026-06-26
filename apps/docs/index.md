@@ -29,4 +29,4 @@ studio
 
 ## Status
 
-ViewFoundry **v0.4.0** is early-access software. Package semver (`0.4.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for CLI scaffolding and interactions.
+ViewFoundry **v0.4.0** is early-access software. Package semver (`0.4.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for CLI scaffolding, interactions, and [loading existing React projects](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v160---existing-project-import) (planned v1.6.0).

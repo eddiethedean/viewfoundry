@@ -5,10 +5,10 @@
 Install all `@viewfoundry/*` packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0
+npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0
 ```
 
-Mixed versions (e.g. `core@0.2.0` with `editor@0.3.0`) cause peer dependency warnings and subtle runtime bugs.
+Mixed versions (e.g. `core@0.3.0` with `editor@0.4.0`) cause peer dependency warnings and subtle runtime bugs.
 
 ## Editor looks unstyled or selection overlays are missing
 

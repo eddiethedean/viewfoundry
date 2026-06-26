@@ -7,6 +7,7 @@ import {
   createRegistry,
   createSelection,
   selectNode,
+  type ViewNode,
 } from '@viewfoundry/core';
 import {
   ViewFoundryProvider,
@@ -15,6 +16,7 @@ import {
   useViewRegistry,
   useViewSelection,
 } from '../src/index.js';
+import { getChildPlacementStyle } from './grid-styles.js';
 
 function Button({
   children,
@@ -155,6 +157,62 @@ describe('ViewRenderer', () => {
     expect(placement).not.toBeNull();
     expect(placement).toHaveStyle({ gridColumn: '2', gridRow: '1' });
     expect(screen.getByRole('button')).toHaveTextContent('Grid child');
+  });
+
+  it('applies grid placement on edit shell when wrapEditNode is used', () => {
+    const registryWithGrid = createRegistry([
+      {
+        type: 'Grid',
+        component: ({
+          children,
+          style,
+        }: {
+          children?: React.ReactNode;
+          style?: React.CSSProperties;
+        }) => (
+          <div data-testid="grid" style={style}>
+            {children}
+          </div>
+        ),
+        acceptsChildren: true,
+      },
+      { type: 'Button', component: Button, acceptsChildren: true },
+    ]);
+
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode('Button', { children: 'Grid child' }, [], 'btn1', {
+      grid: { column: 2, row: 1 },
+    });
+    grid.children = [button];
+    doc.root.children = [grid];
+
+    const wrapEditNode = (node: ViewNode, element: React.ReactNode, parent: ViewNode | null) => (
+      <div
+        data-testid={`drag-${node.id}`}
+        className="vf-grid-placement"
+        style={getChildPlacementStyle(parent, node)}
+      >
+        {element}
+      </div>
+    );
+
+    const { container } = render(
+      <ViewFoundryProvider
+        document={doc}
+        registry={registryWithGrid}
+        mode="edit"
+        wrapEditNode={wrapEditNode}
+      >
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    const dragShell = container.querySelector('[data-testid="drag-btn1"]');
+    expect(dragShell).toHaveStyle({ gridColumn: '2', gridRow: '1' });
+    const innerWrapper = container.querySelector('.vf-node-wrapper[data-node-id="btn1"]');
+    expect(innerWrapper).not.toBeNull();
+    expect(innerWrapper).not.toHaveStyle({ gridColumn: '2' });
   });
 
   it('renders preview mode without editor wrappers', () => {

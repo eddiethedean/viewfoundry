@@ -79,16 +79,19 @@ function renderGridStyleAttr(node: ViewNode, parent: ViewNode | null): string {
 
 function buildMergedStyleObject(
   node: ViewNode,
+  warnings: string[],
   styleTokens?: Record<string, string | number>,
 ): Record<string, string | number> | null {
   const propsStyle =
     node.props?.style && typeof node.props.style === 'object' && !Array.isArray(node.props.style)
       ? (node.props.style as Record<string, string | number>)
       : {};
-  const nodeStyleEntries = Object.entries(node.style ?? {}).map(([key, value]) => [
-    key,
-    resolveStyleValue(value, styleTokens),
-  ]);
+  const nodeStyleEntries = Object.entries(node.style ?? {}).map(([key, value]) => {
+    if (typeof value === 'string' && value.includes('.') && styleTokens?.[value] === undefined) {
+      warnings.push(`Unresolved style token at ${node.type}.style.${key}: ${value}`);
+    }
+    return [key, resolveStyleValue(value, styleTokens)];
+  });
   const merged = { ...propsStyle, ...Object.fromEntries(nodeStyleEntries) };
   return Object.keys(merged).length > 0 ? merged : null;
 }
@@ -96,10 +99,17 @@ function buildMergedStyleObject(
 function renderStyleProp(
   node: ViewNode,
   warnings: string[],
+  parent: ViewNode | null,
   styleTokens?: Record<string, string | number>,
 ): string | null {
-  const merged = buildMergedStyleObject(node, styleTokens);
+  const merged = buildMergedStyleObject(node, warnings, styleTokens);
   if (!merged) return null;
+  if (parent && isGridContainer(parent.type) && node.layout?.grid) {
+    for (const key of Object.keys(placementToCss(node.layout.grid))) {
+      delete merged[key as keyof typeof merged];
+    }
+    if (Object.keys(merged).length === 0) return null;
+  }
   const formatted = formatPropValue(merged, warnings, `${node.type}.style`);
   if (formatted === null) return null;
   return `style=${formatted}`;
@@ -119,7 +129,7 @@ function renderProps(
   delete props.style;
 
   const parts: string[] = [];
-  const styleProp = renderStyleProp(node, warnings, styleTokens);
+  const styleProp = renderStyleProp(node, warnings, _parent, styleTokens);
   if (styleProp) parts.push(styleProp);
 
   for (const [key, value] of Object.entries(props)) {

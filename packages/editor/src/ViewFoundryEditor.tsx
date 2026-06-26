@@ -38,11 +38,15 @@ function KeyboardShortcuts() {
         e.preventDefault();
         store.getState().deleteSelected();
       }
-      if (mod && e.key === 'z' && !e.shiftKey) {
+      if (mod && e.key === 'z' && !e.shiftKey && !isKeyboardShortcutBlocked(e.target)) {
         e.preventDefault();
         store.getState().undo();
       }
-      if (mod && e.key === 'z' && e.shiftKey) {
+      if (
+        mod &&
+        ((e.key === 'z' && e.shiftKey) || e.key === 'y') &&
+        !isKeyboardShortcutBlocked(e.target)
+      ) {
         e.preventDefault();
         store.getState().redo();
       }

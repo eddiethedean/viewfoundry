@@ -36,6 +36,7 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 | [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters |
 | [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders           |
 | [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API            |
+| [v1.6.0](#v160---existing-project-import) | Planned     | Load existing React projects & components |
 | [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion |
 
 See [POST_1_0.md](POST_1_0.md) for post-1.0 detail.
@@ -78,6 +79,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - no multi-route / multi-page sites → **v0.9.0**
 - no named slots → **v0.10.0**
 - no data bindings or variables → **v0.11.0**
+- manual `defineComponent` registration for every component → **v1.6.0** (existing project import)
 
 ---
 
@@ -151,7 +153,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - style commands (`updateNodeStyle`, `setStyleProp`) with undo/redo
 - toolbar: **Edit** with **Component | Style** sub-modes + **Live** toggle
 - optional design-token presets registered by host apps
-- codegen emits styles (inline, class names, or mapped props — TBD)
+- codegen emits inline merged `style={{...}}` on components; grid placement uses wrapper divs; optional `styleTokens` resolve token references at export time
 
 ### Acceptance criteria
 
@@ -172,7 +174,8 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - `@viewfoundry/vite` — real dev-server integration (currently a no-op stub)
 - `examples/dashboard-builder`
 - `examples/landing-page` — single-page first; multi-route in **v0.9.0** (see [ROUTING.md](ROUTING.md))
-- integration guides in repo docs
+- integration guides in repo docs — including **manual** wiring for existing React apps today
+- **planned follow-up:** automated load/discovery of components from existing projects → **v1.6.0**
 
 `viewfoundry export` and `viewfoundry validate` shipped in **v0.2.0**.
 
@@ -481,6 +484,32 @@ Formal extension points for inspector, palette, interactions, codegen. See [POST
 
 ---
 
+## v1.6.0 — Existing project import
+
+**Status: planned** (post-1.0)
+
+**Priority: high for adoption.** Today every component must be registered manually with `defineComponent`. This release adds workflows to **load an existing React project** and populate the editor palette from components already in that codebase.
+
+### Deliverables
+
+- **`viewfoundry import`** (or equivalent CLI) — point at an existing Vite/React (or adapter-supported) repo
+- **component discovery** — configurable scan paths (globs) for exported React components
+- **registry bootstrap** — generate starter `ComponentDefinition` entries and codegen **import maps** from project structure
+- **optional TypeScript inference** — stub prop schemas from component types where available; developer review before publish
+- **gradual adoption** — opt-in subset of components; explicit registration remains the safe default
+- integration docs: manual wiring (**v0.5.0**) vs automated import (**v1.6.0**)
+
+### Acceptance criteria
+
+- developer connects an existing app and gets a working palette without hand-writing every `defineComponent`
+- generated import paths match the host project layout; TSX export resolves correctly
+- undiscovered or unreviewed components do not appear in the palette until confirmed
+- LessonKit and other adapters can reuse the same discovery hooks for their vocabularies
+
+See [COMPONENT_REGISTRY.md](COMPONENT_REGISTRY.md) and [UX_AND_DX.md](UX_AND_DX.md).
+
+---
+
 ## v1.5.0+ — Collaboration & advanced
 
 **Status: exploratory** (post-1.0)
@@ -495,4 +524,4 @@ Comments, real-time co-editing, i18n, a11y panel, motion — evaluate after 1.0 
 - **v0.X.0** — minor releases add capabilities; document model may gain optional fields (`layout`, `style`, `slots`, …) with backward-compatible defaults
 - **v0.10 – v0.15** — pre-1.0 composition, data, productivity, and polish milestones (see table above)
 - **v1.0.0** — stable public API and document contract; breaking changes require **v2.0.0**
-- **v1.1+** — platform adapters, loaders, plugins, and exploratory features ([POST_1_0.md](POST_1_0.md))
+- **v1.1+** — platform adapters, loaders, plugins, existing project import, and exploratory features ([POST_1_0.md](POST_1_0.md))

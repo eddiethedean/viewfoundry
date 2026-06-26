@@ -76,5 +76,6 @@ This site is built with Sphinx and MyST. The [embedded Studio](studio.md) is a s
 | v0.10–v0.15 | Planned      | Slots, bindings, repeat, clipboard, forms, responsive (pre-1.0)                                                                    |
 | v1.0.0      | Planned      | Stable public API                                                                                                                  |
 | v1.1+       | Planned      | Nested layouts, adapters, loaders, plugins ([POST_1_0.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/POST_1_0.md)) |
+| v1.6.0      | Planned      | Load existing React projects and components into the editor                                                                        |
 
 See the repository [`docs/ROADMAP.md`](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for full release notes.
