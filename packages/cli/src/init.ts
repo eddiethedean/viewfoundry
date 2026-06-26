@@ -18,7 +18,7 @@ function packageDir(): string {
   return join(process.cwd(), 'packages/cli');
 }
 
-function getCliVersion(): string {
+export function getCliVersion(): string {
   try {
     const pkgPath = join(packageDir(), 'package.json');
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { version: string };
@@ -63,7 +63,10 @@ function isDirectoryEmpty(dir: string): boolean {
 }
 
 function replaceTokens(content: string, projectName: string, version: string): string {
-  return content.replaceAll('{{PROJECT_NAME}}', projectName).replaceAll('{{VERSION}}', version);
+  return content
+    .replaceAll('{{PROJECT_NAME}}', projectName)
+    .replaceAll('{{VERSION}}', version)
+    .replaceAll('{{ VERSION }}', version);
 }
 
 function copyTemplateTree(
@@ -122,7 +125,7 @@ export function parseInitArgs(args: string[]): Omit<InitOptions, 'cwd'> {
       continue;
     }
     if (arg.startsWith('-')) {
-      continue;
+      throw new Error(`Unknown option: ${arg}`);
     }
     targetDir = arg;
   }
@@ -160,6 +163,12 @@ export function runInit(options: InitOptions): InitResult {
 
   const version = getCliVersion();
   copyTemplateTree(templateDir, resolvedTarget, projectName, version);
+
+  if (force && existsSync(resolvedTarget)) {
+    console.warn(
+      'Warning: --force overwrites existing files in the target directory when scaffolding.',
+    );
+  }
 
   return { ok: true };
 }

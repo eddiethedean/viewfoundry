@@ -43,6 +43,11 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: Sync CLI templates
+        run: |
+          pnpm sync:templates
+          git diff --exit-code packages/cli/templates
+
       - name: Install Sphinx
         run: pip install -r apps/docs/requirements.txt
 

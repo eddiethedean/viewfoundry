@@ -9,6 +9,7 @@ import {
   RESOLVED_DOCUMENT_ID,
   VIRTUAL_DOCUMENT_ID,
 } from './document-module.js';
+import { pathsEqual, resolvePathWithinRoot } from './paths.js';
 
 export type ViewFoundryCodegenOptions = {
   output: string;
@@ -26,7 +27,11 @@ export type ViewFoundryViteOptions = {
 export { VIRTUAL_DOCUMENT_ID } from './document-module.js';
 
 function loadJsonFile<T>(root: string, relativePath: string): T {
-  const raw = readFileSync(resolve(root, relativePath), 'utf-8');
+  const absolutePath = resolvePathWithinRoot(root, relativePath);
+  if (!absolutePath) {
+    throw new Error(`Path must stay within the project root: ${relativePath}`);
+  }
+  const raw = readFileSync(absolutePath, 'utf-8');
   return JSON.parse(raw) as T;
 }
 
@@ -35,12 +40,16 @@ function runCodegen(
   document: ViewDocument,
   options: ViewFoundryCodegenOptions,
 ): void {
+  const outputPath = resolvePathWithinRoot(root, options.output);
+  if (!outputPath) {
+    throw new Error(`Codegen output path must stay within the project root: ${options.output}`);
+  }
   const imports = options.imports ? loadJsonFile<ComponentImportMap>(root, options.imports) : {};
   const styleTokens = options.tokens
     ? loadJsonFile<Record<string, string | number>>(root, options.tokens)
     : undefined;
   const { code } = generateTsx({ document, imports, styleTokens });
-  writeFileSync(resolve(root, options.output), code);
+  writeFileSync(outputPath, code);
 }
 
 function invalidateDocumentModule(server: ViteDevServer): void {
@@ -51,17 +60,51 @@ function invalidateDocumentModule(server: ViteDevServer): void {
   server.ws.send({ type: 'custom', event: 'viewfoundry:document-update' });
 }
 
+function sendDocumentError(server: ViteDevServer, message: string): void {
+  server.ws.send({ type: 'custom', event: 'viewfoundry:document-error', data: { message } });
+}
+
 /** Vite plugin: load ViewDocument JSON via virtual:viewfoundry/document with HMR. */
 export function viewfoundry(options: ViewFoundryViteOptions = {}): Plugin {
   const documentPath = options.document ?? 'viewfoundry/document.json';
   let root = process.cwd();
+  let cachedDocument: ViewDocument | null = null;
 
-  const reloadDocument = (server: ViteDevServer) => {
-    invalidateDocumentModule(server);
+  const getWatchedAbsolutePaths = (): string[] => {
+    const paths: string[] = [];
+    const doc = resolvePathWithinRoot(root, documentPath);
+    if (doc) paths.push(doc);
+    if (options.codegen?.imports) {
+      const p = resolvePathWithinRoot(root, options.codegen.imports);
+      if (p) paths.push(p);
+    }
+    if (options.codegen?.tokens) {
+      const p = resolvePathWithinRoot(root, options.codegen.tokens);
+      if (p) paths.push(p);
+    }
+    return paths;
+  };
+
+  const isWatchedPath = (path: string): boolean => {
+    const normalized = resolve(path);
+    return getWatchedAbsolutePaths().some((w) => pathsEqual(normalized, w));
+  };
+
+  const reloadDocument = (server: ViteDevServer, invalidate = true) => {
+    const loaded = loadDocumentFromFile(root, documentPath);
+    if (!loaded.ok) {
+      sendDocumentError(server, loaded.message);
+      return;
+    }
+    cachedDocument = loaded.document;
+    if (invalidate) {
+      invalidateDocumentModule(server);
+    }
     if (options.codegen) {
-      const loaded = loadDocumentFromFile(root, documentPath);
-      if (loaded.ok) {
+      try {
         runCodegen(root, loaded.document, options.codegen);
+      } catch (error) {
+        sendDocumentError(server, error instanceof Error ? error.message : 'Codegen failed');
       }
     }
   };
@@ -81,23 +124,33 @@ export function viewfoundry(options: ViewFoundryViteOptions = {}): Plugin {
       if (id !== RESOLVED_DOCUMENT_ID) {
         return undefined;
       }
+      if (cachedDocument) {
+        return documentModuleSource(cachedDocument);
+      }
       const loaded = loadDocumentFromFile(root, documentPath);
       if (!loaded.ok) {
         throw new Error(loaded.message);
       }
+      cachedDocument = loaded.document;
       return documentModuleSource(loaded.document);
     },
     configureServer(server) {
-      const absolutePath = resolve(root, documentPath);
-      server.watcher.add(absolutePath);
-      server.watcher.on('change', (path) => {
-        if (path === absolutePath) {
-          reloadDocument(server);
-        }
-      });
-      server.watcher.on('add', (path) => {
-        if (path === absolutePath) {
-          reloadDocument(server);
+      for (const path of getWatchedAbsolutePaths()) {
+        server.watcher.add(path);
+      }
+      const onWatch = (path: string) => {
+        if (!isWatchedPath(path)) return;
+        const docPath = resolvePathWithinRoot(root, documentPath);
+        const normalized = resolve(path);
+        const invalidate = docPath ? pathsEqual(normalized, docPath) : true;
+        reloadDocument(server, invalidate);
+      };
+      server.watcher.on('change', onWatch);
+      server.watcher.on('add', onWatch);
+      server.watcher.on('unlink', (path) => {
+        const docPath = resolvePathWithinRoot(root, documentPath);
+        if (docPath && pathsEqual(resolve(path), docPath)) {
+          sendDocumentError(server, `ViewFoundry document removed: ${documentPath}`);
         }
       });
     },

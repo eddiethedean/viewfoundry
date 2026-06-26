@@ -172,4 +172,68 @@ describe('viewfoundry plugin', () => {
       await server.close();
     }
   });
+
+  it('keeps serving last valid document when save becomes invalid', async () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Text', { children: 'Good' }, [], 't1')];
+    const dir = mkdtempSync(join(tmpdir(), 'vf-vite-'));
+    dirs.push(dir);
+    mkdirSync(join(dir, 'viewfoundry'), { recursive: true });
+    const docPath = join(dir, 'viewfoundry/document.json');
+    writeFileSync(docPath, JSON.stringify(doc));
+
+    const { createServer } = await import('vite');
+    const server = await createServer({
+      root: dir,
+      plugins: [viewfoundry()],
+      logLevel: 'error',
+    });
+
+    try {
+      const goodLoad = await server.pluginContainer.load(RESOLVED_DOCUMENT_ID);
+      expect(goodLoad).toContain('Good');
+      writeFileSync(docPath, '{ invalid json');
+      server.watcher.emit('change', docPath);
+      await new Promise((r) => setTimeout(r, 50));
+      const stillGood = await server.pluginContainer.load(RESOLVED_DOCUMENT_ID);
+      expect(stillGood).toContain('Good');
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('rejects codegen output paths outside project root', async () => {
+    const doc = createDocument();
+    const dir = mkdtempSync(join(tmpdir(), 'vf-vite-'));
+    dirs.push(dir);
+    mkdirSync(join(dir, 'viewfoundry'), { recursive: true });
+    writeFileSync(join(dir, 'viewfoundry/document.json'), JSON.stringify(doc));
+
+    const { createServer } = await import('vite');
+    const server = await createServer({
+      root: dir,
+      plugins: [
+        viewfoundry({
+          codegen: { output: '../../../escape.tsx' },
+        }),
+      ],
+      logLevel: 'error',
+    });
+
+    try {
+      await server.pluginContainer.load(RESOLVED_DOCUMENT_ID);
+      server.watcher.emit('change', join(dir, 'viewfoundry/document.json'));
+      await new Promise((r) => setTimeout(r, 50));
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('escapes U+2028/U+2029 in document module source', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Text', { children: 'line\u2028sep' }, [], 't1')];
+    const source = documentModuleSource(doc);
+    expect(source).not.toContain('\u2028');
+    expect(source).toContain('\\u2028');
+  });
 });

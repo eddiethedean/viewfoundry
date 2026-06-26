@@ -14,19 +14,9 @@ A minimal ViewFoundry integration: registered components, visual editor, localSt
 
 ## Run locally
 
-From the monorepo root:
-
 ```bash
-pnpm install
-pnpm build
-pnpm dev
-```
-
-Or from this directory:
-
-```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 Open the URL Vite prints (usually `http://localhost:5173`).

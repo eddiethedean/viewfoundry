@@ -61,7 +61,7 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 | Canvas updates immediately; token picker shows friendly names (“Primary”, “Spacing md”)   | Codegen maps style to inline or CSS variables; document token registration API |
 | Authors never edit raw CSS unless “Advanced” expanded                                     | Style commands participate in undo like structure edits                        |
 
-### v0.5 — CLI & examples
+### v0.5 — CLI & examples **(shipped)**
 
 | Studio user                                                      | React developer                                                            |
 | ---------------------------------------------------------------- | -------------------------------------------------------------------------- |

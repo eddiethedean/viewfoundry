@@ -2,10 +2,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { generateTsx, type ComponentImportMap } from '@viewfoundry/codegen';
 import { validateDocument, type ViewDocument } from '@viewfoundry/core';
-import { parseInitArgs, printInitNextSteps, runInit } from './init.js';
+import { parseInitArgs, printInitNextSteps, runInit, getCliVersion } from './init.js';
 
 export function printHelp() {
-  console.log(`viewfoundry v0.5.0
+  console.log(`viewfoundry v${getCliVersion()}
 
 Usage:
   viewfoundry init [dir] [--template default|landing-page|dashboard-builder] [--force]
@@ -75,14 +75,20 @@ export function parseExportArgs(args: string[]): {
     }
     if (arg === '--imports') {
       importsPath = args[++i];
+      if (!importsPath) {
+        throw new Error('--imports requires a file path');
+      }
       continue;
     }
     if (arg === '--tokens') {
       tokensPath = args[++i];
+      if (!tokensPath) {
+        throw new Error('--tokens requires a file path');
+      }
       continue;
     }
     if (arg.startsWith('-')) {
-      continue;
+      throw new Error(`Unknown option: ${arg}`);
     }
     if (!inputPath) {
       inputPath = arg;
@@ -114,7 +120,19 @@ export function runCli(argv: string[]): RunCliResult {
 
   switch (command) {
     case 'export': {
-      const { inputPath, outputPath, importsPath, tokensPath, strict } = parseExportArgs(args);
+      let inputPath: string | undefined;
+      let outputPath: string;
+      let importsPath: string | undefined;
+      let tokensPath: string | undefined;
+      let strict: boolean;
+      try {
+        ({ inputPath, outputPath, importsPath, tokensPath, strict } = parseExportArgs(args));
+      } catch (error) {
+        console.error(
+          `Error: ${error instanceof Error ? error.message : 'Invalid export arguments'}`,
+        );
+        return { exitCode: 1 };
+      }
       if (!inputPath) {
         console.error('Error: input JSON path required');
         return { exitCode: 1 };

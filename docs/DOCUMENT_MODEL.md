@@ -12,7 +12,7 @@ The document model must be:
 - suitable for JSON storage
 - suitable for TSX code generation
 
-## Current model (v0.4.0)
+## Current model (v0.5.0)
 
 ```ts
 export type ViewDocument = {

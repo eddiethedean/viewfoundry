@@ -1,6 +1,6 @@
 # Package API Spec
 
-This document describes the public API surface for ViewFoundry packages at **v0.4.x**.
+This document describes the public API surface for ViewFoundry packages at **v0.5.x**.
 
 ## Versioning policy (0.x)
 

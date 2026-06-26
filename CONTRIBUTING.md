@@ -40,7 +40,7 @@ CI runs the full checks workflow including docs build. Run `pnpm ci` before open
 
 ```text
 packages/          @viewfoundry/* libraries
-examples/          Demo apps (basic-react)
+examples/          Demo apps (basic-react, landing-page, dashboard-builder)
 apps/docs/         Published Sphinx/MyST docs (Read the Docs)
 apps/docs-studio/  Vite bundle embedded in docs
 docs/              Planning specs (roadmap, editor spec — may lag code)

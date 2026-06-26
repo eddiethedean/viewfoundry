@@ -4,7 +4,7 @@ This folder contains **maintainer planning specs** — design intent, roadmap, a
 
 **For adopters:** use the [published docs](https://viewfoundry.readthedocs.io/en/latest/) in `apps/docs/` and the API contract in [`specs/PACKAGE_API_SPEC.md`](../specs/PACKAGE_API_SPEC.md).
 
-**Last reviewed for v0.4.0:** COMMANDS_AND_HISTORY, CODEGEN_SPEC, TESTING_STRATEGY (see individual files).
+**Last reviewed for v0.5.0:** COMMANDS_AND_HISTORY, CODEGEN_SPEC, TESTING_STRATEGY (see individual files).
 
 ## Shipped in v0.5.x (npm `0.5.0`)
 

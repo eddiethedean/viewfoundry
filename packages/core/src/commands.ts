@@ -74,10 +74,11 @@ function gridLimitFailure(parentType: string): CommandResult<never> {
 function clearGridLayout(node: ViewNode): ViewNode {
   if (!node.layout?.grid) return node;
   const { grid: _grid, ...restLayout } = node.layout;
-  return {
-    ...node,
-    ...(Object.keys(restLayout).length > 0 ? { layout: restLayout } : {}),
-  };
+  if (Object.keys(restLayout).length === 0) {
+    const { layout: _layout, ...rest } = node;
+    return rest;
+  }
+  return { ...node, layout: restLayout };
 }
 
 export function insertNode(document: ViewDocument, payload: InsertNodePayload): CommandResult {
@@ -97,9 +98,15 @@ export function insertNode(document: ViewDocument, payload: InsertNodePayload): 
     root = growGridRowsIfNeeded(root, payload.parentId, effective);
   }
   let node = payload.node;
-  if (payload.layout) {
-    node = applyLayoutToNode(node, payload.layout);
-  } else if (!isGridContainer(parent.type)) {
+  if (isGridContainer(parent.type)) {
+    if (payload.layout) {
+      node = applyLayoutToNode(node, payload.layout);
+    } else if (!node.layout?.grid) {
+      const tracks = resolveGridTracks(parent);
+      const placement = autoPlaceNextCell(parent.children ?? [], tracks);
+      node = applyLayoutToNode(node, placement);
+    }
+  } else {
     node = clearGridLayout(node);
   }
   const newRoot = insertNodeInTree(root, payload.parentId, node, payload.index);
@@ -113,12 +120,16 @@ export function deleteNode(document: ViewDocument, payload: DeleteNodePayload): 
   if (payload.nodeId === document.root.id) {
     return failure('Cannot delete root node');
   }
-  const node = findNode(document.root, payload.nodeId);
-  if (!node) {
+  const location = findNodeLocation(document.root, payload.nodeId);
+  if (!location) {
     return failure(`Node not found: ${payload.nodeId}`);
   }
   const newRoot = removeNodeFromTree(document.root, payload.nodeId);
-  return success({ ...document, root: newRoot });
+  const orderedRoot =
+    location?.parent && isGridContainer(location.parent.type)
+      ? reorderParentChildren(newRoot, location.parent.id)
+      : newRoot;
+  return success({ ...document, root: orderedRoot });
 }
 
 export function duplicateNode(
@@ -132,12 +143,15 @@ export function duplicateNode(
   if (!location.parent) {
     return failure('Cannot duplicate root node');
   }
-  const duplicate = cloneNode(location.node);
-  if (isGridContainer(location.parent.type)) {
-    const tracks = resolveGridTracks(location.parent);
-    const placement = autoPlaceNextCell(location.parent.children ?? [], tracks);
-    duplicate.layout = { grid: placement };
-  }
+  const duplicate = isGridContainer(location.parent.type)
+    ? (() => {
+        const node = cloneNode(location.node);
+        const tracks = resolveGridTracks(location.parent);
+        const placement = autoPlaceNextCell(location.parent.children ?? [], tracks);
+        node.layout = { grid: placement };
+        return node;
+      })()
+    : clearGridLayout(cloneNode(location.node));
   const root = growGridRowsIfNeeded(
     document.root,
     location.parent.id,
@@ -168,6 +182,11 @@ export function moveNode(document: ViewDocument, payload: MoveNodePayload): Comm
   if (isDescendant(document.root, payload.nodeId, payload.parentId)) {
     return failure('Cannot move node into its own descendant');
   }
+  const fromLocation = findNodeLocation(document.root, payload.nodeId);
+  let insertIndex = payload.index;
+  if (fromLocation?.parent?.id === payload.parentId && fromLocation.index < insertIndex) {
+    insertIndex -= 1;
+  }
   let newRoot = removeNodeFromTree(document.root, payload.nodeId);
   let nodeToInsert = node;
   if (payload.layout !== undefined) {
@@ -185,7 +204,7 @@ export function moveNode(document: ViewDocument, payload: MoveNodePayload): Comm
     }
     newRoot = growGridRowsIfNeeded(newRoot, payload.parentId, effective);
   }
-  newRoot = insertNodeInTree(newRoot, payload.parentId, nodeToInsert, payload.index);
+  newRoot = insertNodeInTree(newRoot, payload.parentId, nodeToInsert, insertIndex);
   if (!findNode(newRoot, payload.nodeId)) {
     return failure('Move failed: node was lost during insertion');
   }

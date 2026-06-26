@@ -1,12 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { createDocument, createNode } from '@viewfoundry/core';
 import { generateTsx, generateJson } from '../src/index.js';
+import { isValidIdentifier, isValidImportPath } from '../src/sanitize.js';
 
 const imports = {
   Button: { importPath: './components/Button', exportName: 'Button' },
   Card: { importPath: './components/Card', exportName: 'Card' },
   Icon: { importPath: './components/Icon', exportName: 'Icon', defaultImport: true },
 };
+
+describe('sanitize', () => {
+  it('rejects JavaScript reserved words as export names', () => {
+    expect(isValidIdentifier('delete')).toBe(false);
+    expect(isValidIdentifier('class')).toBe(false);
+    expect(isValidIdentifier('Button')).toBe(true);
+  });
+
+  it('rejects absolute import paths', () => {
+    expect(isValidImportPath('/etc/passwd')).toBe(false);
+    expect(isValidImportPath('./components/Button')).toBe(true);
+    expect(isValidImportPath('@scope/pkg')).toBe(true);
+  });
+});
 
 describe('generateTsx', () => {
   it('generates simple TSX', () => {

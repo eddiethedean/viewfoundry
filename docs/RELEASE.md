@@ -9,7 +9,13 @@ Maintainer runbook for ViewFoundry npm releases. Package versions are synced acr
 3. **API spec** — update [`specs/PACKAGE_API_SPEC.md`](../specs/PACKAGE_API_SPEC.md) for any public API changes.
 4. **Published docs** — update [`apps/docs/`](../apps/docs/) package pages, getting-started pins, and README version references.
 5. **Planning specs** — sync [`docs/COMMANDS_AND_HISTORY.md`](COMMANDS_AND_HISTORY.md), [`docs/CODEGEN_SPEC.md`](CODEGEN_SPEC.md), etc. if behavior changed.
-6. **Tests** — run full CI locally:
+6. **Sync CLI templates** — after example or template source changes:
+
+```bash
+pnpm sync:templates
+```
+
+7. **Tests** — run full CI locally:
 
 ```bash
 pnpm ci
@@ -17,7 +23,7 @@ pnpm ci
 
 Or step by step: `pnpm check`, `pnpm lint`, `pnpm format:check`, `pnpm docs:build`, `pnpm test:e2e`.
 
-7. **Version bump** — from repo root:
+8. **Version bump** — from repo root:
 
 ```bash
 VERSION=x.y.z node scripts/sync-versions.mjs

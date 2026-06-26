@@ -1,11 +1,12 @@
 import type { HistoryState, ViewDocument } from '@viewfoundry/core';
 
-/** Compare document tree content, ignoring `meta` and other top-level extras. */
+/** Compare document tree content, ignoring version and top-level meta. */
 export function documentTreeEqual(a: ViewDocument, b: ViewDocument): boolean {
-  return a.version === b.version && JSON.stringify(a.root) === JSON.stringify(b.root);
+  return JSON.stringify(a.root) === JSON.stringify(b.root);
 }
 
 /** True when the inbound prop matches the immediate prior snapshot but not the editor present (async parent lag). */
+// Intentionally checks only immediate prior history entry — see sync-utils.test.ts (0.4.1 revert behavior).
 export function isStaleInboundDocument(
   incoming: ViewDocument,
   present: ViewDocument,

@@ -17,7 +17,6 @@
 viewfoundry/
   package.json
   pnpm-workspace.yaml
-  turbo.json
   tsconfig.base.json
 
   packages/
@@ -31,6 +30,8 @@ viewfoundry/
 
   examples/
     basic-react/
+    landing-page/
+    dashboard-builder/
 
   apps/
     docs/           # Read the Docs site (prose + embedded studio UI)

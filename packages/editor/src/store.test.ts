@@ -282,4 +282,22 @@ describe('createEditorStore', () => {
     });
     expect(store.getState().studioMode).toBe('live');
   });
+
+  it('syncDocument rejects invalid external documents', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    const invalid = createDocument({ version: '99.0' as '0.1' });
+    store.getState().syncDocument(invalid);
+    expect(store.getState().lastError).toBeTruthy();
+    expect(store.getState().document.root.children?.[0]?.type).toBe('Grid');
+  });
+
+  it('nudgeNodeLayout sets lastError when out of bounds', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    const buttonId = store.getState().document.root.children?.[0].children?.[0]?.id;
+    if (!buttonId) throw new Error('button missing');
+    store.getState().nudgeNodeLayout(buttonId, { column: 99 });
+    expect(store.getState().lastError).toContain('out of bounds');
+  });
 });

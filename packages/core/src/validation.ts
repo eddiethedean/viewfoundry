@@ -13,6 +13,7 @@ import {
   normalizePlacement,
   rectsOverlap,
   resolveGridTracks,
+  MAX_GRID_CELLS,
 } from './grid.js';
 import { collectNodeIds, walkNodes } from './nodes.js';
 import { validateStyle } from './style.js';
@@ -40,9 +41,18 @@ function validateGridPlacementFields(
 }
 
 function validateGridChildren(parent: ViewNode, issues: ValidationIssue[]): void {
-  if (!isGridContainer(parent.type) || !parent.children) return;
+  if (!isGridContainer(parent.type)) return;
 
   const tracks = resolveGridTracks(parent);
+  if (tracks.columns > MAX_GRID_CELLS || tracks.rows > MAX_GRID_CELLS) {
+    issues.push({
+      path: `node:${parent.id}`,
+      message: `Grid container "${parent.type}" exceeds maximum of ${MAX_GRID_CELLS} tracks`,
+      code: 'GRID_TRACKS_EXCEED_MAX',
+    });
+  }
+
+  if (!parent.children) return;
   const placements: Array<{ id: string; rect: ReturnType<typeof normalizePlacement> }> = [];
 
   for (const child of parent.children) {

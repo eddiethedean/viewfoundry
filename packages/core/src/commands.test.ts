@@ -396,6 +396,66 @@ describe('commands', () => {
       expect(result.error).toContain('64');
     }
   });
+
+  it('auto-places nodes inserted into grid without layout', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    const button = createNode('Button', { children: 'A' }, [], 'btn1');
+    result = insertNode(result.document, { parentId: 'grid1', node: button });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const btn = findNode(result.document.root, 'btn1');
+      expect(btn?.layout?.grid).toBeTruthy();
+    }
+  });
+
+  it('clears grid layout when duplicating into non-grid parent', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    const button = createNode('Button', { children: 'A' }, [], 'btn1', {
+      grid: { column: 2, row: 1 },
+    });
+    result = insertNode(result.document, { parentId: 'grid1', node: button });
+    if (!result.ok) throw new Error(result.error);
+    const card = createNode('Card', {}, [], 'card1');
+    result = insertNode(result.document, { parentId: 'root', node: card });
+    if (!result.ok) throw new Error(result.error);
+    result = moveNode(result.document, {
+      nodeId: 'btn1',
+      parentId: 'card1',
+      index: 0,
+    });
+    if (!result.ok) throw new Error(result.error);
+    result = duplicateNode(result.document, { nodeId: 'btn1' });
+    expect(result.ok).toBe(true);
+    if (result.ok && result.data) {
+      const dup = findNode(result.document.root, result.data);
+      expect(dup?.layout?.grid).toBeUndefined();
+    }
+  });
+
+  it('adjusts moveNode index when moving within the same parent', () => {
+    const doc = createDocument();
+    const b1 = createNode('Button', { children: '1' }, [], 'b1');
+    const b2 = createNode('Button', { children: '2' }, [], 'b2');
+    const b3 = createNode('Button', { children: '3' }, [], 'b3');
+    let result = insertNode(doc, { parentId: 'root', node: b1 });
+    if (!result.ok) throw new Error(result.error);
+    result = insertNode(result.document, { parentId: 'root', node: b2 });
+    if (!result.ok) throw new Error(result.error);
+    result = insertNode(result.document, { parentId: 'root', node: b3 });
+    if (!result.ok) throw new Error(result.error);
+    result = moveNode(result.document, { nodeId: 'b1', parentId: 'root', index: 3 });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const ids = result.document.root.children?.map((c) => c.id);
+      expect(ids).toEqual(['b2', 'b3', 'b1']);
+    }
+  });
 });
 
 describe('history', () => {

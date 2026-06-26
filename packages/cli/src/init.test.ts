@@ -23,6 +23,10 @@ describe('parseInitArgs', () => {
   it('rejects unknown template', () => {
     expect(() => parseInitArgs(['--template', 'nope'])).toThrow(/Unknown template/);
   });
+
+  it('rejects unknown flags', () => {
+    expect(() => parseInitArgs(['--nope'])).toThrow(/Unknown option/);
+  });
 });
 
 describe('runInit', () => {
@@ -57,6 +61,9 @@ describe('runInit', () => {
       };
       expect(pkg.name).toBe('app');
       expect(pkg.dependencies['@viewfoundry/core']).toMatch(/^\^/);
+      const appSource = readFileSync(join(targetDir, 'src/App.tsx'), 'utf-8');
+      expect(appSource).toMatch(/ViewFoundry 0\.5\.0/);
+      expect(appSource).not.toContain('{{');
     });
   }
 

@@ -39,8 +39,17 @@ function transformPackageJson(raw) {
   return `${JSON.stringify(pkg, null, 2)}\n`;
 }
 
+function transformReadme(content) {
+  return content.replace(
+    /## Run locally\n\nFrom the monorepo root:\n\n```bash\npnpm install\npnpm build\npnpm dev\n```\n\nOr from this directory:\n\n```bash\npnpm install\npnpm dev\n```/,
+    '## Run locally\n\n```bash\nnpm install\nnpm run dev\n```',
+  );
+}
+
 function transformText(content) {
-  return content.replaceAll('ViewFoundry 0.5.0', 'ViewFoundry {{VERSION}}');
+  return content
+    .replaceAll('ViewFoundry 0.5.0', 'ViewFoundry {{VERSION}}')
+    .replaceAll('ViewFoundry {{ VERSION }}', 'ViewFoundry {{VERSION}}');
 }
 
 function copyTemplate(id, sourceRel) {
@@ -67,7 +76,10 @@ function copyTemplate(id, sourceRel) {
   for (const rel of textFiles) {
     const path = join(target, rel);
     try {
-      writeFileSync(path, transformText(readFileSync(path, 'utf-8')));
+      const raw = readFileSync(path, 'utf-8');
+      const transformed =
+        rel === 'README.md' ? transformReadme(transformText(raw)) : transformText(raw);
+      writeFileSync(path, transformed);
     } catch {
       // optional file
     }

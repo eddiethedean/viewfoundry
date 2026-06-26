@@ -46,8 +46,14 @@ export type ApplyCommandOptions = {
 };
 
 function validationFailure(issues: ValidationResult['issues']): CommandResult {
-  const first = issues[0];
-  return { ok: false, error: first?.message ?? 'Validation failed' };
+  if (issues.length === 0) {
+    return { ok: false, error: 'Validation failed' };
+  }
+  const message = issues
+    .slice(0, 3)
+    .map((issue) => issue.message)
+    .join('; ');
+  return { ok: false, error: message };
 }
 
 function canAcceptChild(

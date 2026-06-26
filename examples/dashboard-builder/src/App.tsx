@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createDocument, validateDocument } from '@viewfoundry/core';
 import type { ViewDocument } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '@viewfoundry/editor';
@@ -42,6 +42,8 @@ function loadPersistedDocument(fallback: ViewDocument): LoadResult {
 }
 
 export default function App() {
+  const seedRef = useRef(seedDocument);
+  seedRef.current = seedDocument;
   const initialLoad = loadPersistedDocument(seedDocument);
   const [document, setDocument] = useState<ViewDocument>(
     initialLoad.ok ? initialLoad.document : createDocument(),
@@ -59,6 +61,7 @@ export default function App() {
     if (!import.meta.hot) return;
 
     const applySeedDocument = (next: ViewDocument) => {
+      seedRef.current = next;
       setDocument(next);
       setLoadWarning(null);
       localStorage.removeItem(STORAGE_KEY);
@@ -93,7 +96,7 @@ export default function App() {
   const dismissLoadWarning = () => setLoadWarning(null);
 
   const resetDocument = () => {
-    setDocument(seedDocument);
+    setDocument(seedRef.current);
     setLoadWarning(null);
     localStorage.removeItem(STORAGE_KEY);
   };

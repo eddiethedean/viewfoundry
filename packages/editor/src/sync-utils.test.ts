@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { createDocument, createHistory, createNode, pushHistory } from '@viewfoundry/core';
-import { isStaleInboundDocument } from './sync-utils.js';
+import { documentTreeEqual, isStaleInboundDocument } from './sync-utils.js';
+
+describe('documentTreeEqual', () => {
+  it('ignores version-only changes', () => {
+    const a = createDocument({ version: '0.1' });
+    const b = createDocument({ version: '0.2' as '0.1' });
+    expect(documentTreeEqual(a, b)).toBe(true);
+  });
+});
 
 describe('isStaleInboundDocument', () => {
   it('detects parent lag when inbound matches history past', () => {

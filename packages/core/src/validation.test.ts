@@ -115,4 +115,15 @@ describe('validateDocument', () => {
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'INVALID_STYLE_VALUE')).toBe(true);
   });
+
+  it('rejects grid containers exceeding MAX_GRID_CELLS tracks', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Grid', { columns: 65, rows: 2 }, [], 'grid1')];
+    const registry = createRegistry([
+      { type: 'Grid', component: () => null, acceptsChildren: true },
+    ]);
+    const result = validateDocument(doc, registry);
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'GRID_TRACKS_EXCEED_MAX')).toBe(true);
+  });
 });

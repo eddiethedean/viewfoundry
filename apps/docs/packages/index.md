@@ -23,8 +23,7 @@ Install all packages you use at the **same version** (currently `0.5.0`).
 | `@viewfoundry/react`   | `ViewRenderer`, provider, hooks                         |
 | `@viewfoundry/editor`  | `ViewFoundryEditor` and editor panels                   |
 | `@viewfoundry/codegen` | `generateTsx`, `generateJson`                           |
-| `@viewfoundry/cli`     | `viewfoundry validate` / `export`                       |
-| `@viewfoundry/vite`    | Document HMR and validation overlay via Vite plugin     |
 | `@viewfoundry/cli`     | `init`, `validate`, and `export`                        |
+| `@viewfoundry/vite`    | Document HMR and validation overlay via Vite plugin     |
 
 See [PACKAGE_API_SPEC.md](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) for the full public API surface.

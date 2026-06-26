@@ -195,7 +195,7 @@ Document mutations (`insertNode`, etc.) apply to the **active route’s** docume
 | `@viewfoundry/react`   | `ViewFoundrySiteProvider`, `ViewRouter`, `useNavigate`, params hooks   |
 | `@viewfoundry/editor`  | Pages panel; active route state; site props on editor                  |
 | `@viewfoundry/codegen` | Site + per-route TSX export                                            |
-| `@viewfoundry/vite`    | Dev server history fallback for SPA routes (v0.5+ stub → real in v0.9) |
+| `@viewfoundry/vite`    | Document HMR (v0.5); dev server history fallback for SPA routes (v0.9) |
 | `@viewfoundry/cli`     | `viewfoundry validate site.json`; export multi-page project            |
 
 ## Phased delivery (v0.9.0)

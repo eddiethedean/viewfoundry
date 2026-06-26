@@ -61,8 +61,9 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - `@viewfoundry/react` — `ViewFoundryProvider`, `ViewRenderer`, hooks, missing-component fallback
 - `@viewfoundry/editor` — editor shell, Component Editor mode, palette, canvas, prop inspector, toolbar, layers panel, basic palette → canvas drag/drop, undo/redo
 - `@viewfoundry/codegen` — `generateTsx`, import maps, warnings
-- `@viewfoundry/cli` / `@viewfoundry/vite` — stubs
-- `examples/basic-react` — demo with Button, Card, Stack, Heading, Text; localStorage persistence; TSX export
+- `@viewfoundry/cli` — `init`, `validate`, and `export`
+- `@viewfoundry/vite` — document HMR via Vite plugin
+- `examples/basic-react`, `examples/landing-page`, and `examples/dashboard-builder`
 
 ### Acceptance criteria
 
@@ -171,7 +172,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 ### Deliverables
 
 - `viewfoundry init` — scaffold a working project
-- `@viewfoundry/vite` — real dev-server integration (currently a no-op stub)
+- `@viewfoundry/vite` — `virtual:viewfoundry/document` HMR, validation overlay, optional codegen watch
 - `examples/dashboard-builder`
 - `examples/landing-page` — single-page first; multi-route in **v0.9.0** (see [ROUTING.md](ROUTING.md))
 - integration guides in repo docs — including **manual** wiring for existing React apps today

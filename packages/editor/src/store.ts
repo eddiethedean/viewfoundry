@@ -21,6 +21,7 @@ import {
   selectNode,
   sortChildrenByGridOrder,
   undo,
+  validateDocument,
   type ApplyCommandOptions,
   type CommandResult,
   type ComponentRegistry,
@@ -218,6 +219,16 @@ export function createEditorStore(
         }
         return;
       }
+      const validation = validateDocument(document, state.registry, {
+        allowMissingComponents: false,
+      });
+      if (!validation.valid) {
+        const firstIssue = validation.issues[0];
+        set({
+          lastError: firstIssue?.message ?? 'Invalid document',
+        });
+        return;
+      }
       const { history } = state;
       set({
         document,
@@ -302,11 +313,21 @@ export function createEditorStore(
     },
 
     moveNodeToCell: (nodeId, parentId, layout) => {
-      if (nodeId === 'root') return;
+      if (nodeId === 'root') {
+        set({ lastError: 'Cannot move the root node' });
+        return;
+      }
       const { registry, document } = get();
       const location = findNodeLocation(document.root, nodeId);
       const parent = findNode(document.root, parentId);
-      if (!location || !parent || !isGridContainer(parent.type)) return;
+      if (!location) {
+        set({ lastError: `Node not found: ${nodeId}` });
+        return;
+      }
+      if (!parent || !isGridContainer(parent.type)) {
+        set({ lastError: 'Target parent is not a grid container' });
+        return;
+      }
 
       if (location.parent?.id === parentId) {
         handleCommandResult(
@@ -341,7 +362,10 @@ export function createEditorStore(
     nudgeNodeLayout: (nodeId, delta) => {
       const { registry, document } = get();
       const location = findNodeLocation(document.root, nodeId);
-      if (!location?.parent || !isGridContainer(location.parent.type)) return;
+      if (!location?.parent || !isGridContainer(location.parent.type)) {
+        set({ lastError: 'Selected node is not in a grid container' });
+        return;
+      }
 
       const current = normalizePlacement(location.node.layout?.grid);
       const next = {
@@ -351,7 +375,10 @@ export function createEditorStore(
         rowSpan: current.rowSpan,
       };
       const tracks = resolveGridTracks(location.parent);
-      if (!isPlacementInBounds(next, tracks)) return;
+      if (!isPlacementInBounds(next, tracks)) {
+        set({ lastError: 'Grid placement is out of bounds' });
+        return;
+      }
 
       handleCommandResult(
         set,

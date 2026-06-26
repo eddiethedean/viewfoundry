@@ -82,9 +82,9 @@ File: `packages/cli/src/cli.test.ts`
 
 ## Future coverage (deferred)
 
-- `@viewfoundry/vite` plugin tests (v0.5.0) — [x]
-- `viewfoundry init` scaffold tests (v0.5.0) — [x]
 - Visual regression / layout tests
+
+Vite plugin, init scaffold, and CLI e2e coverage shipped in v0.5.0 hardening (`packages/vite/src/plugin.test.ts`, `packages/cli/src/init.test.ts`, `e2e/cli.spec.ts`).
 
 Grid layout and canvas drag-and-drop are covered by unit tests in `@viewfoundry/core` / `@viewfoundry/editor` and e2e specs (`grid-layout.spec.ts`).
 
@@ -95,6 +95,7 @@ Browser tests for `examples/basic-react` live in `e2e/`.
 | File                       | Focus                                                                               |
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | `basic-react.spec.ts`      | Chrome on load, palette insert, Edit/Live, TSX export                               |
+| `cli.spec.ts`              | CLI export with imports map; init scaffold smoke                                    |
 | `editor-workflows.spec.ts` | Layers selection, inspector edits, delete/duplicate, undo when history is available |
 | `grid-layout.spec.ts`      | Grid containers, palette insert into grid, layer labels                             |
 
