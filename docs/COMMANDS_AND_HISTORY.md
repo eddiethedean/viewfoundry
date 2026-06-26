@@ -39,6 +39,8 @@ Prefer `applyCommand(document, command, registry)` for editor integrations. It d
 | `setNodeLayout`   | Update `layout.grid` on a node                                     |
 | `updateNodeProps` | Replace props object on a node                                     |
 | `setNodeProp`     | Set a single prop key on a node                                    |
+| `setStyleProp`    | Set or remove one key on `node.style` (**v0.4.0**)                 |
+| `updateNodeStyle` | Merge partial style object on a node (**v0.4.0**)                  |
 
 Selection helpers (`selectNode`, `clearSelection`) are handled in the editor store rather than document commands in the current implementation.
 
@@ -87,7 +89,24 @@ type SetNodeLayoutPayload = {
 };
 ```
 
-Undo/redo restores grid placement together with tree structure.
+Undo/redo restores grid placement and style together with tree structure.
+
+## Style payloads (v0.4.0)
+
+```ts
+type SetStylePropPayload = {
+  nodeId: string;
+  key: string;
+  value: StyleValue | null; // null removes the key
+};
+
+type UpdateNodeStylePayload = {
+  nodeId: string;
+  style: Partial<StyleTokenMap>;
+};
+```
+
+Style commands validate keys via `@viewfoundry/schema` (`validateStyleProp`). Use `applyCommand(document, { type: 'setStyleProp', payload }, registry)` for registry-aware dispatch.
 
 ## Future commands (planned)
 

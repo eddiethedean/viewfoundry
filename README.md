@@ -13,6 +13,8 @@ Register your real components. ViewFoundry gives you a no-code editor, canvas, p
 
 ## Try it
 
+**Prerequisites:** Node.js 20+, React 18 or 19, a bundler (Vite recommended). Install all `@viewfoundry/*` packages at the same version.
+
 No clone required:
 
 1. **[Open the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html)** in your browser — Edit/Live toggle, grid layout, JSON and TSX export.
@@ -22,7 +24,7 @@ No clone required:
 npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
 ```
 
-3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a copy-pasteable embed example.
+3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a paste-in embed example, or [Integrate into an existing app](https://viewfoundry.readthedocs.io/en/latest/integrate-existing-app.html) for folder layout and Vite setup.
 
 ## Develop the monorepo
 

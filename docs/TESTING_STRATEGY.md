@@ -13,6 +13,7 @@
 - [x] document creation
 - [x] node traversal and tree helpers
 - [x] insert / delete / duplicate / move / update props
+- [x] setStyleProp / updateNodeStyle (v0.4.0)
 - [x] command failure paths and immutability
 - [x] selection helpers
 - [x] undo / redo integrated with commands
@@ -53,7 +54,8 @@ File: `packages/react/src/react.test.tsx`
 - [x] delete and duplicate toolbar actions
 - [x] keyboard undo shortcut
 - [x] `onStudioModeChange` callback
-- [x] editor store unit tests (insert, delete, undo, studio mode)
+- [x] editor store unit tests (insert, delete, undo, studio mode, syncDocument)
+- [x] Style sub-mode and style prop mutations (v0.4.0)
 
 Files: `packages/editor/src/editor.test.tsx`, `packages/editor/src/store.test.ts`
 
@@ -80,9 +82,10 @@ File: `packages/cli/src/cli.test.ts`
 
 ## Future coverage (deferred)
 
-- Canvas drag-and-drop insert (v0.3.0 grid)
 - `@viewfoundry/vite` plugin tests (v0.5.0)
 - Visual regression / layout tests
+
+Grid layout and canvas drag-and-drop are covered by unit tests in `@viewfoundry/core` / `@viewfoundry/editor` and e2e specs (`grid-layout.spec.ts`).
 
 ## E2E tests (Playwright)
 
@@ -104,7 +107,7 @@ pnpm test:e2e
 
 Playwright starts `vite preview` for `basic-react` automatically.
 
-**Note:** Controlled `document` + `onChange` embeds reset undo history — e2e avoids asserting undo in that pattern. See [UX_AND_DX.md](UX_AND_DX.md) and [apps/docs/troubleshooting.md](../apps/docs/troubleshooting.md).
+Controlled `document` + `onChange` embeds preserve undo via `syncDocument` when updates flow through `onChange`. E2e avoids asserting undo in patterns that replace the document outside `onChange`. See [apps/docs/troubleshooting.md](../apps/docs/troubleshooting.md) and [apps/docs/faq.md](../apps/docs/faq.md).
 
 ## UX acceptance testing
 

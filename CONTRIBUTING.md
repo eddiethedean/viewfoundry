@@ -29,11 +29,12 @@ pnpm build
 | `pnpm format`       | Prettier write                                                                        |
 | `pnpm format:check` | Prettier check (CI)                                                                   |
 | `pnpm check`        | `build` + `test` + `typecheck`                                                        |
+| `pnpm ci`           | Full CI gate locally (`check` + lint + format + docs + e2e)                           |
 | `pnpm dev`          | Run `examples/basic-react`                                                            |
 | `pnpm docs:build`   | Build Sphinx docs + embedded studio                                                   |
 | `pnpm docs:preview` | Serve built docs on port 8080                                                         |
 
-CI runs the full checks workflow including docs build. Run `pnpm check`, `pnpm lint`, `pnpm format:check`, and `pnpm docs:build` before opening a PR when your change touches docs or packages.
+CI runs the full checks workflow including docs build. Run `pnpm ci` before opening a PR, or run `pnpm check`, `pnpm lint`, `pnpm format:check`, `pnpm docs:build`, and `pnpm test:e2e` when your change touches docs or packages.
 
 ## Project layout
 
@@ -75,7 +76,7 @@ The PR checklist at the bottom of `UX_AND_DX.md` is the release bar for mileston
 
 ## Releases
 
-Maintainers trigger releases via the GitHub Actions release workflow and version tags. Package versions are synced with `node scripts/sync-versions.mjs` (requires `VERSION=x.y.z`). Do not bump versions in drive-by PRs unless coordinated with maintainers.
+Maintainers trigger releases via the GitHub Actions release workflow and version tags. See [docs/RELEASE.md](docs/RELEASE.md) for the full checklist. Package versions are synced with `node scripts/sync-versions.mjs` (requires `VERSION=x.y.z`). Do not bump versions in drive-by PRs unless coordinated with maintainers.
 
 ## Questions
 

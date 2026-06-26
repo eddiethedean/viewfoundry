@@ -6,7 +6,7 @@ ViewFoundry **v0.3.0** adds CSS Grid–based layout with canvas drag-and-drop. T
 
 - A **grid container** (`Grid` or `Row` in the demo) defines columns, rows, and gap via component props.
 - **Child nodes** declare placement with `layout.grid` on `ViewNode` — column, row, `colSpan`, and `rowSpan`.
-- Placement is stored separately from `props` and `style` so structure edits and layout edits stay distinct.
+- Placement is stored separately from `props` and `style` so structure edits and layout edits stay distinct. Style tokens on `node.style` are documented in [Migration 0.3 → 0.4](migration-0.3-0.4.md).
 
 ```ts
 type GridPlacement = {
@@ -26,6 +26,7 @@ type ViewNode = {
   props?: Record<string, unknown>;
   children?: ViewNode[];
   layout?: NodeLayout;
+  style?: StyleTokenMap;
 };
 ```
 

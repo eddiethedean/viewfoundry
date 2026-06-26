@@ -5,7 +5,7 @@
 Install all `@viewfoundry/*` packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0
+npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
 ```
 
 Mixed versions (e.g. `core@0.3.0` with `editor@0.4.0`) cause peer dependency warnings and subtle runtime bugs.
@@ -78,15 +78,38 @@ Check the [RTD build log](https://readthedocs.org/projects/viewfoundry/builds/).
 
 ## Undo and redo with controlled document
 
-When `ViewFoundryEditor` receives `document` and `onChange` from your React state, every `onChange` callback updates parent state, which re-renders the editor with a new `document` prop. The editor treats that as a fresh document and **resets undo/redo**.
+When you pass `document` and `onChange` to `ViewFoundryEditor`, the editor uses `syncDocument` to merge external updates without resetting the undo stack.
+
+- **Undo history is preserved** when your app re-renders with an updated document from `onChange`.
+- **The redo stack is cleared** when you push an external document that did not originate from the editor (for example loading from a server or resetting the page).
+
+Toolbar Undo/Redo works in `examples/basic-react` with standard controlled props (`useState` + `onChange`).
+
+If you replace the document on every parent render without going through `onChange`, history may reset depending on your integration.
 
 **Options:**
 
-1. **Uncontrolled** — omit `document` / `onChange` and let the editor manage state; subscribe via `onChange` only when you need to persist.
-2. **App-owned history** — store document snapshots in your state and wire your own Undo/Redo UI.
-3. **Hybrid** — persist on save/blur rather than on every command if you need controlled mode without constant resets.
+1. **Controlled (recommended)** — `useState` + `onChange`; persist to storage on change.
+2. **Uncontrolled** — omit `document`; use `onChange` only to persist snapshots.
+3. **App-owned history** — store snapshots yourself and restore on Undo in your UI.
 
-Undo/redo toolbar buttons work out of the box in `examples/basic-react` because the demo uses a pattern that does not reset history on every edit.
+See also [FAQ — controlled document undo](faq.md#why-does-undo-not-work-in-my-app).
+
+## Style edits do not appear on the canvas
+
+`ViewFoundryEditor` merges `node.style` into each component's `style` prop at render time. Your React components must **accept and forward `style`** to a DOM element:
+
+```tsx
+function Button({ children, style }: { children?: ReactNode; style?: CSSProperties }) {
+  return (
+    <button type="button" style={style}>
+      {children}
+    </button>
+  );
+}
+```
+
+See [Migration from 0.3 → 0.4](migration-0.3-0.4.md) and [Component registration](component-registration.md).
 
 ## Canvas click does not select the right component
 

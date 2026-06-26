@@ -31,15 +31,13 @@ viewfoundry/
 
   examples/
     basic-react/
-    landing-page/
-    dashboard-builder/
-    lessonkit-adapter/
 
   apps/
     docs/           # Read the Docs site (prose + embedded studio UI)
-    playground/     # optional standalone studio app; may share code with docs embed
+    docs-studio/    # Vite bundle embedded in docs
 
-  docs/             # planning and design specs (source for apps/docs content)
+  docs/             # Planning and design specs (not published to RTD — see docs/README.md)
+  specs/            # Public API contract (PACKAGE_API_SPEC.md)
 ```
 
 ### `apps/docs` (Read the Docs)
@@ -53,7 +51,7 @@ Owns:
 - **embedded Studio UI** — a static build of `ViewFoundryEditor` shipped inside the docs site so readers can try ViewFoundry in the browser
 - docs build pipeline that compiles the studio bundle before the RTD HTML build
 
-The studio embed should reuse the same component definitions as `examples/basic-react` (or `apps/playground`) so the docs demo stays in sync with the SDK.
+The studio embed should reuse the same component definitions as `examples/basic-react` (via `apps/docs-studio`) so the docs demo stays in sync with the SDK.
 
 Build flow:
 

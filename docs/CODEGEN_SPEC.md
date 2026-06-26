@@ -10,6 +10,8 @@ Codegen should make ViewFoundry developer credible. It should produce readable T
 export type CodegenInput = {
   document: ViewDocument;
   imports: ComponentImportMap;
+  componentName?: string;
+  styleTokens?: Record<string, string | number>;
 };
 
 export type ComponentImportMap = Record<
@@ -21,6 +23,8 @@ export type ComponentImportMap = Record<
   }
 >;
 ```
+
+`styleTokens` resolves token references in `node.style` at export time (same map as `ViewFoundryEditor` / `ViewFoundryProvider`).
 
 ## Output
 
@@ -48,6 +52,9 @@ Input document:
         "props": {
           "variant": "primary",
           "children": "Click me"
+        },
+        "style": {
+          "margin": 8
         }
       }
     ]
@@ -55,7 +62,7 @@ Input document:
 }
 ```
 
-Generated TSX:
+Generated TSX (simplified):
 
 ```tsx
 import { Button } from './components/Button';
@@ -63,7 +70,9 @@ import { Button } from './components/Button';
 export function GeneratedView() {
   return (
     <>
-      <Button variant="primary">Click me</Button>
+      <Button variant="primary" style={{ margin: 8 }}>
+        Click me
+      </Button>
     </>
   );
 }
@@ -72,6 +81,12 @@ export function GeneratedView() {
 ## Children prop handling
 
 If `props.children` is a string and the node has no child nodes, render it as JSX children instead of a literal prop when safe.
+
+## Style output (v0.4.0)
+
+- Merged `style={{...}}` from `node.style` and `props.style` when present.
+- Token references resolved when `styleTokens` is provided.
+- Grid placement may wrap nodes in a layout `div` (see grid codegen in implementation).
 
 ## Safety rules
 

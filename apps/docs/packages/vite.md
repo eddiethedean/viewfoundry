@@ -9,12 +9,14 @@ The plugin is a **no-op placeholder** until v0.5.0. It exports a valid Vite plug
 ```ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import viewfoundry from '@viewfoundry/vite';
+import { viewfoundry } from '@viewfoundry/vite';
 
 export default defineConfig({
   plugins: [react(), viewfoundry()],
 });
 ```
+
+Use the **named export** `{ viewfoundry }`, not a default import.
 
 ## Planned (v0.5.0)
 
@@ -22,6 +24,6 @@ export default defineConfig({
 - Optional codegen watch mode
 - Scaffold helpers alongside `viewfoundry init`
 
-For now, use Vite normally and import `@viewfoundry/*` packages directly. See [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react).
+For now, use Vite normally and import `@viewfoundry/*` packages directly. See [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react) and [Integrate into an existing app](../integrate-existing-app.md).
 
-Peer dependency: `@viewfoundry/core@^0.4.0`.
+Peer dependencies: `vite@^5.0.0 || ^6.0.0`.

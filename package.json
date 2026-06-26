@@ -12,6 +12,7 @@
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "pnpm -r typecheck",
     "check": "pnpm build && pnpm test && pnpm typecheck",
+    "ci": "pnpm check && pnpm lint && pnpm format:check && pnpm docs:build && pnpm test:e2e",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

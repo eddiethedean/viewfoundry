@@ -45,6 +45,7 @@ type ViewNode = {
   props?: Record<string, unknown>;
   children?: ViewNode[];
   layout?: { grid?: GridPlacement };
+  style?: StyleTokenMap;
 };
 ```
 
