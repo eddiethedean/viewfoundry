@@ -82,5 +82,6 @@ Examples:
 - array
 - object
 - componentRef
-- action
-- dataBinding
+- routeRef — picker for a site route id (planned **v0.9.0**; see `docs/ROUTING.md`)
+- action — prop-level handler reference (distinct from document `interactions`; see `docs/INTERACTIONS.md`)
+- dataBinding — continuous prop sync (planned post-v0.8; triggers are episodic in v0.8.0)

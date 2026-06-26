@@ -11,7 +11,7 @@ React runtime for ViewFoundry documents.
 
 ## Example
 
-```tsx
+```jsx
 import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import '@viewfoundry/react/styles.css';
 

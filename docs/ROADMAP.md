@@ -4,15 +4,45 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 
 ## Release overview
 
-| Version                                 | Status       | Theme                                        |
-| --------------------------------------- | ------------ | -------------------------------------------- |
-| [v0.1.0](#v010---sdk-foundation)        | **Released** | Core SDK, basic editor, codegen, example app |
-| [v0.2.0](#v020---edit--live-studio)     | **Released** | Single-window Edit / Live toggle             |
-| [v0.3.0](#v030---grid-layout--dragdrop) | **Released** | Grid system and satisfying layout drag/drop  |
-| [v0.4.0](#v040---style-editor)          | Planned      | Style Editor sub-mode and `node.style`       |
-| [v0.5.0](#v050---cli--examples)         | Planned      | `init`, Vite plugin, additional examples     |
-| [v0.6.0](#v060---documentation-site)    | **Released** | Read the Docs site with embedded studio      |
-| [v0.7.0](#v070---lessonkit-integration) | Planned      | LessonKit adapter and flagship integration   |
+| Version                                  | Status       | Theme                                          |
+| ---------------------------------------- | ------------ | ---------------------------------------------- |
+| [v0.1.0](#v010---sdk-foundation)         | **Released** | Core SDK, basic editor, codegen, example app   |
+| [v0.2.0](#v020---edit--live-studio)      | **Released** | Single-window Edit / Live toggle               |
+| [v0.3.0](#v030---grid-layout--dragdrop)  | **Released** | Grid system and satisfying layout drag/drop    |
+| [v0.4.0](#v040---style-editor)           | Planned      | Style Editor sub-mode and `node.style`         |
+| [v0.5.0](#v050---cli--examples)          | Planned      | `init`, Vite plugin, additional examples       |
+| [v0.6.0](#v060---documentation-site)     | **Released** | Read the Docs site with embedded studio        |
+| [v0.7.0](#v070---lessonkit-integration)  | Planned      | LessonKit adapter and flagship integration     |
+| [v0.8.0](#v080---interactions--triggers) | Planned      | Component interactions, triggers, and actions  |
+| [v0.9.0](#v090---routing--multi-page)    | Planned      | Multi-route sites, Pages panel, URL navigation |
+
+### Pre-1.0 (v0.10 – v0.15)
+
+| Version                                            | Status  | Theme                                           |
+| -------------------------------------------------- | ------- | ----------------------------------------------- |
+| [v0.10.0](#v0100---slots--composition)             | Planned | Named slots & compound components               |
+| [v0.11.0](#v0110---bindings-variables--conditions) | Planned | Data bindings, variables, visibility conditions |
+| [v0.12.0](#v0120---repeat--lists)                  | Planned | List/repeat templates                           |
+| [v0.13.0](#v0130---clipboard--saved-blocks)        | Planned | Copy/paste subtrees & saved block library       |
+| [v0.14.0](#v0140---forms)                          | Planned | Form patterns, validation, submit flows         |
+| [v0.15.0](#v0150---responsive--design-tokens)      | Planned | Breakpoint overrides & theme tokens             |
+| [v1.0.0](#v100---stable-api)                       | Planned | Stable public API & document contract           |
+
+### Post-1.0
+
+| Version                                   | Status      | Theme                             |
+| ----------------------------------------- | ----------- | --------------------------------- |
+| [v1.1.0](#v110---nested-routes--layouts)  | Planned     | Nested routes & shared layouts    |
+| [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters |
+| [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders           |
+| [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API            |
+| [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion |
+
+See [POST_1_0.md](POST_1_0.md) for post-1.0 detail.
+
+## UX & DX standards
+
+Every milestone must meet the **studio user** and **React developer** bars in [UX_AND_DX.md](UX_AND_DX.md). Acceptance criteria in each section below are additive — they do not replace those global requirements.
 
 ---
 
@@ -44,6 +74,10 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 
 - palette insert only; no grid layout drag/drop yet → **v0.3.0**
 - no Style Editor sub-mode → **v0.4.0**
+- no declarative interactions between components → **v0.8.0**
+- no multi-route / multi-page sites → **v0.9.0**
+- no named slots → **v0.10.0**
+- no data bindings or variables → **v0.11.0**
 
 ---
 
@@ -135,7 +169,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - `viewfoundry init` — scaffold a working project
 - `@viewfoundry/vite` — real dev-server integration (currently a no-op stub)
 - `examples/dashboard-builder`
-- `examples/landing-page`
+- `examples/landing-page` — single-page first; multi-route in **v0.9.0** (see [ROUTING.md](ROUTING.md))
 - integration guides in repo docs
 
 `viewfoundry export` and `viewfoundry validate` shipped in **v0.2.0**.
@@ -186,8 +220,277 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 
 ---
 
+## v0.8.0 — Interactions & triggers
+
+**Status: planned**
+
+**Priority: high.** Declarative wiring between components — triggers (events) and actions (effects) — without functions in document JSON.
+
+See [INTERACTIONS.md](INTERACTIONS.md) for the full model.
+
+### Deliverables
+
+- **`interactions` on `ViewDocument`** — trigger → action lists with stable node id references
+- **registry metadata** — `events` and `actions` on `ComponentDefinition`; built-in `click`, `change`, `setProp`, `toggleVisibility`, …
+- **core commands** — `addInteraction`, `updateInteraction`, `removeInteraction` with validation and undo/redo
+- **runtime interpreter** in `@viewfoundry/react` — execute interactions in Live mode
+- **Interactions editor sub-mode** — list, create, and edit wiring in the studio (toolbar: Component | Style | Interactions)
+- **codegen** — emit runtime helper or handler module; warnings for unsupported actions
+- **example** — button click updates another component’s prop in `examples/basic-react`
+
+### Acceptance criteria
+
+- user can define “when Button A is clicked, set Heading B text” entirely in the editor
+- interaction JSON round-trips through save/load and runs in Live mode
+- invalid targets or unknown events surface validation errors in the editor
+- interaction edits undo/redo without corrupting structure or layout
+- codegen produces runnable output or explicit warnings
+
+### Known gaps (addressed in later releases)
+
+- visual canvas wiring overlay → later within v0.8.x
+- continuous data **bindings** → **v0.11.0**
+- document/site **variables** and **conditions** → **v0.11.0**
+- full **routing** and URL `navigate` → **v0.9.0**
+
+---
+
+## v0.9.0 — Routing & multi-page
+
+**Status: planned**
+
+**Priority: high.** Multiple routes per app — each with its own `ViewDocument` — plus editor Pages panel and runtime navigation.
+
+See [ROUTING.md](ROUTING.md) for the full model.
+
+### Deliverables
+
+- **`ViewSite` / `ViewRoute`** — site container with path, label, and document per route
+- **Pages panel** in `@viewfoundry/editor` — add, switch, duplicate, delete routes
+- **`ViewFoundrySiteProvider` + `ViewRouter`** in `@viewfoundry/react` — match path, render active page
+- **`navigate` integration** — v0.8 interaction action drives site navigation; optional `NavLink` + `routeRef` field
+- **site commands** — `addRoute`, `updateRoute`, `removeRoute`, `duplicateRoute`
+- **codegen** — React Router (or adapter) route table + per-page components
+- **`@viewfoundry/vite`** — SPA fallback for dev preview of client routes
+- **example** — multi-page `examples/landing-page` (extends v0.5.0 scaffold)
+
+### Acceptance criteria
+
+- user can author Home and About as separate pages and switch between them in the editor
+- Live mode navigates between routes via interaction or link component
+- path patterns with params validate and resolve at runtime
+- single-document apps (no site config) continue to work unchanged
+- site + pages export to a runnable multi-route React app
+
+### Known gaps (addressed in later releases)
+
+- nested layouts / shared parent routes → **v1.1.0**
+- Next.js / file-based router adapters → **v1.2.0**
+- route-level data loaders → **v1.3.0**
+
+---
+
+## v0.10.0 — Slots & composition
+
+**Status: planned**
+
+**Priority: high.** Named slots for real React compound components.
+
+See [SLOTS.md](SLOTS.md).
+
+### Deliverables
+
+- `slots` on `ViewNode`; slot metadata on `ComponentDefinition`
+- slot-aware insert/reparent commands and validation
+- canvas drop targets and layers grouping per slot
+- codegen for slot props / subcomponents
+
+### Acceptance criteria
+
+- user can place content into Card `header` and `footer` slots independently
+- invalid slot or child type is rejected with clear errors
+- exported TSX matches the host component’s slot API
+
+---
+
+## v0.11.0 — Bindings, variables & conditions
+
+**Status: planned**
+
+**Priority: high.** Continuous data flow and declarative visibility.
+
+See [DATA_BINDING.md](DATA_BINDING.md).
+
+### Deliverables
+
+- **bindings** — prop ← variable, route param, node prop, literal
+- **variables** on document/site for shared state
+- **conditions** on nodes for show/hide
+- runtime resolver in `@viewfoundry/react`; binding/variable commands
+- inspector UI: bind prop, edit variables, simple condition builder
+
+### Acceptance criteria
+
+- input bound to variable updates heading in Live mode
+- node hidden when condition is false; visible when true
+- route param binding works on parameterized paths (with v0.9)
+
+---
+
+## v0.12.0 — Repeat & lists
+
+**Status: planned**
+
+**Priority: high.** Template subtrees rendered per list item.
+
+See [REPEAT.md](REPEAT.md).
+
+### Deliverables
+
+- `repeat` on `ViewNode` with static items array (MVP)
+- optional bind `repeat.source` to variable (with v0.11)
+- runtime list rendering; codegen `.map()` emission
+- editor: items editor + repeat preview
+
+### Acceptance criteria
+
+- user builds a 3-item nav from one template row
+- list round-trips JSON and renders in Live mode
+
+---
+
+## v0.13.0 — Clipboard & saved blocks
+
+**Status: planned**
+
+**Priority: medium.** Author productivity.
+
+See [CLIPBOARD_AND_BLOCKS.md](CLIPBOARD_AND_BLOCKS.md).
+
+### Deliverables
+
+- copy/paste subtree (keyboard + toolbar); new ids on paste
+- cross-page paste within a site
+- **saved blocks** library on site or host; palette “Blocks” category
+- commands integrated with undo/redo
+
+### Acceptance criteria
+
+- copy Card subtree, paste into Grid cell on another page
+- save hero section as block and insert twice with independent edits
+
+---
+
+## v0.14.0 — Forms
+
+**Status: planned**
+
+**Priority: medium.** Form UIs over registered inputs.
+
+See [FORMS.md](FORMS.md).
+
+### Deliverables
+
+- form container conventions in registry
+- field ↔ variable bindings; validation metadata on props
+- submit trigger + interaction chain (validate → actions)
+- inspector validation editor; basic Live validation
+
+### Acceptance criteria
+
+- user builds contact form visually; submit updates state or navigates
+- required field blocks submit with visible error
+
+---
+
+## v0.15.0 — Responsive & design tokens
+
+**Status: planned**
+
+**Priority: medium.** Breakpoints and theme-aware styling.
+
+See [RESPONSIVE.md](RESPONSIVE.md).
+
+### Deliverables
+
+- responsive `layout` / `style` overrides per breakpoint
+- editor breakpoint switcher; host breakpoint config
+- token registry; token picker in Style Editor
+- codegen resolves tokens to CSS variables or theme paths
+
+### Acceptance criteria
+
+- grid columns differ mobile vs desktop in Live preview
+- style uses `color.primary` token from host theme
+
+---
+
+## v1.0.0 — Stable API
+
+**Status: planned**
+
+**Priority: critical.** First stable semver for public adopters.
+
+### Deliverables
+
+- freeze **document schema** `0.1` + optional fields shipped through v0.15
+- freeze **public package APIs** documented in `specs/PACKAGE_API_SPEC.md`
+- migration guides for any breaking changes from late v0.x
+- RTD “production readiness” guide; security & embedding notes
+- `1.0.0` git tag and npm publish policy
+
+### Acceptance criteria
+
+- no breaking API changes without 2.0.0
+- all v0.10–v0.15 features documented on RTD
+- CI green; e2e covers primary author flows (layout, style, interactions, routing, slots)
+
+---
+
+## v1.1.0 — Nested routes & layouts
+
+**Status: planned** (post-1.0)
+
+Shared parent layouts and nested route tree. See [POST_1_0.md](POST_1_0.md) and [ROUTING.md](ROUTING.md).
+
+---
+
+## v1.2.0 — Framework adapters
+
+**Status: planned** (post-1.0)
+
+Next.js App Router and optional Remix codegen/dev adapters. See [POST_1_0.md](POST_1_0.md).
+
+---
+
+## v1.3.0 — Async data & loaders
+
+**Status: planned** (post-1.0)
+
+Route/node loaders; binding loader results to props. See [POST_1_0.md](POST_1_0.md).
+
+---
+
+## v1.4.0 — Plugin API
+
+**Status: planned** (post-1.0)
+
+Formal extension points for inspector, palette, interactions, codegen. See [POST_1_0.md](POST_1_0.md).
+
+---
+
+## v1.5.0+ — Collaboration & advanced
+
+**Status: exploratory** (post-1.0)
+
+Comments, real-time co-editing, i18n, a11y panel, motion — evaluate after 1.0 adoption. See [POST_1_0.md](POST_1_0.md).
+
+---
+
 ## Versioning notes
 
 - **v0.1.x** — patch fixes and non-breaking SDK improvements on the foundation release
-- **v0.X.0** — minor releases add capabilities; document model may gain optional fields (`layout`, `style`) with backward-compatible defaults
-- **v1.0.0** — reserved for a stable public API and any breaking document-model or package-surface changes after LessonKit and docs site are proven
+- **v0.X.0** — minor releases add capabilities; document model may gain optional fields (`layout`, `style`, `slots`, …) with backward-compatible defaults
+- **v0.10 – v0.15** — pre-1.0 composition, data, productivity, and polish milestones (see table above)
+- **v1.0.0** — stable public API and document contract; breaking changes require **v2.0.0**
+- **v1.1+** — platform adapters, loaders, plugins, and exploratory features ([POST_1_0.md](POST_1_0.md))

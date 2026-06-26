@@ -4,8 +4,16 @@ from __future__ import annotations
 
 import json
 import os
+import warnings
 from datetime import datetime
 from pathlib import Path
+
+# requests warns when chardet 6+ is installed alongside charset_normalizer (common on dev machines).
+warnings.filterwarnings(
+    "ignore",
+    message=r"urllib3 \(.*\) or chardet \(.*\)/charset_normalizer \(.*\) doesn't match a supported version!",
+    category=Warning,
+)
 
 project = "ViewFoundry"
 author = "ViewFoundry contributors"
@@ -40,6 +48,9 @@ myst_enable_extensions = [
 ]
 
 pygments_style = "sphinx"
+
+# Pygments TS/JSX lexers fall back to relaxed mode for union types and JSX in docs snippets.
+suppress_warnings = ["misc.highlighting_failure"]
 
 # Allow RTD theme version switcher when hosted on Read the Docs
 if os.environ.get("READTHEDOCS"):

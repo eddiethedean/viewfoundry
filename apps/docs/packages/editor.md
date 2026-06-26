@@ -4,7 +4,7 @@ Visual editor UI — palette, canvas, inspector, layers, toolbar, Edit/Live togg
 
 ## Primary export
 
-```tsx
+```jsx
 import { ViewFoundryEditor } from '@viewfoundry/editor';
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';

@@ -1,5 +1,7 @@
 # Editor Specification
 
+Studio usability standards (plain language, safe defaults, progressive disclosure) are in [UX_AND_DX.md](UX_AND_DX.md). This spec covers layout and behavior.
+
 ## MVP editor layout
 
 ```txt
@@ -48,6 +50,17 @@ Features:
 - reorder nodes later
 - delete node later
 
+### Pages panel (planned v0.9.0)
+
+Multi-route site editing. See `docs/ROUTING.md`.
+
+Features:
+
+- list routes (label + path)
+- add, duplicate, delete, switch active route
+- route path and meta inspector
+- each route loads its own `ViewDocument` into the canvas
+
 ### Inspector
 
 Generated from the selected component's prop schema.
@@ -69,7 +82,7 @@ Features:
 - duplicate
 - save/export hooks
 - **Edit / Live toggle** — primary mode switcher (single viewport; see below)
-- **edit sub-modes: Component Editor | Style Editor** (visible only in Edit mode)
+- **edit sub-modes: Component Editor | Style Editor | Interactions** (Component active; Style in **v0.4.0**; Interactions in **v0.8.0**)
 
 ## Edit mode and Live mode (single window)
 
@@ -159,26 +172,42 @@ Features:
 
 Use when tuning appearance without changing component identity or schema-backed props.
 
+### Interactions Editor mode
+
+Declarative behavior wiring between components. Planned in **v0.8.0**. See `docs/INTERACTIONS.md`.
+
+Features:
+
+- interactions list panel (all trigger → action rules in the document)
+- create flow: select source node → pick trigger event → add actions → pick targets
+- edit `ViewDocument.interactions` (not inline functions in props)
+- validation for unknown nodes, events, and action payloads
+- optional canvas overlay showing source/target links when an interaction is selected (later)
+
+Use when connecting component behavior — e.g. button click updates another node’s prop, toggles visibility, or navigates.
+
+Triggers fire in **Live mode** via the `@viewfoundry/react` interaction interpreter; disabled or no-op in Edit mode while wiring.
+
 ## Mode switching
 
 ```txt
 Toolbar:  [ Edit | Live ]     ← primary toggle (single viewport)
 
 When Edit:
-  [ Component | Style ]       ← edit sub-modes
+  [ Component | Style | Interactions ]   ← edit sub-modes (Style v0.4, Interactions v0.8)
   palette + inspector + overlays visible
 
 When Live:
-  chrome hidden; same canvas shows interactive runtime output
+  chrome hidden; same canvas shows interactive runtime output (including interaction triggers)
 ```
 
 Rules:
 
 - **Edit / Live** is the top-level toggle; optimize for one browser window
-- Component and Style are sub-modes only available in Edit
-- selection is preserved when switching Component ↔ Style and when returning Edit ← Live
-- Live disables editor mutations and shortcuts; component interactivity enabled
-- undo/redo history is shared across Component and Style edits (not cleared by Live toggle)
+- Component, Style, and Interactions are sub-modes only available in Edit
+- selection is preserved when switching sub-modes and when returning Edit ← Live
+- Live disables editor mutations and shortcuts; component interactivity and **interaction triggers** enabled
+- undo/redo history is shared across Component, Style, and Interaction edits (not cleared by Live toggle)
 
 ## Grid layout and layout drag/drop
 

@@ -88,3 +88,16 @@ type SetNodeLayoutPayload = {
 ```
 
 Undo/redo restores grid placement together with tree structure.
+
+## Future commands (planned)
+
+| Command             | Release | Purpose                                  |
+| ------------------- | ------- | ---------------------------------------- |
+| `addInteraction`    | v0.8.0  | Add document-level trigger → action rule |
+| `updateInteraction` | v0.8.0  | Edit trigger, actions, or conditions     |
+| `removeInteraction` | v0.8.0  | Delete interaction by id                 |
+| `addRoute`          | v0.9.0  | Add route to site                        |
+| `updateRoute`       | v0.9.0  | Change path, label, or meta              |
+| `removeRoute`       | v0.9.0  | Delete route by id                       |
+
+See [INTERACTIONS.md](INTERACTIONS.md) and [ROUTING.md](ROUTING.md).

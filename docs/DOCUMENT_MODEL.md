@@ -113,7 +113,7 @@ Allowed prop value types:
 - arrays of JSON-compatible values
 - plain objects
 
-Avoid functions in document JSON. For callbacks/actions, use action references later.
+Avoid functions in document JSON. For callbacks/actions, use **interaction references** on the document (see `docs/INTERACTIONS.md`, planned **v0.8.0**) or prop-level action fields.
 
 ## Layout (shipped v0.3.0)
 
@@ -143,7 +143,12 @@ A document is valid when:
 Potential future fields:
 
 ```ts
-export type StyleTokenMap = Record<string, string | number>;
+export type ViewDocument = {
+  version: '0.1';
+  root: ViewNode;
+  meta?: ViewDocumentMeta;
+  interactions?: Interaction[]; // planned v0.8.0 — see INTERACTIONS.md
+};
 
 export type ViewNode = {
   id: string;
@@ -158,6 +163,32 @@ export type ViewNode = {
   layout?: NodeLayout;
 };
 ```
+
+### Interactions & triggers (planned v0.8.0)
+
+Document-level `interactions` connect **triggers** (events on a source node) to **actions** (effects on target nodes) — e.g. button `click` → `setProp` on a heading. Serializable, validated, editable in an Interactions sub-mode, executed in Live mode by `@viewfoundry/react`.
+
+See [INTERACTIONS.md](INTERACTIONS.md) for types, registry events/actions, commands, and codegen.
+
+### Routing & multi-page (planned v0.9.0)
+
+A **site** (`ViewSite`) holds multiple **routes** — each with a path and its own `ViewDocument`. The editor **Pages** panel switches routes; runtime matches URL to active page; interactions and link components call `navigate`.
+
+Single-document embeds remain valid (one implicit `/` route).
+
+See [ROUTING.md](ROUTING.md).
+
+### Repeat & lists (planned v0.12.0)
+
+`repeat` on `ViewNode` renders child template per list item. See [REPEAT.md](REPEAT.md).
+
+### Slots (planned v0.10.0)
+
+Named slot trees on `ViewNode`. See [SLOTS.md](SLOTS.md).
+
+### Data bindings & variables (planned v0.11.0)
+
+Bindings, variables, and conditions. See [DATA_BINDING.md](DATA_BINDING.md).
 
 ### Style Editor mode (planned v0.4.0)
 

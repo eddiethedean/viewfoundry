@@ -20,7 +20,7 @@ Package semver (`0.3.0`) is separate from the document schema version (`ViewDocu
 
 This is a complete, copy-pasteable file. It registers a `Button`, embeds the editor, persists the document to `localStorage`, and exports TSX on demand.
 
-```tsx
+```jsx
 import { useCallback, useEffect, useState } from 'react';
 import { createDocument } from '@viewfoundry/core';
 import type { ViewDocument } from '@viewfoundry/core';
@@ -117,7 +117,7 @@ Import **both** stylesheets when using the full editor. The editor CSS covers ch
 
 Use `defineComponent` from `@viewfoundry/schema` and `createRegistry` from `@viewfoundry/core`:
 
-```tsx
+```typescript
 import { defineComponent, text, select, boolean } from '@viewfoundry/schema';
 import { createRegistry } from '@viewfoundry/core';
 
@@ -168,7 +168,7 @@ Wire `onExport` on `ViewFoundryEditor` to call `generateTsx` and show or downloa
 
 Use `@viewfoundry/react` for runtime-only rendering:
 
-```tsx
+```jsx
 import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import '@viewfoundry/react/styles.css';
 

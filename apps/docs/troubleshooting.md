@@ -14,7 +14,7 @@ Mixed versions (e.g. `core@0.2.0` with `editor@0.3.0`) cause peer dependency war
 
 Import both stylesheets:
 
-```tsx
+```typescript
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';
 ```
@@ -75,3 +75,19 @@ Check the [RTD build log](https://readthedocs.org/projects/viewfoundry/builds/).
 - [FAQ](faq.md)
 - [GitHub issues](https://github.com/eddiethedean/viewfoundry/issues)
 - [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) for API details
+
+## Undo and redo with controlled document
+
+When `ViewFoundryEditor` receives `document` and `onChange` from your React state, every `onChange` callback updates parent state, which re-renders the editor with a new `document` prop. The editor treats that as a fresh document and **resets undo/redo**.
+
+**Options:**
+
+1. **Uncontrolled** — omit `document` / `onChange` and let the editor manage state; subscribe via `onChange` only when you need to persist.
+2. **App-owned history** — store document snapshots in your state and wire your own Undo/Redo UI.
+3. **Hybrid** — persist on save/blur rather than on every command if you need controlled mode without constant resets.
+
+Undo/redo toolbar buttons work out of the box in `examples/basic-react` because the demo uses a pattern that does not reset history on every edit.
+
+## Canvas click does not select the right component
+
+On grid layouts, pointer hit-testing can favor drop targets over selection. Use the **Layers** panel to select, reorder, and delete nodes reliably. Keyboard shortcuts (when enabled) apply to the layer-selected node.

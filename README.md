@@ -130,6 +130,7 @@ See [`examples/basic-react`](examples/basic-react/README.md) for a full demo wit
 | -------------------------------------------------------------- | ------------------------------------------ | --------------------------------- |
 | [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/) | Adopters — install, embed, grid, FAQ       | **Primary user guides**           |
 | [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)       | Integrators — full public API              | **API contract**                  |
+| [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                       | Maintainers — studio + developer UX bars   | **Release acceptance**            |
 | [`docs/`](docs/)                                               | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**) |
 | [`CHANGELOG.md`](CHANGELOG.md)                                 | Everyone — release notes                   | Current                           |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md)                           | Contributors                               | Current                           |
@@ -142,4 +143,4 @@ Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Sourc
 
 Planning specs in [`docs/`](docs/) describe intent and roadmap; they may lag implementation. The implementation follows [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Planned:** [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.5.0](docs/ROADMAP.md#v050---cli--examples) CLI scaffolding. See [docs/ROADMAP.md](docs/ROADMAP.md) for the full release plan.
+**Planned (pre-1.0):** [v0.4–v0.9](docs/ROADMAP.md) Style · CLI · Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins.

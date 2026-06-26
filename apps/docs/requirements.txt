@@ -1,3 +1,8 @@
 sphinx>=7.0,<9
 myst-parser>=3.0,<5
 sphinx-rtd-theme>=2.0,<4
+requests>=2.32.3,<3
+urllib3>=2.2.2,<3
+charset-normalizer>=3.3.2,<4
+# requests validates chardet before charset_normalizer; 6+ triggers RequestsDependencyWarning
+chardet>=3.0.2,<6

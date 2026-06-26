@@ -39,6 +39,6 @@ cpSync(studioDist, staticStudio, { recursive: true });
 console.log(`Running sphinx-build → ${outputDir}`);
 mkdirSync(outputDir, { recursive: true });
 const python = process.env.READTHEDOCS ? 'python' : 'python3';
-run(`${python} -m sphinx -b html "${docsDir}" "${outputDir}"`);
+run(`${python} -m sphinx -W -b html "${docsDir}" "${outputDir}"`);
 
 console.log('Documentation build complete.');

@@ -34,6 +34,8 @@ Examples:
 
 Non-technical editors who need a safe, constrained no-code UI over developer-approved components.
 
+Usability requirements for both audiences are defined in [UX_AND_DX.md](UX_AND_DX.md).
+
 ## What ViewFoundry is
 
 - A component registry
@@ -77,8 +79,10 @@ After the MVP, the editor gains explicit modes (see `docs/EDITOR_SPEC.md`):
 - **Component Editor** — structure, nesting, and schema-driven props (Edit sub-mode; **v0.1.0**)
 - **Grid layout drag/drop** — intuitive CSS Grid–based arrangement with satisfying canvas moves (**v0.3.0**, critical)
 - **Style Editor** — visual styling via `node.style` tokens (Edit sub-mode; **v0.4.0**)
-
-See `docs/ROADMAP.md` for the full v0.X release plan.
+- **Interactions** — triggers and actions (**v0.8.0**)
+- **Routing** — multi-page sites (**v0.9.0**)
+- **Slots, bindings, repeat, forms, responsive** — **v0.10 – v0.15** (pre-1.0); see `docs/ROADMAP.md`
+- **Stable API** — **v1.0.0**; platform adapters and plugins — **v1.1+** ([POST_1_0.md](POST_1_0.md))
 
 ## North star
 

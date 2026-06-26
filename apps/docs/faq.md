@@ -41,3 +41,27 @@ The repository `docs/` folder holds **planning and design specs** (roadmap, edit
 ## Is ViewFoundry stable?
 
 ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. See [0.x stability](https://github.com/eddiethedean/viewfoundry#0x-stability) in the README.
+
+## Who is the editor for — authors or developers?
+
+**Both**, with different entry points:
+
+- **Studio users** (authors, designers) use Edit / Live, the palette, layers, and inspector to build pages without writing React. Success means plain-language UI, safe defaults, and undo for mistakes.
+- **React developers** embed `ViewFoundryEditor`, register real components with `defineComponent`, persist `ViewDocument` JSON, and export TSX. Success means typed APIs, copy-pasteable examples, and codegen you would ship.
+
+Usability bars for both audiences are defined in the repo planning doc [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md) (maintainers use this for release review).
+
+## Why does undo not work in my app?
+
+If you pass **controlled** `document` and `onChange` props, each parent update replaces the editor’s internal document and **clears undo history**. That is expected today.
+
+**Workarounds:**
+
+- Let the editor own document state internally (uncontrolled), or
+- Keep history in your app and pass a restored document when the user clicks Undo in your own toolbar.
+
+See [Troubleshooting — controlled document](troubleshooting.md#undo-and-redo-with-controlled-document).
+
+## How do I select a component on the grid canvas?
+
+Use the **Layers** panel for reliable selection when grid drop overlays are active. Canvas click selection can be ambiguous when multiple drop targets overlap — we are improving this in future releases.

@@ -82,7 +82,7 @@ Core commands that understand grid placement:
 
 `generateTsx` emits inline styles for grid children:
 
-```tsx
+```jsx
 <div style={{ gridColumn: '2 / span 2', gridRow: '1' }}>...</div>
 ```
 

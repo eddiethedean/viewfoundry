@@ -86,21 +86,37 @@ File: `packages/cli/src/cli.test.ts`
 
 ## E2E tests (Playwright)
 
-Browser smoke tests for `examples/basic-react` live in `e2e/basic-react.spec.ts`.
+Browser tests for `examples/basic-react` live in `e2e/`.
 
-Coverage:
+| File                       | Focus                                                                               |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `basic-react.spec.ts`      | Chrome on load, palette insert, Edit/Live, TSX export                               |
+| `editor-workflows.spec.ts` | Layers selection, inspector edits, delete/duplicate, undo when history is available |
+| `grid-layout.spec.ts`      | Grid containers, palette insert into grid, layer labels                             |
 
-- Edit mode chrome on load
-- Palette insert
-- Edit / Live toggle
-- TSX export drawer
+Shared helpers: `e2e/helpers.ts`. Config: `playwright.config.ts` (10s action/expect timeouts).
 
 ```bash
 pnpm build
+pnpm exec playwright install chromium   # first run
 pnpm test:e2e
 ```
 
-Playwright starts `vite preview` for `basic-react` automatically (see `playwright.config.ts`).
+Playwright starts `vite preview` for `basic-react` automatically.
+
+**Note:** Controlled `document` + `onChange` embeds reset undo history — e2e avoids asserting undo in that pattern. See [UX_AND_DX.md](UX_AND_DX.md) and [apps/docs/troubleshooting.md](../apps/docs/troubleshooting.md).
+
+## UX acceptance testing
+
+Author-facing flows should be exercisable without reading JSON:
+
+- Empty canvas shows a helpful hint
+- Palette search and insert update layers and canvas
+- Inspector labels match schema metadata (not raw prop keys)
+- Edit / Live toggle preserves document; Live hides chrome
+- Errors from validation or commands surface readable messages
+
+Before shipping a milestone, use the checklist in [UX_AND_DX.md](UX_AND_DX.md) and manually smoke-test in `examples/basic-react` or the docs Studio embed.
 
 ## CI commands
 

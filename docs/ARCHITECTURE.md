@@ -9,6 +9,7 @@
 5. **Command-based mutation**: editing operations should flow through commands to support history, validation, and plugins.
 6. **Framework adapter boundary**: core should not depend on React.
 7. **Embeddable by default**: apps should be able to use the editor as a component.
+8. **Dual-audience UX**: every feature must be approachable in the studio and ergonomic for React integrators — see [UX_AND_DX.md](UX_AND_DX.md).
 
 ## Monorepo layout
 
@@ -87,6 +88,8 @@ Owns:
 - validation
 - clipboard model
 - plugin API
+- interaction model types and validation (planned **v0.8.0**)
+- site/route types and path matching (planned **v0.9.0**)
 
 Must not import React.
 
@@ -101,6 +104,8 @@ Owns:
 - slot definitions
 - prop validation helpers
 - default value generation
+- component `events` / `actions` metadata for interactions (planned **v0.8.0**)
+- `routeRef` field builder for link components (planned **v0.9.0**)
 
 ### `@viewfoundry/react`
 
@@ -114,6 +119,8 @@ Owns:
 - editable wrappers
 - hooks
 - runtime context
+- interaction interpreter for Live mode (planned **v0.8.0**)
+- site router, `ViewRouter`, navigation hooks (planned **v0.9.0**)
 
 Should be usable without `@viewfoundry/editor`.
 
@@ -163,7 +170,7 @@ Vite integration.
 Owns:
 
 - development plugin
-- optional route helpers
+- SPA dev-server fallback for client routes (planned **v0.9.0**)
 - config loading
 - HMR helpers
 
@@ -175,8 +182,8 @@ Owns:
 
 - `viewfoundry init`
 - `viewfoundry dev`
-- `viewfoundry export`
-- `viewfoundry validate`
+- `viewfoundry validate` — document or site JSON
+- `viewfoundry export` — single page or multi-route site (v0.9.0)
 
 ## Data flow
 

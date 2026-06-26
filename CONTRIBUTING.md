@@ -56,6 +56,16 @@ specs/             Public API contract (PACKAGE_API_SPEC.md)
 4. Run `pnpm format` if Prettier check fails.
 5. Update `CHANGELOG.md` under `[Unreleased]` or the next version section for user-visible changes.
 
+### UX & DX review (user-facing changes)
+
+ViewFoundry serves **studio users** (non-technical authors) and **React developers** (integrators). For any change that touches the editor, embed API, or author workflows, check [docs/UX_AND_DX.md](docs/UX_AND_DX.md):
+
+- **Studio:** plain-language labels, safe defaults, undo where possible, empty/error states without jargon
+- **Developer:** typed public APIs, documented embed patterns, codegen snippets that compile, FAQ/troubleshooting if support burden is likely
+- **Tests:** unit tests for core behavior; Playwright e2e when a primary author flow changes (see [docs/TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md))
+
+The PR checklist at the bottom of `UX_AND_DX.md` is the release bar for milestones.
+
 ## API and versioning
 
 - All `@viewfoundry/*` packages share the same semver.
