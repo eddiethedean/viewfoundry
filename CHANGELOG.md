@@ -2,6 +2,25 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.3.0] — 2025
+
+### Added
+
+- `NodeLayout` / `GridPlacement` on `ViewNode` for CSS Grid child placement
+- `Grid` and `Row` layout components in `examples/basic-react`
+- Grid layout validation (bounds, overlap, parent rules) in `@viewfoundry/core`
+- `setNodeLayout` command and grid-aware `moveNode` / `insertNode` payloads
+- Canvas drag-and-drop via **dnd-kit** — palette ghost, per-cell drop targets, node reposition
+- Editor store: `moveNodeToCell`, `nudgeNodeLayout`, grid bootstrap on empty canvas
+- Grid reading order in layers panel; arrow-key nudge between cells
+- Codegen emits `gridColumn` / `gridRow` inline styles from `layout.grid`
+- Playwright e2e coverage for grid bootstrap and grid container insert
+
+### Changed
+
+- Palette and canvas use dnd-kit instead of native HTML5 drag-and-drop
+- `ViewFoundryProvider` accepts optional `wrapEditNode` and `renderGridDropLayer` hooks
+
 ## [0.2.0] — 2025
 
 ### Added
@@ -34,5 +53,6 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Visual editor MVP with palette, canvas, inspector, layers
 - TSX codegen and `examples/basic-react`
 
+[0.3.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/eddiethedean/viewfoundry/releases/tag/v0.2.0
 [0.1.0]: https://github.com/eddiethedean/viewfoundry/releases/tag/v0.1.0

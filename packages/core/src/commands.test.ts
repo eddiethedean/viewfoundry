@@ -7,6 +7,7 @@ import {
   deleteNode,
   duplicateNode,
   moveNode,
+  setNodeLayout,
   updateNodeProps,
   setNodeProp,
   createHistory,
@@ -104,6 +105,51 @@ describe('commands', () => {
       expect(result.document.root.children?.[0].type).toBe('Button');
       expect(result.document.root.children?.[1].type).toBe('Button');
       expect(result.document.root.children?.[0].id).not.toBe(result.document.root.children?.[1].id);
+    }
+  });
+
+  it('moves a node with grid layout', () => {
+    let doc = makeDoc();
+    const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, { parentId: 'root', node: grid });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    result = moveNode(doc, {
+      nodeId: 'btn1',
+      parentId: 'grid1',
+      index: 0,
+      layout: { column: 2, row: 1 },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const btn = findNode(result.document.root, 'btn1');
+      expect(btn?.layout?.grid).toEqual({ column: 2, row: 1 });
+    }
+  });
+
+  it('sets node layout in place', () => {
+    let doc = makeDoc();
+    const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
+    let result = insertNode(doc, {
+      parentId: 'root',
+      node: grid,
+    });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+    result = insertNode(doc, {
+      parentId: 'grid1',
+      node: createNode('Button', {}, [], 'btn1'),
+      layout: { column: 1, row: 1 },
+    });
+    if (!result.ok) throw new Error(result.error);
+    doc = result.document;
+
+    result = setNodeLayout(doc, { nodeId: 'btn1', layout: { column: 3, row: 1 } });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const btn = findNode(result.document.root, 'btn1');
+      expect(btn?.layout?.grid).toEqual({ column: 3, row: 1 });
     }
   });
 

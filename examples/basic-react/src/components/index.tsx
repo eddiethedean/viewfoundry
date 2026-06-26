@@ -61,3 +61,54 @@ type TextProps = {
 export function Text({ children, size = 'md' }: TextProps) {
   return <p className={`demo-text demo-text--${size}`}>{children}</p>;
 }
+
+type GridProps = {
+  children?: ReactNode;
+  columns?: number;
+  rows?: number;
+  gap?: number;
+  minRowHeight?: number | string;
+  style?: CSSProperties;
+};
+
+export function Grid({ children, columns = 4, rows, gap = 8, minRowHeight, style }: GridProps) {
+  return (
+    <div
+      className="demo-grid"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        gridTemplateRows: rows ? `repeat(${rows}, minmax(0, auto))` : undefined,
+        gap,
+        minHeight: minRowHeight,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+type RowProps = {
+  children?: ReactNode;
+  columns?: number;
+  gap?: number;
+  style?: CSSProperties;
+};
+
+export function Row({ children, columns = 4, gap = 8, style }: RowProps) {
+  return (
+    <div
+      className="demo-row"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+        gridTemplateRows: 'minmax(0, auto)',
+        gap,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}

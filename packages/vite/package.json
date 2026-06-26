@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/vite",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Vite integration for ViewFoundry (stub — no-op plugin until v0.5.0)",
   "type": "module",
   "main": "./dist/index.js",

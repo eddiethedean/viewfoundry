@@ -1,6 +1,8 @@
 import { createRegistry } from '@viewfoundry/core';
 import { defineComponent, text, select, boolean, number } from '@viewfoundry/schema';
-import { Button, Card, Stack, Heading, Text } from './components/index.js';
+import { Button, Card, Stack, Grid, Row, Heading, Text } from './components/index.js';
+
+const layoutChildren = ['Button', 'Card', 'Stack', 'Grid', 'Row', 'Heading', 'Text'];
 
 export const ButtonDefinition = defineComponent(Button, {
   type: 'Button',
@@ -23,7 +25,7 @@ export const CardDefinition = defineComponent(Card, {
   label: 'Card',
   category: 'Layout',
   acceptsChildren: true,
-  allowedChildren: ['Button', 'Stack', 'Heading', 'Text', 'Card'],
+  allowedChildren: layoutChildren,
   props: {
     title: text({ label: 'Title', defaultValue: 'Card title' }),
   },
@@ -34,7 +36,7 @@ export const StackDefinition = defineComponent(Stack, {
   label: 'Stack',
   category: 'Layout',
   acceptsChildren: true,
-  allowedChildren: ['Button', 'Card', 'Heading', 'Text', 'Stack'],
+  allowedChildren: layoutChildren,
   props: {
     direction: select({
       label: 'Direction',
@@ -42,6 +44,32 @@ export const StackDefinition = defineComponent(Stack, {
       defaultValue: 'vertical',
     }),
     gap: number({ label: 'Gap', defaultValue: 12, min: 0, max: 64 }),
+  },
+});
+
+export const GridDefinition = defineComponent(Grid, {
+  type: 'Grid',
+  label: 'Grid',
+  category: 'Layout',
+  acceptsChildren: true,
+  allowedChildren: layoutChildren,
+  props: {
+    columns: number({ label: 'Columns', defaultValue: 4, min: 1, max: 12 }),
+    rows: number({ label: 'Rows', defaultValue: 2, min: 1, max: 12 }),
+    gap: number({ label: 'Gap', defaultValue: 8, min: 0, max: 64 }),
+    minRowHeight: number({ label: 'Min row height', defaultValue: 48, min: 0, max: 200 }),
+  },
+});
+
+export const RowDefinition = defineComponent(Row, {
+  type: 'Row',
+  label: 'Row',
+  category: 'Layout',
+  acceptsChildren: true,
+  allowedChildren: layoutChildren,
+  props: {
+    columns: number({ label: 'Columns', defaultValue: 4, min: 1, max: 12 }),
+    gap: number({ label: 'Gap', defaultValue: 8, min: 0, max: 64 }),
   },
 });
 
@@ -77,6 +105,8 @@ export const demoRegistry = createRegistry([
   ButtonDefinition,
   CardDefinition,
   StackDefinition,
+  GridDefinition,
+  RowDefinition,
   HeadingDefinition,
   TextDefinition,
 ]);
@@ -85,6 +115,8 @@ export const importMap = {
   Button: { importPath: './components', exportName: 'Button' },
   Card: { importPath: './components', exportName: 'Card' },
   Stack: { importPath: './components', exportName: 'Stack' },
+  Grid: { importPath: './components', exportName: 'Grid' },
+  Row: { importPath: './components', exportName: 'Row' },
   Heading: { importPath: './components', exportName: 'Heading' },
   Text: { importPath: './components', exportName: 'Text' },
 };

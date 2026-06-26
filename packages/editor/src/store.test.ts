@@ -29,10 +29,19 @@ const cardDef = {
   acceptsChildren: true,
 };
 
-const registry = createRegistry([buttonDef, cardDef]);
+const gridDef = {
+  type: 'Grid',
+  label: 'Grid',
+  category: 'Layout',
+  component: () => null,
+  acceptsChildren: true,
+  defaultProps: { columns: 4, rows: 2, gap: 8 },
+};
+
+const registry = createRegistry([buttonDef, cardDef, gridDef]);
 
 describe('createEditorStore', () => {
-  it('insertComponent adds node at root and selects it', () => {
+  it('insertComponent bootstraps a grid on empty canvas', () => {
     const onChange = vi.fn();
     const store = createEditorStore(registry, createDocument(), onChange);
 
@@ -40,15 +49,19 @@ describe('createEditorStore', () => {
 
     const { document, selection } = store.getState();
     expect(document.root.children).toHaveLength(1);
-    expect(document.root.children?.[0].type).toBe('Button');
-    expect(getPrimarySelection(selection)).toBe(document.root.children?.[0].id);
+    expect(document.root.children?.[0].type).toBe('Grid');
+    const button = document.root.children?.[0].children?.[0];
+    expect(button?.type).toBe('Button');
+    expect(button?.layout?.grid).toEqual({ column: 1, row: 1, colSpan: 1, rowSpan: 1 });
+    expect(getPrimarySelection(selection)).toBe(button?.id);
     expect(onChange).toHaveBeenCalled();
   });
 
   it('insertComponent inserts into selected container', () => {
     const store = createEditorStore(registry, createDocument());
     store.getState().insertComponent('Card');
-    const cardId = store.getState().document.root.children?.[0].id;
+    const grid = store.getState().document.root.children?.[0];
+    const cardId = grid?.children?.[0]?.id;
     if (!cardId) throw new Error('card missing');
     store.getState().selectNode(cardId);
 
@@ -115,17 +128,41 @@ describe('createEditorStore', () => {
     expect(onChange).toHaveBeenCalled();
   });
 
+  it('moveNodeToCell updates grid placement', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    const buttonId = store.getState().document.root.children?.[0].children?.[0]?.id;
+    const gridId = store.getState().document.root.children?.[0].id;
+    if (!buttonId || !gridId) throw new Error('nodes missing');
+
+    store.getState().moveNodeToCell(buttonId, gridId, { column: 2, row: 1 });
+    const button = findNode(store.getState().document.root, buttonId);
+    expect(button?.layout?.grid?.column).toBe(2);
+  });
+
+  it('nudgeNodeLayout moves within bounds', () => {
+    const store = createEditorStore(registry, createDocument());
+    store.getState().insertComponent('Button');
+    const buttonId = store.getState().document.root.children?.[0].children?.[0]?.id;
+    if (!buttonId) throw new Error('button missing');
+    store.getState().selectNode(buttonId);
+
+    store.getState().nudgeNodeLayout(buttonId, { column: 1 });
+    const button = findNode(store.getState().document.root, buttonId);
+    expect(button?.layout?.grid?.column).toBe(2);
+  });
+
   it('undo and redo restore document state', () => {
     const store = createEditorStore(registry, createDocument());
     store.getState().insertComponent('Button');
-    const insertedId = store.getState().document.root.children?.[0].id;
+    const insertedId = store.getState().document.root.children?.[0].children?.[0]?.id;
 
     store.getState().undo();
     expect(store.getState().document.root.children).toHaveLength(0);
     expect(getPrimarySelection(store.getState().selection)).toBeUndefined();
 
     store.getState().redo();
-    expect(store.getState().document.root.children?.[0].id).toBe(insertedId);
+    expect(store.getState().document.root.children?.[0].children?.[0]?.id).toBe(insertedId);
   });
 
   it('setStudioMode calls onStudioModeChange', () => {

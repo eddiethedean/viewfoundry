@@ -3,12 +3,80 @@ import type {
   ValidationIssue,
   ValidationResult,
   ViewDocument,
+  ViewNode,
 } from './types.js';
+import {
+  isGridContainer,
+  isPlacementInBounds,
+  normalizePlacement,
+  rectsOverlap,
+  resolveGridTracks,
+} from './grid.js';
 import { collectNodeIds, walkNodes } from './nodes.js';
 
 export type ValidateDocumentOptions = {
   allowMissingComponents?: boolean;
 };
+
+function validateGridChildren(parent: ViewNode, issues: ValidationIssue[]): void {
+  if (!isGridContainer(parent.type) || !parent.children) return;
+
+  const tracks = resolveGridTracks(parent);
+  const placements: Array<{ id: string; rect: ReturnType<typeof normalizePlacement> }> = [];
+
+  for (const child of parent.children) {
+    if (!child.layout?.grid) {
+      issues.push({
+        path: `node:${child.id}`,
+        message: `Child of grid container "${parent.type}" must have layout.grid placement`,
+        code: 'MISSING_GRID_PLACEMENT',
+      });
+      continue;
+    }
+
+    const rect = normalizePlacement(child.layout.grid);
+    if (!isPlacementInBounds(rect, tracks)) {
+      issues.push({
+        path: `node:${child.id}`,
+        message: `Grid placement for "${child.type}" is out of bounds`,
+        code: 'GRID_PLACEMENT_OUT_OF_BOUNDS',
+      });
+    }
+
+    for (const existing of placements) {
+      if (rectsOverlap(rect, existing.rect)) {
+        issues.push({
+          path: `node:${child.id}`,
+          message: `Grid placement overlaps with node "${existing.id}"`,
+          code: 'GRID_PLACEMENT_OVERLAP',
+        });
+      }
+    }
+    placements.push({ id: child.id, rect });
+  }
+}
+
+export function validateGridLayout(
+  document: ViewDocument,
+  _registry?: ComponentRegistry,
+): ValidationResult {
+  const issues: ValidationIssue[] = [];
+
+  walkNodes(document.root, (node, parent) => {
+    if (node.layout?.grid && (!parent || !isGridContainer(parent.type))) {
+      issues.push({
+        path: `node:${node.id}`,
+        message: `layout.grid is only allowed when parent is a Grid or Row container`,
+        code: 'INVALID_GRID_PARENT',
+      });
+    }
+    if (isGridContainer(node.type)) {
+      validateGridChildren(node, issues);
+    }
+  });
+
+  return { valid: issues.length === 0, issues };
+}
 
 export function validateDocument(
   document: ViewDocument,
@@ -73,6 +141,9 @@ export function validateDocument(
       }
     }
   });
+
+  const gridResult = validateGridLayout(document, registry);
+  issues.push(...gridResult.issues);
 
   return { valid: issues.length === 0, issues };
 }

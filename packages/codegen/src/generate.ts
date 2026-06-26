@@ -1,4 +1,5 @@
 import type { ViewDocument, ViewNode } from '@viewfoundry/core';
+import { isGridContainer, placementToCss, sortChildrenByGridOrder } from '@viewfoundry/core';
 import {
   isValidIdentifier,
   isValidImportPath,
@@ -63,7 +64,19 @@ function formatPropValue(value: unknown, warnings: string[], path: string): stri
   return `{${JSON.stringify(value)}}`;
 }
 
-function renderProps(node: ViewNode, warnings: string[], hasChildNodes: boolean): string {
+function renderGridStyle(node: ViewNode, parent: ViewNode | null): string {
+  if (!parent || !isGridContainer(parent.type) || !node.layout?.grid) return '';
+  const css = placementToCss(node.layout.grid);
+  const entries = Object.entries(css).map(([key, value]) => `${key}: '${value}'`);
+  return ` style={{ ${entries.join(', ')} }}`;
+}
+
+function renderProps(
+  node: ViewNode,
+  warnings: string[],
+  hasChildNodes: boolean,
+  parent: ViewNode | null,
+): string {
   const props = { ...(node.props ?? {}) };
   if (typeof props.children === 'string' && !hasChildNodes) {
     delete props.children;
@@ -84,7 +97,8 @@ function renderProps(node: ViewNode, warnings: string[], hasChildNodes: boolean)
       parts.push(`${key}=${formatted}`);
     }
   }
-  return parts.length > 0 ? ' ' + parts.join(' ') : '';
+  const base = parts.length > 0 ? ' ' + parts.join(' ') : '';
+  return base + renderGridStyle(node, parent);
 }
 
 function renderNode(
@@ -92,6 +106,7 @@ function renderNode(
   imports: ComponentImportMap,
   warnings: string[],
   indent: number,
+  parent: ViewNode | null = null,
 ): string {
   const pad = '  '.repeat(indent);
   const hasChildNodes = Boolean(node.children && node.children.length > 0);
@@ -103,10 +118,10 @@ function renderNode(
       return `${pad}<></>`;
     }
     if (node.children.length === 1) {
-      return renderNode(node.children[0], imports, warnings, indent);
+      return renderNode(node.children[0], imports, warnings, indent, node);
     }
     const children = node.children
-      .map((child) => renderNode(child, imports, warnings, indent + 1))
+      .map((child) => renderNode(child, imports, warnings, indent + 1, node))
       .join('\n');
     return `${pad}<>\n${children}\n${pad}</>`;
   }
@@ -122,12 +137,15 @@ function renderNode(
     return `${pad}{/* Missing component: ${sanitizeCommentText(node.type)} */}`;
   }
 
-  const propsStr = renderProps(node, warnings, hasChildNodes);
+  const propsStr = renderProps(node, warnings, hasChildNodes, parent);
   const tag = importInfo.exportName;
 
   if (hasChildNodes) {
-    const children = node
-      .children!.map((child) => renderNode(child, imports, warnings, indent + 1))
+    const childNodes = isGridContainer(node.type)
+      ? sortChildrenByGridOrder(node.children!)
+      : node.children!;
+    const children = childNodes
+      .map((child) => renderNode(child, imports, warnings, indent + 1, node))
       .join('\n');
     return `${pad}<${tag}${propsStr}>\n${children}\n${pad}</${tag}>`;
   }

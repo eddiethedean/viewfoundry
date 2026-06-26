@@ -1,4 +1,4 @@
-import { findNode } from '@viewfoundry/core';
+import { findNode, isGridContainer, sortChildrenByGridOrder } from '@viewfoundry/core';
 import { useEditorState, useEditorStore } from './EditorContext.js';
 
 function LayerItem({ nodeId, depth }: { nodeId: string; depth: number }) {
@@ -11,6 +11,10 @@ function LayerItem({ nodeId, depth }: { nodeId: string; depth: number }) {
 
   const isSelected = selection.selectedNodeIds.includes(nodeId);
   const hasChildren = node.children && node.children.length > 0;
+  const orderedChildren =
+    hasChildren && isGridContainer(node.type)
+      ? sortChildrenByGridOrder(node.children!)
+      : node.children;
 
   return (
     <>
@@ -24,12 +28,16 @@ function LayerItem({ nodeId, depth }: { nodeId: string; depth: number }) {
         }}
       >
         {node.type}
+        {node.layout?.grid && (
+          <span className="vf-layer-item-grid">
+            r{node.layout.grid.row ?? 1}c{node.layout.grid.column ?? 1}
+          </span>
+        )}
         <span className="vf-layer-item-id">{node.id}</span>
       </button>
-      {hasChildren &&
-        node.children!.map((child) => (
-          <LayerItem key={child.id} nodeId={child.id} depth={depth + 1} />
-        ))}
+      {orderedChildren?.map((child) => (
+        <LayerItem key={child.id} nodeId={child.id} depth={depth + 1} />
+      ))}
     </>
   );
 }

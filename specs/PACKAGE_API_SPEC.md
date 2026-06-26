@@ -1,10 +1,10 @@
 # Package API Spec
 
-This document describes the public API surface for ViewFoundry packages at **v0.2.x**.
+This document describes the public API surface for ViewFoundry packages at **v0.3.x**.
 
 ## Versioning policy (0.x)
 
-- **Package semver** (`0.2.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
+- **Package semver** (`0.3.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
 - **Document version** (`ViewDocument.version: '0.1'`) is separate from package semver. It identifies the JSON document schema.
 - During `0.x`, minor releases may add optional document fields and APIs. Patch releases are backward compatible within the minor.
 - `1.0.0` is reserved for a stable public API after grid layout, docs site, and integrations are proven.
@@ -12,7 +12,7 @@ This document describes the public API surface for ViewFoundry packages at **v0.
 Install all ViewFoundry packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.2.0 @viewfoundry/schema@0.2.0 @viewfoundry/react@0.2.0 @viewfoundry/editor@0.2.0
+npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0
 ```
 
 ## `@viewfoundry/core`
@@ -22,7 +22,9 @@ npm install @viewfoundry/core@0.2.0 @viewfoundry/schema@0.2.0 @viewfoundry/react
 ```ts
 export type ViewDocument;
 export type ViewDocumentMeta;
-export type ViewNode;
+export type ViewNode; // includes optional layout?: NodeLayout
+export type GridPlacement;
+export type NodeLayout;
 export type PropField;
 export type PropSchema;
 export type ComponentDefinition;
@@ -46,6 +48,7 @@ export function createNode(
   props?: Record<string, unknown>,
   children?: ViewNode[],
   id?: string,
+  layout?: NodeLayout,
 ): ViewNode;
 export function cloneNode(node: ViewNode): ViewNode;
 ```
@@ -59,6 +62,22 @@ export function validateDocument(
   registry?: ComponentRegistry,
   options?: ValidateDocumentOptions,
 ): ValidationResult;
+export function validateGridLayout(
+  document: ViewDocument,
+  registry?: ComponentRegistry,
+): ValidationResult;
+```
+
+### Grid helpers
+
+```ts
+export const GRID_CONTAINER_TYPES; // ['Grid', 'Row']
+export function isGridContainer(type: string): boolean;
+export function resolveGridTracks(node: ViewNode): GridTracks;
+export function sortChildrenByGridOrder(children: ViewNode[]): ViewNode[];
+export function autoPlaceNextCell(children: ViewNode[], tracks: GridTracks): GridPlacement;
+export function placementToCss(placement?: GridPlacement): Record<string, string>;
+export function gridDropId(parentId: string, row: number, column: number): string;
 ```
 
 ### Commands (low-level)
@@ -74,6 +93,9 @@ export function insertNode(document: ViewDocument, payload: InsertNodePayload): 
 export function deleteNode(document: ViewDocument, payload: DeleteNodePayload): CommandResult;
 export function duplicateNode(document: ViewDocument, payload: DuplicateNodePayload): CommandResult;
 export function moveNode(document: ViewDocument, payload: MoveNodePayload): CommandResult;
+// MoveNodePayload.layout?: GridPlacement
+export function setNodeLayout(document: ViewDocument, payload: SetNodeLayoutPayload): CommandResult;
+// InsertNodePayload.layout?: GridPlacement
 export function updateNodeProps(
   document: ViewDocument,
   payload: UpdateNodePropsPayload,
@@ -159,7 +181,7 @@ export function getSelectValues(
 ): string[] | undefined;
 ```
 
-**Peer dependency:** `@viewfoundry/core@^0.2.0`
+**Peer dependency:** `@viewfoundry/core@^0.3.0`
 
 ## `@viewfoundry/react`
 
@@ -174,7 +196,7 @@ export function useViewSelection(): SelectionState;
 
 Styles: `@viewfoundry/react/styles.css` (selection overlays, missing-component fallback).
 
-**Peer dependencies:** `@viewfoundry/core@^0.2.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.3.0`, `react`, `react-dom`
 
 ## `@viewfoundry/editor`
 
@@ -196,7 +218,7 @@ export function Toolbar(props: ToolbarProps): JSX.Element;
 
 Styles: `@viewfoundry/editor/styles.css` **and** `@viewfoundry/react/styles.css` when using the full editor.
 
-**Peer dependencies:** `@viewfoundry/core@^0.2.0`, `@viewfoundry/react@^0.2.0`, `@viewfoundry/schema@^0.2.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.3.0`, `@viewfoundry/react@^0.3.0`, `@viewfoundry/schema@^0.3.0`, `react`, `react-dom`
 
 ## `@viewfoundry/codegen`
 
@@ -207,7 +229,7 @@ export function generateJson(document: ViewDocument): string;
 
 Sanitizes `componentName`, import paths, export names, and prop keys. Emits warnings for rejected values.
 
-**Peer dependency:** `@viewfoundry/core@^0.2.0`
+**Peer dependency:** `@viewfoundry/core@^0.3.0`
 
 ## `@viewfoundry/cli`
 

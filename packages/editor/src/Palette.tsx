@@ -1,4 +1,5 @@
 import { useEditorState, useEditorStore } from './EditorContext.js';
+import { PaletteItem } from './PaletteItem.js';
 
 export type PaletteProps = Record<string, never>;
 
@@ -40,20 +41,12 @@ export function Palette(_props: PaletteProps) {
           <div key={category} className="vf-palette-category">
             <div className="vf-palette-category-label">{category}</div>
             {defs.map((def) => (
-              <button
+              <PaletteItem
                 key={def.type}
-                type="button"
-                className="vf-palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/viewfoundry-component', def.type);
-                  e.dataTransfer.effectAllowed = 'copy';
-                }}
-                onClick={() => store.getState().insertComponent(def.type)}
-              >
-                <span className="vf-palette-item-label">{def.label ?? def.type}</span>
-                {def.description && <span className="vf-palette-item-desc">{def.description}</span>}
-              </button>
+                type={def.type}
+                label={def.label ?? def.type}
+                description={def.description}
+              />
             ))}
           </div>
         ))}

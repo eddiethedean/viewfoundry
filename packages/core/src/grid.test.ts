@@ -1,0 +1,101 @@
+import { describe, expect, it } from 'vitest';
+import { createNode } from './document.js';
+import {
+  autoPlaceNextCell,
+  gridDropId,
+  isPlacementInBounds,
+  normalizePlacement,
+  parseGridDropId,
+  placementToCss,
+  rectsOverlap,
+  resolveGridTracks,
+  sortChildrenByGridOrder,
+} from './grid.js';
+
+describe('grid utilities', () => {
+  it('normalizes placement defaults', () => {
+    expect(normalizePlacement()).toEqual({ column: 1, row: 1, colSpan: 1, rowSpan: 1 });
+    expect(normalizePlacement({ column: 2, row: 3, colSpan: 2 })).toEqual({
+      column: 2,
+      row: 3,
+      colSpan: 2,
+      rowSpan: 1,
+    });
+  });
+
+  it('detects overlapping rects', () => {
+    const a = normalizePlacement({ column: 1, row: 1, colSpan: 2, rowSpan: 1 });
+    const b = normalizePlacement({ column: 2, row: 1, colSpan: 1, rowSpan: 1 });
+    const c = normalizePlacement({ column: 3, row: 1, colSpan: 1, rowSpan: 1 });
+    expect(rectsOverlap(a, b)).toBe(true);
+    expect(rectsOverlap(a, c)).toBe(false);
+  });
+
+  it('sorts children row-major', () => {
+    const children = [
+      createNode('Button', {}, [], 'b2', { grid: { column: 2, row: 1 } }),
+      createNode('Button', {}, [], 'b1', { grid: { column: 1, row: 1 } }),
+      createNode('Button', {}, [], 'b3', { grid: { column: 1, row: 2 } }),
+    ];
+    expect(sortChildrenByGridOrder(children).map((c) => c.id)).toEqual(['b1', 'b2', 'b3']);
+  });
+
+  it('auto-places next free cell', () => {
+    const grid = createNode('Grid', { columns: 2, rows: 2 });
+    const tracks = resolveGridTracks(grid);
+    const children = [
+      createNode('Button', {}, [], 'b1', { grid: { column: 1, row: 1 } }),
+      createNode('Button', {}, [], 'b2', { grid: { column: 2, row: 1 } }),
+    ];
+    expect(autoPlaceNextCell(children, tracks)).toEqual({
+      column: 1,
+      row: 2,
+      colSpan: 1,
+      rowSpan: 1,
+    });
+  });
+
+  it('resolves grid tracks from props', () => {
+    const grid = createNode('Grid', { columns: 6, rows: 3, gap: 16, minRowHeight: 48 });
+    expect(resolveGridTracks(grid)).toEqual({
+      columns: 6,
+      rows: 3,
+      gap: 16,
+      minRowHeight: 48,
+    });
+    const row = createNode('Row', { columns: 3, gap: 4 });
+    expect(resolveGridTracks(row)).toEqual({ columns: 3, rows: 1, gap: 4 });
+  });
+
+  it('converts placement to CSS grid properties', () => {
+    expect(placementToCss({ column: 1, row: 1 })).toEqual({
+      gridColumn: '1',
+      gridRow: '1',
+    });
+    expect(placementToCss({ column: 2, row: 1, colSpan: 2 })).toEqual({
+      gridColumn: '2 / 4',
+      gridRow: '1',
+    });
+  });
+
+  it('checks placement bounds', () => {
+    const tracks = { columns: 4, rows: 2, gap: 8 };
+    expect(isPlacementInBounds(normalizePlacement({ column: 1, row: 1 }), tracks)).toBe(true);
+    expect(isPlacementInBounds(normalizePlacement({ column: 3, row: 1, colSpan: 2 }), tracks)).toBe(
+      true,
+    );
+    expect(isPlacementInBounds(normalizePlacement({ column: 4, row: 1, colSpan: 2 }), tracks)).toBe(
+      false,
+    );
+  });
+
+  it('parses grid drop ids', () => {
+    expect(gridDropId('grid1', 2, 3)).toBe('grid:grid1:2:3');
+    expect(parseGridDropId('grid:grid1:2:3')).toEqual({
+      parentId: 'grid1',
+      row: 2,
+      column: 3,
+    });
+    expect(parseGridDropId('invalid')).toBeNull();
+  });
+});

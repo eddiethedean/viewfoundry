@@ -90,7 +90,8 @@ describe('ViewFoundryEditor', () => {
 
     const doc = latestDocument(onChange);
     expect(doc.root.children).toHaveLength(1);
-    expect(doc.root.children?.[0].type).toBe('Button');
+    expect(doc.root.children?.[0].type).toBe('Grid');
+    expect(doc.root.children?.[0].children?.[0].type).toBe('Button');
   });
 
   it('shows inspector details after layer selection', async () => {
@@ -103,7 +104,7 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(palette).getByRole('button', { name: 'Button' }));
 
     const doc = latestDocument(onChange);
-    const nodeId = doc.root.children?.[0].id;
+    const nodeId = doc.root.children?.[0]?.children?.[0]?.id;
     if (!nodeId) throw new Error('node missing');
 
     const layers = screen.getByText('Layers').closest('.vf-layers');
@@ -126,7 +127,7 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(palette).getByRole('button', { name: 'Button' }));
 
     const doc = latestDocument(onChange);
-    const nodeId = doc.root.children?.[0].id;
+    const nodeId = doc.root.children?.[0]?.children?.[0]?.id;
     if (!nodeId) throw new Error('node missing');
 
     const layers = screen.getByText('Layers').closest('.vf-layers');
@@ -176,7 +177,7 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(palette).getByRole('button', { name: 'Button' }));
 
     const doc = latestDocument(onChange);
-    const nodeId = doc.root.children?.[0].id;
+    const nodeId = doc.root.children?.[0]?.children?.[0]?.id;
     if (!nodeId) throw new Error('node missing');
 
     const layers = screen.getByText('Layers').closest('.vf-layers');
@@ -184,7 +185,7 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
 
     await user.click(screen.getByRole('button', { name: 'Delete' }));
-    expect(latestDocument(onChange).root.children).toHaveLength(0);
+    expect(latestDocument(onChange).root.children?.[0]?.children ?? []).toHaveLength(0);
   });
 
   it('duplicates selected node from the toolbar', async () => {
@@ -197,7 +198,7 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(palette).getByRole('button', { name: 'Button' }));
 
     const doc = latestDocument(onChange);
-    const nodeId = doc.root.children?.[0].id;
+    const nodeId = doc.root.children?.[0]?.children?.[0]?.id;
     if (!nodeId) throw new Error('node missing');
 
     const layers = screen.getByText('Layers').closest('.vf-layers');
@@ -206,9 +207,9 @@ describe('ViewFoundryEditor', () => {
 
     await user.click(screen.getByRole('button', { name: 'Duplicate' }));
 
-    const children = latestDocument(onChange).root.children ?? [];
-    expect(children).toHaveLength(2);
-    expect(children[0].id).not.toBe(children[1].id);
+    const gridChildren = latestDocument(onChange).root.children?.[0]?.children ?? [];
+    expect(gridChildren).toHaveLength(2);
+    expect(gridChildren[0].id).not.toBe(gridChildren[1].id);
   });
 
   it('preserves document content when switching to Live mode', async () => {
@@ -269,7 +270,7 @@ describe('ViewFoundryEditor', () => {
     expect(onChange1).not.toHaveBeenCalled();
   });
 
-  it('inserts dragged components into the selected container', async () => {
+  it('inserts components into the selected container', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderEditor(createDocument(), { onChange });
@@ -279,36 +280,18 @@ describe('ViewFoundryEditor', () => {
     await user.click(within(palette).getByRole('button', { name: 'Card' }));
 
     const docWithCard = latestDocument(onChange);
-    const cardId = docWithCard.root.children?.[0].id;
+    const cardId = docWithCard.root.children?.[0]?.children?.[0]?.id;
     if (!cardId) throw new Error('card missing');
 
     const layers = screen.getByText('Layers').closest('.vf-layers');
     if (!layers) throw new Error('layers missing');
     await user.click(within(layers).getByRole('button', { name: new RegExp(cardId) }));
 
-    const buttonItem = within(palette).getByRole('button', { name: 'Button' });
-    const dataTransfer = {
-      data: {} as Record<string, string>,
-      effectAllowed: 'copy',
-      dropEffect: 'copy',
-      setData(type: string, value: string) {
-        this.data[type] = value;
-      },
-      getData(type: string) {
-        return this.data[type] ?? '';
-      },
-    };
-
-    fireEvent.dragStart(buttonItem, { dataTransfer });
-    const canvas = screen.getByText('Canvas').closest('.vf-canvas');
-    if (!canvas) throw new Error('canvas missing');
-    fireEvent.dragOver(canvas, { dataTransfer });
-    fireEvent.drop(canvas, { dataTransfer });
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
 
     const finalDoc = latestDocument(onChange);
     const card = findNode(finalDoc.root, cardId);
     expect(card?.children).toHaveLength(1);
     expect(card?.children?.[0].type).toBe('Button');
-    expect(finalDoc.root.children).toHaveLength(1);
   });
 });

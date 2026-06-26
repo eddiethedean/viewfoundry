@@ -1,3 +1,14 @@
+export type GridPlacement = {
+  column?: number;
+  row?: number;
+  colSpan?: number;
+  rowSpan?: number;
+};
+
+export type NodeLayout = {
+  grid?: GridPlacement;
+};
+
 export type ViewDocumentMeta = {
   name?: string;
   description?: string;
@@ -16,6 +27,7 @@ export type ViewNode = {
   type: string;
   props?: Record<string, unknown>;
   children?: ViewNode[];
+  layout?: NodeLayout;
 };
 
 export type PropField<TValue = unknown> = {
@@ -77,6 +89,7 @@ export type InsertNodePayload = {
   parentId: string;
   index?: number;
   node: ViewNode;
+  layout?: GridPlacement;
 };
 
 export type DeleteNodePayload = {
@@ -91,6 +104,12 @@ export type MoveNodePayload = {
   nodeId: string;
   parentId: string;
   index: number;
+  layout?: GridPlacement;
+};
+
+export type SetNodeLayoutPayload = {
+  nodeId: string;
+  layout: GridPlacement;
 };
 
 export type UpdateNodePropsPayload = {

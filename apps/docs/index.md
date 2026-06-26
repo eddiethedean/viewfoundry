@@ -21,4 +21,4 @@ studio
 
 ## Status
 
-ViewFoundry **v0.2.0** is early-access software. Package semver (`0.2.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for upcoming grid layout, style editor, and CLI scaffolding.
+ViewFoundry **v0.3.0** is early-access software. Package semver (`0.3.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for upcoming style editor and CLI scaffolding.

@@ -175,6 +175,23 @@ describe('generateTsx', () => {
     const { code } = generateTsx({ document: doc, imports });
     expect(code).toContain("<Button variant='primary' />");
   });
+
+  it('emits grid placement as inline style', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 4, rows: 2 }, [], 'grid1');
+    const button = createNode('Button', { children: 'A' }, [], 'b1', {
+      grid: { column: 2, row: 1, colSpan: 2 },
+    });
+    grid.children = [button];
+    doc.root.children = [grid];
+    const imports = {
+      Grid: { importPath: './components', exportName: 'Grid' },
+      Button: { importPath: './components', exportName: 'Button' },
+    };
+    const { code } = generateTsx({ document: doc, imports });
+    expect(code).toContain("gridColumn: '2 / 4'");
+    expect(code).toContain("gridRow: '1'");
+  });
 });
 
 describe('generateJson', () => {

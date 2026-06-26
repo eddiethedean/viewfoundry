@@ -1,6 +1,12 @@
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType, CSSProperties, ReactNode } from 'react';
 import type { ViewNode } from '@viewfoundry/core';
+import { isGridContainer, sortChildrenByGridOrder } from '@viewfoundry/core';
 import { useViewFoundryContext } from './context.js';
+import {
+  getChildPlacementStyle,
+  getGridContainerStyle,
+  getGridPlacementClass,
+} from './grid-styles.js';
 
 export type MissingComponentFallbackProps = {
   type: string;
@@ -26,28 +32,54 @@ export function resolveComponent(
 
 export type ViewNodeRendererProps = {
   node: ViewNode;
+  parent?: ViewNode | null;
   renderChildren?: boolean;
 };
 
-export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRendererProps) {
-  const { registry, mode, selection, onSelectNode } = useViewFoundryContext();
+function renderChildNodes(node: ViewNode, renderChildren: boolean): ReactNode {
+  if (!renderChildren || !node.children || node.children.length === 0) {
+    return undefined;
+  }
+  const children = isGridContainer(node.type)
+    ? sortChildrenByGridOrder(node.children)
+    : node.children;
+  return children.map((child) => <ViewNodeRenderer key={child.id} node={child} parent={node} />);
+}
+
+export function ViewNodeRenderer({
+  node,
+  parent = null,
+  renderChildren = true,
+}: ViewNodeRendererProps) {
+  const { registry, mode, selection, onSelectNode, wrapEditNode, renderGridDropLayer } =
+    useViewFoundryContext();
   const Component = resolveComponent(node.type, registry);
   const isSelected = selection.selectedNodeIds.includes(node.id);
   const isEditMode = mode === 'edit';
-
-  const childElements =
-    renderChildren && node.children && node.children.length > 0
-      ? node.children.map((child) => <ViewNodeRenderer key={child.id} node={child} />)
-      : undefined;
+  const placementStyle = getChildPlacementStyle(parent, node);
+  const gridContainerStyle = getGridContainerStyle(node);
+  const childElements = renderChildNodes(node, renderChildren);
 
   const props = { ...(node.props ?? {}) } as Record<string, unknown>;
-
   if (typeof props.children === 'string' && !childElements) {
     delete props.children;
   }
 
+  const mergedStyle: CSSProperties = {
+    ...((props.style as CSSProperties | undefined) ?? {}),
+    ...(placementStyle ?? {}),
+    ...(gridContainerStyle ?? {}),
+  };
+  if (Object.keys(mergedStyle).length > 0) {
+    props.style = mergedStyle;
+  }
+
   const jsxChildren: ReactNode =
     childElements ?? (typeof node.props?.children === 'string' ? node.props.children : undefined);
+
+  const gridClass = isGridContainer(node.type)
+    ? ' vf-grid-container'
+    : getGridPlacementClass(parent);
 
   if (!isEditMode) {
     if (node.type === 'Root') {
@@ -59,13 +91,27 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
     return <Component {...props}>{jsxChildren}</Component>;
   }
 
+  const editWrapper = (content: ReactNode, includeGridLayer = false) => {
+    const element = (
+      <>
+        {content}
+        {includeGridLayer && isEditMode && renderGridDropLayer?.(node)}
+      </>
+    );
+    if (wrapEditNode) {
+      return wrapEditNode(node, element, parent);
+    }
+    return element;
+  };
+
   if (!Component) {
     if (node.type === 'Root') {
       return <div className="vf-root">{childElements}</div>;
     }
-    return (
+    return editWrapper(
       <div
-        className={`vf-node-wrapper${isSelected ? ' vf-node-selected' : ''}`}
+        className={`vf-node-wrapper${gridClass}${isSelected ? ' vf-node-selected' : ''}`}
+        style={placementStyle}
         data-node-id={node.id}
         onClick={(e) => {
           e.stopPropagation();
@@ -73,12 +119,12 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
         }}
       >
         <MissingComponentFallback type={node.type} nodeId={node.id} />
-      </div>
+      </div>,
     );
   }
 
   if (node.type === 'Root') {
-    return (
+    return editWrapper(
       <div
         className={`vf-root${isSelected ? ' vf-node-selected' : ''}`}
         data-node-id={node.id}
@@ -88,20 +134,23 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
         }}
       >
         {childElements}
-      </div>
+      </div>,
     );
   }
 
-  return (
+  return editWrapper(
     <div
-      className={`vf-node-wrapper${isSelected ? ' vf-node-selected' : ''}`}
+      className={`vf-node-wrapper${gridClass}${isSelected ? ' vf-node-selected' : ''}`}
+      style={placementStyle}
       data-node-id={node.id}
+      data-component-type={node.type}
       onClick={(e) => {
         e.stopPropagation();
         onSelectNode?.(node.id);
       }}
     >
       <Component {...props}>{jsxChildren}</Component>
-    </div>
+    </div>,
+    isGridContainer(node.type),
   );
 }

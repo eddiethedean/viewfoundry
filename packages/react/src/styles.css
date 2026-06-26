@@ -21,3 +21,37 @@
 .vf-root {
   min-height: 100%;
 }
+
+.vf-grid-container > * {
+  transition:
+    grid-row 150ms ease,
+    grid-column 150ms ease;
+}
+
+.vf-grid-container {
+  position: relative;
+  border-radius: 4px;
+}
+
+.vf-grid-child {
+  min-height: 0;
+}
+
+.vf-node-wrapper.vf-node-dragging {
+  opacity: 0.45;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.vf-grid-drop-target {
+  outline: 2px solid #3182ce;
+  background: rgba(49, 130, 206, 0.12);
+}
+
+.vf-grid-cell-drop {
+  min-height: 24px;
+  border-radius: 2px;
+}
+
+.vf-grid-drop-layer {
+  opacity: 1;
+}

@@ -18,12 +18,36 @@ test.describe('basic-react example', () => {
     await expect(page.getByRole('button', { name: 'Edit', pressed: true })).toBeVisible();
   });
 
-  test('inserts a component from the palette', async ({ page }) => {
+  test('inserts a component from the palette with grid bootstrap', async ({ page }) => {
     const palette = page.locator('.vf-palette');
     await palette.getByRole('button', { name: 'Button', exact: true }).click();
 
+    await expect(page.locator('.vf-layers').getByRole('button', { name: /Grid/ })).toBeVisible();
     await expect(page.locator('.vf-layers').getByRole('button', { name: /Button/ })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Click me' })).toBeVisible();
+    await expect(page.locator('.demo-button')).toBeVisible();
+
+    const stored = await page.evaluate(() =>
+      localStorage.getItem('viewfoundry-basic-react-document'),
+    );
+    expect(stored).toContain('"layout"');
+    expect(stored).toContain('"grid"');
+  });
+
+  test('inserts into a selected grid container', async ({ page }) => {
+    const palette = page.locator('.vf-palette');
+    await palette.getByRole('button', { name: 'Grid', exact: true }).click();
+
+    const gridLayer = page.locator('.vf-layers').getByRole('button', { name: /Grid/ });
+    await gridLayer.click();
+    await palette.getByRole('button', { name: 'Heading', exact: true }).click();
+
+    await expect(page.locator('.demo-grid')).toBeVisible();
+    await expect(page.locator('.vf-layers').getByRole('button', { name: /Heading/ })).toBeVisible();
+
+    const stored = await page.evaluate(() =>
+      localStorage.getItem('viewfoundry-basic-react-document'),
+    );
+    expect(stored).toContain('"layout"');
   });
 
   test('toggles Live mode and keeps the canvas interactive', async ({ page }) => {

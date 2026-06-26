@@ -2,6 +2,8 @@ export type {
   ViewDocument,
   ViewDocumentMeta,
   ViewNode,
+  GridPlacement,
+  NodeLayout,
   PropField,
   PropSchema,
   ComponentDefinition,
@@ -14,6 +16,7 @@ export type {
   DeleteNodePayload,
   DuplicateNodePayload,
   MoveNodePayload,
+  SetNodeLayoutPayload,
   UpdateNodePropsPayload,
   SetNodePropPayload,
   CommandResult,
@@ -31,16 +34,32 @@ export {
 } from './nodes.js';
 export type { NodeLocation } from './nodes.js';
 export { createRegistry } from './registry.js';
-export { validateDocument } from './validation.js';
+export { validateDocument, validateGridLayout } from './validation.js';
 export type { ValidateDocumentOptions } from './validation.js';
 export {
   insertNode,
   deleteNode,
   duplicateNode,
   moveNode,
+  setNodeLayout,
   updateNodeProps,
   setNodeProp,
 } from './commands.js';
+export {
+  isGridContainer,
+  GRID_CONTAINER_TYPES,
+  resolveGridTracks,
+  sortChildrenByGridOrder,
+  autoPlaceNextCell,
+  placementToCss,
+  gridContainerStyle,
+  normalizePlacement,
+  rectsOverlap,
+  isPlacementInBounds,
+  gridDropId,
+  parseGridDropId,
+} from './grid.js';
+export type { GridTracks, PlacementRect, GridContainerType } from './grid.js';
 export { createHistory, pushHistory, undo, redo, canUndo, canRedo } from './history.js';
 export {
   createSelection,

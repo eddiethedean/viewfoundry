@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { ComponentRegistry, SelectionState, ViewDocument } from '@viewfoundry/core';
+import type { ComponentRegistry, SelectionState, ViewDocument, ViewNode } from '@viewfoundry/core';
 import { createSelection } from '@viewfoundry/core';
 
 export type ViewFoundryContextValue = {
@@ -8,6 +8,8 @@ export type ViewFoundryContextValue = {
   selection: SelectionState;
   mode: 'preview' | 'edit';
   onSelectNode?: (nodeId: string | null) => void;
+  wrapEditNode?: (node: ViewNode, element: ReactNode, parent: ViewNode | null) => ReactNode;
+  renderGridDropLayer?: (node: ViewNode) => ReactNode;
 };
 
 const ViewFoundryContext = createContext<ViewFoundryContextValue | null>(null);
@@ -18,6 +20,8 @@ export type ViewFoundryProviderProps = {
   selection?: SelectionState;
   mode?: 'preview' | 'edit';
   onSelectNode?: (nodeId: string | null) => void;
+  wrapEditNode?: (node: ViewNode, element: ReactNode, parent: ViewNode | null) => ReactNode;
+  renderGridDropLayer?: (node: ViewNode) => ReactNode;
   children: ReactNode;
 };
 
@@ -27,10 +31,22 @@ export function ViewFoundryProvider({
   selection = createSelection(),
   mode = 'preview',
   onSelectNode,
+  wrapEditNode,
+  renderGridDropLayer,
   children,
 }: ViewFoundryProviderProps) {
   return (
-    <ViewFoundryContext.Provider value={{ document, registry, selection, mode, onSelectNode }}>
+    <ViewFoundryContext.Provider
+      value={{
+        document,
+        registry,
+        selection,
+        mode,
+        onSelectNode,
+        wrapEditNode,
+        renderGridDropLayer,
+      }}
+    >
       {children}
     </ViewFoundryContext.Provider>
   );

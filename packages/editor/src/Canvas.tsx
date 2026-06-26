@@ -1,77 +1,43 @@
-import { useEffect, useRef } from 'react';
-import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
-import { useEditorState, useEditorStore } from './EditorContext.js';
+import { useCallback } from 'react';
+import { useEditorState } from './EditorContext.js';
+import { CanvasSurface, type CanvasSurfaceProps } from './CanvasSurface.js';
+import { DraggableNode } from './dnd/DraggableNode.js';
+import { GridDropLayer } from './dnd/GridDropLayer.js';
 
 export type CanvasProps = Record<string, never>;
 
 export function Canvas(_props: CanvasProps) {
-  const store = useEditorStore();
-  const document = useEditorState((s) => s.document);
   const registry = useEditorState((s) => s.registry);
-  const selection = useEditorState((s) => s.selection);
   const studioMode = useEditorState((s) => s.studioMode);
-  const surfaceRef = useRef<HTMLDivElement>(null);
-  const scrollTopRef = useRef(0);
   const isEdit = studioMode === 'edit';
 
-  useEffect(() => {
-    const surface = surfaceRef.current;
-    if (surface) {
-      surface.scrollTop = scrollTopRef.current;
-    }
-  }, [studioMode]);
+  const wrapEditNode = useCallback<NonNullable<CanvasSurfaceProps['wrapEditNode']>>(
+    (node, element, parent) => (
+      <DraggableNode node={node} parent={parent}>
+        {element}
+      </DraggableNode>
+    ),
+    [],
+  );
 
-  const handleScroll = () => {
-    if (surfaceRef.current) {
-      scrollTopRef.current = surfaceRef.current.scrollTop;
-    }
-  };
-
-  const isEmpty = !document.root.children || document.root.children.length === 0;
+  const renderGridDropLayer = useCallback<NonNullable<CanvasSurfaceProps['renderGridDropLayer']>>(
+    (node) => (
+      <GridDropLayer
+        node={node}
+        canDrop={(componentType) => {
+          const def = registry.get(node.type);
+          if (!def?.allowedChildren) return true;
+          return def.allowedChildren.includes(componentType);
+        }}
+      />
+    ),
+    [registry],
+  );
 
   return (
-    <div
-      className="vf-canvas"
-      onClick={isEdit ? () => store.getState().clearSelection() : undefined}
-      onDragOver={
-        isEdit
-          ? (e) => {
-              e.preventDefault();
-              e.dataTransfer.dropEffect = 'copy';
-            }
-          : undefined
-      }
-      onDrop={
-        isEdit
-          ? (e) => {
-              e.preventDefault();
-              const type = e.dataTransfer.getData('application/viewfoundry-component');
-              if (type) store.getState().insertComponent(type);
-            }
-          : undefined
-      }
-    >
-      {isEdit && <div className="vf-panel-header">Canvas</div>}
-      <div
-        ref={surfaceRef}
-        className={`vf-canvas-surface${isEdit ? '' : ' vf-canvas-surface--live'}`}
-        onScroll={handleScroll}
-      >
-        {isEdit && isEmpty && (
-          <div className="vf-canvas-empty">
-            Drag components here or click an item in the palette
-          </div>
-        )}
-        <ViewFoundryProvider
-          document={document}
-          registry={registry}
-          selection={selection}
-          mode={isEdit ? 'edit' : 'preview'}
-          onSelectNode={isEdit ? (nodeId) => store.getState().selectNode(nodeId) : undefined}
-        >
-          <ViewRenderer />
-        </ViewFoundryProvider>
-      </div>
-    </div>
+    <CanvasSurface
+      wrapEditNode={isEdit ? wrapEditNode : undefined}
+      renderGridDropLayer={isEdit ? renderGridDropLayer : undefined}
+    />
   );
 }

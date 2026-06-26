@@ -7,7 +7,9 @@ import { Palette } from './Palette.js';
 import { Canvas } from './Canvas.js';
 import { Inspector } from './Inspector.js';
 import { LayersPanel } from './LayersPanel.js';
+import { EditorDndShell } from './EditorDndShell.js';
 import { useEditorStore, useEditorState } from './EditorContext.js';
+import { findNodeLocation, isGridContainer } from '@viewfoundry/core';
 
 export type ViewFoundryEditorProps = {
   registry: ComponentRegistry;
@@ -46,6 +48,29 @@ function KeyboardShortcuts() {
         e.preventDefault();
         store.getState().duplicateSelected();
       }
+      if (!isInputTarget(e.target) && !mod) {
+        const nodeId = store.getState().selection.selectedNodeIds[0];
+        if (!nodeId) return;
+        const { document } = store.getState();
+        const location = findNodeLocation(document.root, nodeId);
+        if (!location?.parent || !isGridContainer(location.parent.type)) return;
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          store.getState().nudgeNodeLayout(nodeId, { column: -1 });
+        }
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          store.getState().nudgeNodeLayout(nodeId, { column: 1 });
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          store.getState().nudgeNodeLayout(nodeId, { row: -1 });
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          store.getState().nudgeNodeLayout(nodeId, { row: 1 });
+        }
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -70,22 +95,24 @@ function EditorLayout({ onExport, className }: { onExport?: () => void; classNam
     >
       <KeyboardShortcuts />
       <Toolbar onExport={onExport} />
-      <div className="vf-editor-body">
-        {isEdit && (
-          <aside className="vf-editor-sidebar vf-editor-sidebar-left">
-            <Palette />
-            <LayersPanel />
-          </aside>
-        )}
-        <main className="vf-editor-main">
-          <Canvas />
-        </main>
-        {isEdit && (
-          <aside className="vf-editor-sidebar vf-editor-sidebar-right">
-            <Inspector />
-          </aside>
-        )}
-      </div>
+      <EditorDndShell>
+        <div className="vf-editor-body">
+          {isEdit && (
+            <aside className="vf-editor-sidebar vf-editor-sidebar-left">
+              <Palette />
+              <LayersPanel />
+            </aside>
+          )}
+          <main className="vf-editor-main">
+            <Canvas />
+          </main>
+          {isEdit && (
+            <aside className="vf-editor-sidebar vf-editor-sidebar-right">
+              <Inspector />
+            </aside>
+          )}
+        </div>
+      </EditorDndShell>
     </div>
   );
 }

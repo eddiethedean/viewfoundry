@@ -3,9 +3,11 @@ import {
   duplicateNode,
   insertNode,
   moveNode,
+  setNodeLayout,
   setNodeProp,
   updateNodeProps,
 } from './commands.js';
+import { isGridContainer } from './grid.js';
 import { findNode, findNodeLocation } from './nodes.js';
 import type {
   CommandResult,
@@ -14,6 +16,7 @@ import type {
   DuplicateNodePayload,
   InsertNodePayload,
   MoveNodePayload,
+  SetNodeLayoutPayload,
   SetNodePropPayload,
   UpdateNodePropsPayload,
   ValidationResult,
@@ -27,6 +30,7 @@ export type DocumentCommand =
   | { type: 'deleteNode'; payload: DeleteNodePayload }
   | { type: 'duplicateNode'; payload: DuplicateNodePayload }
   | { type: 'moveNode'; payload: MoveNodePayload }
+  | { type: 'setNodeLayout'; payload: SetNodeLayoutPayload }
   | { type: 'updateNodeProps'; payload: UpdateNodePropsPayload }
   | { type: 'setNodeProp'; payload: SetNodePropPayload };
 
@@ -146,6 +150,25 @@ export function applyCommand(
       if (childError) return childError;
 
       const result = moveNode(document, command.payload);
+      if (!result.ok) return result;
+      return validateCommandResult(result.document, registry);
+    }
+    case 'setNodeLayout': {
+      const node = findNode(document.root, command.payload.nodeId);
+      if (!node) {
+        return { ok: false, error: `Node not found: ${command.payload.nodeId}` };
+      }
+      const location = findNodeLocation(document.root, command.payload.nodeId);
+      if (!location?.parent) {
+        return { ok: false, error: 'Cannot set layout on root node' };
+      }
+      if (!isGridContainer(location.parent.type)) {
+        return {
+          ok: false,
+          error: `Parent "${location.parent.type}" is not a grid container`,
+        };
+      }
+      const result = setNodeLayout(document, command.payload);
       if (!result.ok) return result;
       return validateCommandResult(result.document, registry);
     }

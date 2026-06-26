@@ -43,7 +43,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.2.0 — Basic React</h1>
+        <h1>ViewFoundry 0.3.0 — Basic React</h1>
       </header>
       <main className="app-main">
         <ViewFoundryEditor

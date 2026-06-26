@@ -200,6 +200,28 @@
   margin-top: 2px;
 }
 
+.vf-palette-item--dragging {
+  opacity: 0.5;
+}
+
+.vf-drag-ghost {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #3182ce;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  font-weight: 500;
+  color: #2d3748;
+  pointer-events: none;
+}
+
+.vf-layer-item-grid {
+  margin-left: 6px;
+  font-size: 10px;
+  color: #718096;
+}
+
 .vf-canvas {
   flex: 1;
   display: flex;

@@ -21,7 +21,7 @@ pnpm test:e2e   # Playwright UI smoke tests (first run: pnpm exec playwright ins
 pnpm dev        # runs examples/basic-react
 ```
 
-## Packages (0.2.0)
+## Packages (0.3.0)
 
 See the [package overview](https://viewfoundry.readthedocs.io/en/latest/packages/index.html) for API details.
 
@@ -39,7 +39,7 @@ Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md
 
 ### 0.x stability
 
-ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.2.0`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
+ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.3.0`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
 
 ## Usage
 
@@ -90,4 +90,4 @@ Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Sourc
 
 Planning specs live in [`docs/`](https://github.com/eddiethedean/viewfoundry/tree/main/docs). The implementation follows [docs/ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
 
-**Planned:** [v0.3.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v030---grid-layout--dragdrop) grid drag/drop · [v0.4.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.6.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v060---documentation-site) Read the Docs studio. See [docs/ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for the full release plan.
+**Planned:** [v0.4.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.5.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v050---cli--examples) CLI scaffolding. See [docs/ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for the full release plan.
