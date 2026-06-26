@@ -56,4 +56,6 @@ See `examples/basic-react` for a full demo with Button, Card, Stack, Heading, an
 
 ## Docs
 
-Planning and architecture docs live in `docs/`. The implementation follows `docs/IMPLEMENTATION_ROADMAP.md` phases 0–5 for the 0.1.0 release.
+Planning and architecture specs live in `docs/`. The implementation follows `docs/IMPLEMENTATION_ROADMAP.md`.
+
+**Planned:** Phase 4 adds **Edit / Live** toggle in a single viewport. Phase 5 adds grid layout drag/drop. Phase 7 adds Style Editor sub-mode. Phase 9 adds Read the Docs with an embedded studio.

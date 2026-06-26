@@ -35,10 +35,39 @@ viewfoundry/
     lessonkit-adapter/
 
   apps/
-    docs/
-    playground/
+    docs/           # Read the Docs site (prose + embedded studio UI)
+    playground/     # optional standalone studio app; may share code with docs embed
 
-  docs/
+  docs/             # planning and design specs (source for apps/docs content)
+```
+
+### `apps/docs` (Read the Docs)
+
+Published documentation hosted on Read the Docs.
+
+Owns:
+
+- Sphinx or MyST-based prose docs (getting started, guides, API reference)
+- Read the Docs build config (`.readthedocs.yaml`)
+- **embedded Studio UI** — a static build of `ViewFoundryEditor` shipped inside the docs site so readers can try ViewFoundry in the browser
+- docs build pipeline that compiles the studio bundle before the RTD HTML build
+
+The studio embed should reuse the same component definitions as `examples/basic-react` (or `apps/playground`) so the docs demo stays in sync with the SDK.
+
+Build flow:
+
+```txt
+pnpm build (packages)
+  ↓
+build studio static bundle (Vite)
+  ↓
+copy assets into apps/docs/_static/ (or equivalent)
+  ↓
+Read the Docs HTML build
+  ↓
+deployed site with prose + live studio page
+```
+
 ```
 
 ## Package responsibilities
@@ -97,13 +126,23 @@ Owns:
 - canvas
 - palette
 - layers panel
-- inspector
-- toolbar
-- drag/drop
+- inspector (prop inspector in Component Editor mode; style inspector in Style Editor mode)
+- toolbar with **Edit | Live** toggle (single viewport) and **Component | Style** edit sub-modes
+- **grid layout system** with canvas drag/drop for repositioning (Phase 5)
+- drag/drop (palette insert + layout moves)
 - keyboard shortcuts
 - editor shell
 
 Depends on `@viewfoundry/core`, `@viewfoundry/schema`, and `@viewfoundry/react`.
+
+**Editor modes:**
+
+| Mode | Purpose |
+|------|---------|
+| **Edit** | Studio chrome on; Component or Style sub-mode for mutations |
+| **Live** | Same canvas viewport; chrome off; interactive runtime render |
+| Component (edit sub-mode) | Structure, nesting, schema-driven props, grid layout drag/drop |
+| Style (edit sub-mode) | Visual styling via `node.style` tokens (Phase 7) |
 
 ### `@viewfoundry/codegen`
 

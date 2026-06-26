@@ -12,10 +12,8 @@ The example should include:
   - Heading
   - Text
 - ViewFoundry component definitions for each component
-- an editor page
-- a preview page or preview pane
-- JSON save/load using local state or localStorage
-- TSX export demo if `@viewfoundry/codegen` is implemented
+- an editor page with **Edit / Live toggle in one window** (not separate editor and preview pages)
+- optional JSON panel and TSX export demo if `@viewfoundry/codegen` is implemented
 
 Acceptance criteria:
 

@@ -12,6 +12,8 @@ The core value proposition:
 
 > Install ViewFoundry, register your components, and your app becomes visually editable.
 
+Arranging those components on an intuitive **grid** with satisfying **drag and drop** is essential to that promise — it should feel as good as the rest of the editor.
+
 ## Target users
 
 ### Primary user
@@ -66,6 +68,15 @@ The MVP is successful when a developer can:
 7. Save/load the page as JSON.
 8. Render the JSON document as React.
 9. Export the JSON document to readable TSX.
+
+## Post-MVP editor modes
+
+After the MVP, the editor gains explicit modes (see `docs/EDITOR_SPEC.md`):
+
+- **Edit / Live** — toggle in one browser window; same canvas viewport (Phase 4, **critical**)
+- **Component Editor** — structure, nesting, and schema-driven props (Edit sub-mode / Phase 4)
+- **Grid layout drag/drop** — intuitive CSS Grid–based arrangement with satisfying canvas moves (Phase 5, **critical**)
+- **Style Editor** — visual styling via `node.style` tokens (Edit sub-mode / Phase 7)
 
 ## North star
 

@@ -111,6 +111,8 @@ A document is valid when:
 Potential future fields:
 
 ```ts
+export type StyleTokenMap = Record<string, string | number>;
+
 export type ViewNode = {
   id: string;
   type: string;
@@ -123,3 +125,42 @@ export type ViewNode = {
   style?: StyleTokenMap;
 };
 ```
+
+### Style Editor mode
+
+The `style` field powers **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It stores presentation values separately from schema-backed `props`:
+
+- spacing (`margin`, `padding`, `gap`)
+- size (`width`, `height`, `minWidth`, `maxWidth`)
+- colors (`color`, `backgroundColor`, `borderColor`)
+- typography (`fontSize`, `fontWeight`, `lineHeight`, `textAlign`)
+- border and radius
+- layout (`display`, `flexDirection`, `alignItems`, `justifyContent`)
+- opacity and overflow
+
+Styles must remain JSON-serializable. Avoid functions. Codegen should map `style` to JSX `style` objects or registered class/token helpers.
+
+### Grid layout
+
+Grid placement powers the layout drag/drop system (see `docs/EDITOR_SPEC.md`). Stored separately from `props` and `style` where possible:
+
+```ts
+export type GridPlacement = {
+  column?: number;
+  row?: number;
+  colSpan?: number;
+  rowSpan?: number;
+};
+
+export type NodeLayout = {
+  grid?: GridPlacement;
+  /** grid container track definition when node is a layout container */
+  tracks?: {
+    columns?: number | string;
+    rows?: number | string;
+    gap?: number | string;
+  };
+};
+```
+
+Add `layout?: NodeLayout` to `ViewNode` when Phase 5 begins. Validation should reject out-of-bounds spans and overlapping placements according to container rules.
