@@ -2,7 +2,7 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
-## [0.3.0] — 2025
+## [0.3.0] — June 2026
 
 ### Added
 
@@ -13,13 +13,28 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Canvas drag-and-drop via **dnd-kit** — palette ghost, per-cell drop targets, node reposition
 - Editor store: `moveNodeToCell`, `nudgeNodeLayout`, grid bootstrap on empty canvas
 - Grid reading order in layers panel; arrow-key nudge between cells
-- Codegen emits `gridColumn` / `gridRow` inline styles from `layout.grid`
+- Codegen emits grid placement in wrapper `<div>` elements with `gridColumn` / `gridRow` styles
+- `growGridRowsIfNeeded` helper and `isDescendant` tree utility in `@viewfoundry/core`
 - Playwright e2e coverage for grid bootstrap and grid container insert
 
 ### Changed
 
 - Palette and canvas use dnd-kit instead of native HTML5 drag-and-drop
 - `ViewFoundryProvider` accepts optional `wrapEditNode` and `renderGridDropLayer` hooks
+- Preview/Live mode wraps grid children in placement elements for WYSIWYG layout fidelity
+- Controlled `document` prop sync preserves undo history (`syncDocument`); drag cancel uses `revertDocument`
+- Editor toolbar shows `lastError` when mutations are blocked
+
+### Fixed
+
+- `moveNode` no longer silently deletes subtrees when targeting self or a descendant
+- Live mode grid placement no longer dropped when components omit a `style` prop
+- Codegen no longer emits invalid TSX for `{` in string children
+- Full grids auto-grow `rows` instead of failing insert/duplicate silently
+- Drag cancel no longer wipes undo/redo history
+- `Canvas.canDrop` respects `acceptsChildren`; duplicate selects the new node
+- CLI handles malformed JSON and missing files gracefully
+- `validateProps` rejects `NaN` and wrong-type values; `validateDocument` checks `acceptsChildren`
 
 ## [0.2.0] — 2025
 

@@ -58,7 +58,7 @@ Palette and canvas DnD now use **dnd-kit** instead of native HTML5 drag-and-drop
 
 ## Codegen
 
-`generateTsx` emits `gridColumn` and `gridRow` inline styles for nodes with `layout.grid`. No import map changes are required for layout itself.
+`generateTsx` wraps nodes with `layout.grid` in a `<div style={{ gridColumn, gridRow }}>` so components without a `style` prop still render in the correct cell. No import map changes are required for layout itself.
 
 ## React provider
 

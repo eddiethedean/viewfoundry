@@ -160,7 +160,7 @@ const { code, warnings } = generateTsx({
 - `exportName` — named export to import from that module.
 - `warnings` — unsupported prop values, missing import map entries, or invalid identifiers.
 
-In v0.3.0, nodes with `layout.grid` placement emit inline `gridColumn` / `gridRow` styles in generated TSX.
+In v0.3.0, nodes with `layout.grid` placement are wrapped in a `<div style={{ gridColumn, gridRow }}>` in generated TSX so components without a `style` prop still render correctly.
 
 Wire `onExport` on `ViewFoundryEditor` to call `generateTsx` and show or download the result. See [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react) for a fuller demo with Grid, Row, Card, Stack, and persistence.
 

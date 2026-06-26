@@ -28,7 +28,7 @@ You provide an **import map** to `generateTsx`. Each document node `type` maps t
 
 ## What changed in v0.3.0?
 
-Grid layout, canvas drag-and-drop, `layout.grid` on nodes, and grid-aware codegen. See [Migration from 0.2 → 0.3](migration-0.2-0.3.md) and the [changelog](changelog.md).
+Grid layout, canvas drag-and-drop, `layout.grid` on nodes, grid-aware codegen, and reliability fixes for Live mode layout, `moveNode`, and controlled embed history. See [Migration from 0.2 → 0.3](migration-0.2-0.3.md) and the [changelog](changelog.md).
 
 ## Where is the full API reference?
 

@@ -76,6 +76,12 @@ export function isGridContainer(type: string): boolean;
 export function resolveGridTracks(node: ViewNode): GridTracks;
 export function sortChildrenByGridOrder(children: ViewNode[]): ViewNode[];
 export function autoPlaceNextCell(children: ViewNode[], tracks: GridTracks): GridPlacement;
+export function growGridRowsIfNeeded(
+  root: ViewNode,
+  parentId: string,
+  placement: GridPlacement,
+): ViewNode;
+export function isDescendant(root: ViewNode, ancestorId: string, nodeId: string): boolean;
 export function placementToCss(placement?: GridPlacement): Record<string, string>;
 export function gridDropId(parentId: string, row: number, column: number): string;
 ```
