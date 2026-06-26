@@ -43,13 +43,22 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
   const props = { ...(node.props ?? {}) } as Record<string, unknown>;
 
   if (typeof props.children === 'string' && !childElements) {
-    // string children prop handled via JSX children below
     delete props.children;
   }
 
   const jsxChildren: ReactNode =
     childElements ??
     (typeof node.props?.children === 'string' ? node.props.children : undefined);
+
+  if (!isEditMode) {
+    if (node.type === 'Root') {
+      return <>{childElements}</>;
+    }
+    if (!Component) {
+      return <MissingComponentFallback type={node.type} nodeId={node.id} />;
+    }
+    return <Component {...props}>{jsxChildren}</Component>;
+  }
 
   if (!Component) {
     if (node.type === 'Root') {
@@ -59,14 +68,10 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
       <div
         className={`vf-node-wrapper${isSelected ? ' vf-node-selected' : ''}`}
         data-node-id={node.id}
-        onClick={
-          isEditMode
-            ? (e) => {
-                e.stopPropagation();
-                onSelectNode?.(node.id);
-              }
-            : undefined
-        }
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectNode?.(node.id);
+        }}
       >
         <MissingComponentFallback type={node.type} nodeId={node.id} />
       </div>
@@ -78,14 +83,10 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
       <div
         className={`vf-root${isSelected ? ' vf-node-selected' : ''}`}
         data-node-id={node.id}
-        onClick={
-          isEditMode
-            ? (e) => {
-                e.stopPropagation();
-                onSelectNode?.(node.id);
-              }
-            : undefined
-        }
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectNode?.(node.id);
+        }}
       >
         {childElements}
       </div>
@@ -96,14 +97,10 @@ export function ViewNodeRenderer({ node, renderChildren = true }: ViewNodeRender
     <div
       className={`vf-node-wrapper${isSelected ? ' vf-node-selected' : ''}`}
       data-node-id={node.id}
-      onClick={
-        isEditMode
-          ? (e) => {
-              e.stopPropagation();
-              onSelectNode?.(node.id);
-            }
-          : undefined
-      }
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelectNode?.(node.id);
+      }}
     >
       <Component {...props}>{jsxChildren}</Component>
     </div>

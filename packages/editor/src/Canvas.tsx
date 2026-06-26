@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import { useEditorState, useEditorStore } from './EditorContext.js';
 
@@ -8,26 +9,55 @@ export function Canvas(_props: CanvasProps) {
   const document = useEditorState((s) => s.document);
   const registry = useEditorState((s) => s.registry);
   const selection = useEditorState((s) => s.selection);
+  const studioMode = useEditorState((s) => s.studioMode);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const scrollTopRef = useRef(0);
+  const isEdit = studioMode === 'edit';
+
+  useEffect(() => {
+    const surface = surfaceRef.current;
+    if (surface) {
+      surface.scrollTop = scrollTopRef.current;
+    }
+  }, [studioMode]);
+
+  const handleScroll = () => {
+    if (surfaceRef.current) {
+      scrollTopRef.current = surfaceRef.current.scrollTop;
+    }
+  };
 
   const isEmpty = !document.root.children || document.root.children.length === 0;
 
   return (
     <div
       className="vf-canvas"
-      onClick={() => store.getState().clearSelection()}
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
-      }}
-      onDrop={(e) => {
-        e.preventDefault();
-        const type = e.dataTransfer.getData('application/viewfoundry-component');
-        if (type) store.getState().insertComponent(type, 'root');
-      }}
+      onClick={isEdit ? () => store.getState().clearSelection() : undefined}
+      onDragOver={
+        isEdit
+          ? (e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'copy';
+            }
+          : undefined
+      }
+      onDrop={
+        isEdit
+          ? (e) => {
+              e.preventDefault();
+              const type = e.dataTransfer.getData('application/viewfoundry-component');
+              if (type) store.getState().insertComponent(type, 'root');
+            }
+          : undefined
+      }
     >
-      <div className="vf-panel-header">Canvas</div>
-      <div className="vf-canvas-surface">
-        {isEmpty && (
+      {isEdit && <div className="vf-panel-header">Canvas</div>}
+      <div
+        ref={surfaceRef}
+        className={`vf-canvas-surface${isEdit ? '' : ' vf-canvas-surface--live'}`}
+        onScroll={handleScroll}
+      >
+        {isEdit && isEmpty && (
           <div className="vf-canvas-empty">
             Drag components here or click an item in the palette
           </div>
@@ -36,8 +66,8 @@ export function Canvas(_props: CanvasProps) {
           document={document}
           registry={registry}
           selection={selection}
-          mode="edit"
-          onSelectNode={(nodeId) => store.getState().selectNode(nodeId)}
+          mode={isEdit ? 'edit' : 'preview'}
+          onSelectNode={isEdit ? (nodeId) => store.getState().selectNode(nodeId) : undefined}
         >
           <ViewRenderer />
         </ViewFoundryProvider>

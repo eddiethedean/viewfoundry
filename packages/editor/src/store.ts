@@ -23,14 +23,20 @@ import {
   type ViewDocument,
 } from '@viewfoundry/core';
 
+export type StudioMode = 'edit' | 'live';
+export type EditSubMode = 'component';
+
 export type EditorStore = {
   document: ViewDocument;
   history: HistoryState;
   selection: SelectionState;
   registry: ComponentRegistry;
   paletteFilter: string;
+  studioMode: StudioMode;
+  editSubMode: EditSubMode;
   setRegistry: (registry: ComponentRegistry) => void;
   setDocument: (document: ViewDocument) => void;
+  setStudioMode: (mode: StudioMode) => void;
   selectNode: (nodeId: string | null) => void;
   clearSelection: () => void;
   insertComponent: (type: string, parentId?: string) => void;
@@ -60,8 +66,14 @@ export function createEditorStore(
   registry: ComponentRegistry,
   initialDocument?: ViewDocument,
   onChange?: (document: ViewDocument) => void,
+  options?: {
+    defaultStudioMode?: StudioMode;
+    onStudioModeChange?: (mode: StudioMode) => void;
+  },
 ) {
   const doc = initialDocument ?? createDocument();
+  const defaultStudioMode = options?.defaultStudioMode ?? 'edit';
+  const onStudioModeChange = options?.onStudioModeChange;
 
   return create<EditorStore>((set, get) => ({
     document: doc,
@@ -69,8 +81,16 @@ export function createEditorStore(
     selection: createSelection(),
     registry,
     paletteFilter: '',
+    studioMode: defaultStudioMode,
+    editSubMode: 'component',
 
     setRegistry: (registry) => set({ registry }),
+
+    setStudioMode: (mode) => {
+      if (get().studioMode === mode) return;
+      set({ studioMode: mode });
+      onStudioModeChange?.(mode);
+    },
 
     setDocument: (document) => {
       set({ document, history: createHistory(document), selection: createSelection() });

@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI for ViewFoundry scaffolding and export",
   "type": "module",
   "bin": {
@@ -8,7 +8,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit"

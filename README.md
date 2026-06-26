@@ -19,7 +19,7 @@ pnpm test
 pnpm dev   # runs examples/basic-react
 ```
 
-## Packages (0.1.0)
+## Packages (0.2.0)
 
 | Package | Description |
 |---------|-------------|
@@ -64,4 +64,4 @@ See `examples/basic-react` for a full demo with Button, Card, Stack, Heading, an
 
 Planning and architecture specs live in `docs/`. The implementation follows `docs/ROADMAP.md`.
 
-**Planned:** [v0.2.0](docs/ROADMAP.md#v020---edit--live-studio) Edit / Live single viewport · [v0.3.0](docs/ROADMAP.md#v030---grid-layout--dragdrop) grid drag/drop · [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.6.0](docs/ROADMAP.md#v060---documentation-site) Read the Docs studio. See `docs/ROADMAP.md` for the full release plan.
+**Planned:** [v0.3.0](docs/ROADMAP.md#v030---grid-layout--dragdrop) grid drag/drop · [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.6.0](docs/ROADMAP.md#v060---documentation-site) Read the Docs studio. See `docs/ROADMAP.md` for the full release plan.

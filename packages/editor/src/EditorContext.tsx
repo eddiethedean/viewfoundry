@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
 import type { ComponentRegistry, ViewDocument } from '@viewfoundry/core';
-import { createEditorStore, type EditorStoreApi } from './store.js';
+import { createEditorStore, type EditorStoreApi, type StudioMode } from './store.js';
 
 const EditorStoreContext = createContext<EditorStoreApi | null>(null);
 
@@ -8,12 +8,25 @@ export type EditorProviderProps = {
   registry: ComponentRegistry;
   document?: ViewDocument;
   onChange?: (document: ViewDocument) => void;
+  defaultStudioMode?: StudioMode;
+  onStudioModeChange?: (mode: StudioMode) => void;
   children: ReactNode;
 };
 
-export function EditorProvider({ registry, document, onChange, children }: EditorProviderProps) {
+export function EditorProvider({
+  registry,
+  document,
+  onChange,
+  defaultStudioMode,
+  onStudioModeChange,
+  children,
+}: EditorProviderProps) {
   const store = useMemo(
-    () => createEditorStore(registry, document, onChange),
+    () =>
+      createEditorStore(registry, document, onChange, {
+        defaultStudioMode,
+        onStudioModeChange,
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

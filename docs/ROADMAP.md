@@ -7,7 +7,7 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 | Version | Status | Theme |
 |---------|--------|-------|
 | [v0.1.0](#v010---sdk-foundation) | **Released** | Core SDK, basic editor, codegen, example app |
-| [v0.2.0](#v020---edit--live-studio) | Planned | Single-window Edit / Live toggle |
+| [v0.2.0](#v020---edit--live-studio) | **Released** | Single-window Edit / Live toggle |
 | [v0.3.0](#v030---grid-layout--dragdrop) | Planned | Grid system and satisfying layout drag/drop |
 | [v0.4.0](#v040---style-editor) | Planned | Style Editor sub-mode and `node.style` |
 | [v0.5.0](#v050---cli--examples) | Planned | CLI scaffolding and additional examples |
@@ -42,13 +42,14 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 
 ### Known gaps (addressed in later releases)
 
-- Edit / Live uses separate tabs in `basic-react` (not single viewport yet → **v0.2.0**)
 - palette insert only; no grid layout drag/drop yet → **v0.3.0**
 - no Style Editor sub-mode → **v0.4.0**
 
 ---
 
 ## v0.2.0 — Edit / Live studio
+
+**Status: released**
 
 **Priority: critical.** One browser window; same canvas viewport for editing and live preview.
 

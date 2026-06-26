@@ -64,4 +64,18 @@ describe('ViewRenderer', () => {
     expect(screen.getByText(/Missing component/)).toBeInTheDocument();
     expect(screen.getByText('Unknown')).toBeInTheDocument();
   });
+
+  it('renders preview mode without editor wrappers', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Live click' }, [], 'b1')];
+
+    const { container } = render(
+      <ViewFoundryProvider document={doc} registry={registry} mode="preview">
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    expect(screen.getByRole('button')).toHaveTextContent('Live click');
+    expect(container.querySelector('.vf-node-wrapper')).toBeNull();
+  });
 });

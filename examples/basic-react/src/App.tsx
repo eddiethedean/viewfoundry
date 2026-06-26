@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { createDocument } from '@viewfoundry/core';
 import type { ViewDocument } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '@viewfoundry/editor';
-import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import { generateTsx } from '@viewfoundry/codegen';
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';
@@ -22,8 +21,7 @@ function loadDocument(): ViewDocument {
 
 export default function App() {
   const [document, setDocument] = useState<ViewDocument>(loadDocument);
-  const [mode, setMode] = useState<'edit' | 'preview'>('edit');
-  const [exportedCode, setExportedCode] = useState('');
+  const [exportedCode, setExportedCode] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(document));
@@ -38,56 +36,32 @@ export default function App() {
     setExportedCode(
       warnings.length > 0 ? `${code}\n// Warnings:\n${warnings.map((w) => `// ${w}`).join('\n')}` : code,
     );
-    setMode('preview');
   }, [document]);
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.1.0 — Basic React</h1>
-        <div className="app-tabs">
-          <button
-            type="button"
-            className={mode === 'edit' ? 'active' : ''}
-            onClick={() => setMode('edit')}
-          >
-            Editor
-          </button>
-          <button
-            type="button"
-            className={mode === 'preview' ? 'active' : ''}
-            onClick={() => setMode('preview')}
-          >
-            Preview
-          </button>
-        </div>
+        <h1>ViewFoundry 0.2.0 — Basic React</h1>
       </header>
       <main className="app-main">
-        {mode === 'edit' ? (
-          <div className="app-editor">
-            <ViewFoundryEditor
-              registry={demoRegistry}
-              document={document}
-              onChange={setDocument}
-              onExport={handleExport}
-            />
-          </div>
-        ) : (
-          <div className="app-preview">
-            <div className="preview-surface">
-              <ViewFoundryProvider document={document} registry={demoRegistry} mode="preview">
-                <ViewRenderer />
-              </ViewFoundryProvider>
-            </div>
-            {exportedCode && (
-              <div className="export-panel">
-                <h3>Generated TSX</h3>
-                <pre>{exportedCode}</pre>
-              </div>
-            )}
-          </div>
-        )}
+        <ViewFoundryEditor
+          registry={demoRegistry}
+          document={document}
+          onChange={setDocument}
+          onExport={handleExport}
+        />
       </main>
+      {exportedCode !== null && (
+        <div className="export-drawer" role="dialog" aria-label="Generated TSX">
+          <div className="export-drawer-header">
+            <h2>Generated TSX</h2>
+            <button type="button" onClick={() => setExportedCode(null)}>
+              Close
+            </button>
+          </div>
+          <pre className="export-drawer-body">{exportedCode}</pre>
+        </div>
+      )}
     </div>
   );
 }
