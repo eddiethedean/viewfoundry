@@ -12,4 +12,4 @@ export {
   MissingComponentFallback,
   resolveComponent,
 } from './ViewNodeRenderer.js';
-export type { ViewNodeRendererProps, MissingComponentFallbackProps } from './ViewNodeRenderer.js';
+export { resolveStyleMap, mergeStyles } from './style-utils.js';

@@ -13,6 +13,7 @@ export type StoredDocument = {
         type: string;
         props?: Record<string, unknown>;
         layout?: { grid?: { column?: number; row?: number } };
+        style?: Record<string, string | number>;
         children?: Array<{ id: string; type: string; props?: Record<string, unknown> }>;
       }>;
     }>;
@@ -92,6 +93,14 @@ export async function bootstrapGridWithButton(page: Page) {
   await insertFromPalette(page, 'Button');
   await expect(layerButton(page, /^Button\b/)).toBeVisible();
   await expect(layerButton(page, /^Grid\b/)).toBeVisible();
+}
+
+export function styleInspector(page: Page) {
+  return page.locator('.vf-style-inspector');
+}
+
+export async function setEditSubMode(page: Page, mode: 'Component' | 'Style') {
+  await toolbar(page).getByRole('button', { name: mode, exact: true }).click();
 }
 
 export function firstGridChild(doc: StoredDocument) {

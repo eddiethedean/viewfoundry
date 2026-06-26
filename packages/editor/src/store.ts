@@ -27,13 +27,15 @@ import {
   type GridPlacement,
   type HistoryState,
   type SelectionState,
+  type StyleTokenMap,
+  type StyleValue,
   type ViewDocument,
   type ViewNode,
 } from '@viewfoundry/core';
 import { validateProps } from '@viewfoundry/schema';
 
 export type StudioMode = 'edit' | 'live';
-export type EditSubMode = 'component';
+export type EditSubMode = 'component' | 'style';
 
 export type InsertComponentOptions = {
   parentId?: string;
@@ -54,6 +56,7 @@ export type EditorStore = {
   syncDocument: (document: ViewDocument) => void;
   revertDocument: (document: ViewDocument) => void;
   setStudioMode: (mode: StudioMode) => void;
+  setEditSubMode: (mode: EditSubMode) => void;
   selectNode: (nodeId: string | null) => void;
   clearSelection: () => void;
   insertComponent: (type: string, options?: InsertComponentOptions) => void;
@@ -62,6 +65,8 @@ export type EditorStore = {
   deleteSelected: () => void;
   duplicateSelected: () => void;
   updateProp: (key: string, value: unknown) => void;
+  setStyleProp: (key: string, value: StyleValue | undefined) => void;
+  updateStyle: (style: StyleTokenMap) => void;
   undo: () => void;
   redo: () => void;
   canUndo: () => boolean;
@@ -139,6 +144,13 @@ function createApplyOptions(registry: ComponentRegistry): ApplyCommandOptions {
   };
 }
 
+function preserveSelection(selection: SelectionState, document: ViewDocument): SelectionState {
+  const selectedId = getPrimarySelection(selection);
+  if (!selectedId) return selection;
+  if (findNode(document.root, selectedId)) return selection;
+  return clearSelection();
+}
+
 export function createEditorStore(
   registry: ComponentRegistry,
   initialDocument?: ViewDocument,
@@ -168,6 +180,11 @@ export function createEditorStore(
       if (get().studioMode === mode) return;
       set({ studioMode: mode });
       onStudioModeChange?.(mode);
+    },
+
+    setEditSubMode: (mode) => {
+      if (get().editSubMode === mode) return;
+      set({ editSubMode: mode, lastError: null });
     },
 
     setDocument: (document) => {
@@ -386,19 +403,63 @@ export function createEditorStore(
       );
     },
 
+    setStyleProp: (key, value) => {
+      const nodeId = getPrimarySelection(get().selection);
+      if (!nodeId) return;
+      const { registry, document } = get();
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          { type: 'setStyleProp', payload: { nodeId, key, value } },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
+      );
+    },
+
+    updateStyle: (style) => {
+      const nodeId = getPrimarySelection(get().selection);
+      if (!nodeId) return;
+      const { registry, document } = get();
+      handleCommandResult(
+        set,
+        get,
+        applyCommand(
+          document,
+          { type: 'updateNodeStyle', payload: { nodeId, style } },
+          registry,
+          createApplyOptions(registry),
+        ),
+        onChange,
+      );
+    },
+
     undo: () => {
-      const { history } = get();
+      const { history, selection } = get();
       if (!canUndo(history)) return;
       const next = undo(history);
-      set({ history: next, document: next.present, selection: clearSelection(), lastError: null });
+      set({
+        history: next,
+        document: next.present,
+        selection: preserveSelection(selection, next.present),
+        lastError: null,
+      });
       onChange?.(next.present);
     },
 
     redo: () => {
-      const { history } = get();
+      const { history, selection } = get();
       if (!canRedo(history)) return;
       const next = redo(history);
-      set({ history: next, document: next.present, selection: clearSelection(), lastError: null });
+      set({
+        history: next,
+        document: next.present,
+        selection: preserveSelection(selection, next.present),
+        lastError: null,
+      });
       onChange?.(next.present);
     },
 

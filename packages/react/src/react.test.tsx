@@ -16,8 +16,20 @@ import {
   useViewSelection,
 } from '../src/index.js';
 
-function Button({ children, variant }: { children?: string; variant?: string }) {
-  return <button data-variant={variant}>{children}</button>;
+function Button({
+  children,
+  variant,
+  style,
+}: {
+  children?: string;
+  variant?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <button data-variant={variant} style={style}>
+      {children}
+    </button>
+  );
 }
 
 function HookProbe() {
@@ -225,6 +237,92 @@ describe('ViewRenderer', () => {
     const wrapper = container.querySelector('.vf-node-wrapper[data-node-id="u1"]');
     expect(wrapper).not.toBeNull();
     expect(wrapper?.textContent).toContain('Missing component');
+  });
+
+  it('applies node.style in preview mode', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Styled' }, [], 'b1', undefined, {
+        backgroundColor: '#ff0000',
+        padding: 8,
+      }),
+    ];
+
+    render(
+      <ViewFoundryProvider document={doc} registry={registry} mode="preview">
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    expect(screen.getByRole('button')).toHaveStyle({
+      backgroundColor: 'rgb(255, 0, 0)',
+      padding: '8px',
+    });
+  });
+
+  it('resolves style tokens via provider', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Token' }, [], 'b1', undefined, {
+        color: 'color.primary',
+      }),
+    ];
+
+    render(
+      <ViewFoundryProvider
+        document={doc}
+        registry={registry}
+        mode="preview"
+        styleTokens={{ 'color.primary': '#336699' }}
+      >
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    expect(screen.getByRole('button')).toHaveStyle({ color: 'rgb(51, 102, 153)' });
+  });
+
+  it('applies node.style alongside grid placement wrapper', () => {
+    const registryWithGrid = createRegistry([
+      {
+        type: 'Grid',
+        component: ({
+          children,
+          style,
+        }: {
+          children?: React.ReactNode;
+          style?: React.CSSProperties;
+        }) => (
+          <div data-testid="grid" style={style}>
+            {children}
+          </div>
+        ),
+        acceptsChildren: true,
+      },
+      { type: 'Button', component: Button, acceptsChildren: true },
+    ]);
+
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode(
+      'Button',
+      { children: 'Styled grid child' },
+      [],
+      'btn1',
+      { grid: { column: 1, row: 1 } },
+      { margin: 4 },
+    );
+    grid.children = [button];
+    doc.root.children = [grid];
+
+    const { container } = render(
+      <ViewFoundryProvider document={doc} registry={registryWithGrid} mode="preview">
+        <ViewRenderer />
+      </ViewFoundryProvider>,
+    );
+
+    expect(container.querySelector('.vf-grid-placement')).not.toBeNull();
+    expect(screen.getByRole('button')).toHaveStyle({ margin: '4px' });
   });
 });
 

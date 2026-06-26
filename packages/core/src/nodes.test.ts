@@ -44,6 +44,16 @@ describe('nodes', () => {
     expect(cloned.children?.[0].id).not.toBe('icon1');
   });
 
+  it('cloneNode preserves style', () => {
+    const node = createNode('Button', {}, [], 'btn1', undefined, {
+      margin: 8,
+      color: '#fff',
+    });
+    const cloned = cloneNode(node);
+    expect(cloned.style).toEqual({ margin: 8, color: '#fff' });
+    expect(cloned.style).not.toBe(node.style);
+  });
+
   it('insertNodeInTree appends by default', () => {
     const root = createDocument().root;
     const a = createNode('Button', {}, [], 'a');

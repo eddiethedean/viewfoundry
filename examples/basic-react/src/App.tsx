@@ -5,7 +5,7 @@ import { ViewFoundryEditor } from '@viewfoundry/editor';
 import { generateTsx } from '@viewfoundry/codegen';
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';
-import { demoRegistry, importMap } from './definitions.js';
+import { demoRegistry, importMap, styleTokens } from './definitions.js';
 
 const STORAGE_KEY = 'viewfoundry-basic-react-document';
 
@@ -36,6 +36,7 @@ export default function App() {
       document,
       imports: importMap,
       componentName: 'DemoView',
+      styleTokens,
     });
     setExportedCode(
       warnings.length > 0
@@ -47,7 +48,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.3.0 — Basic React</h1>
+        <h1>ViewFoundry 0.4.0 — Basic React</h1>
       </header>
       <main className="app-main">
         <ViewFoundryEditor
@@ -55,6 +56,7 @@ export default function App() {
           document={document}
           onChange={setDocument}
           onExport={handleExport}
+          styleTokens={styleTokens}
         />
       </main>
       {exportedCode !== null && (

@@ -90,6 +90,11 @@ Core commands that understand grid placement:
 
 Register grid container components in your import map like any other type.
 
+## Style vs layout
+
+- **`layout.grid`** — cell placement inside a grid container (structural).
+- **`node.style`** — presentation tokens (spacing, colors, typography) edited in Style sub-mode (**v0.4.0**). Grid wrappers keep only placement styles; component `style` merges `props.style` with `node.style`.
+
 ## React provider hooks
 
 For custom editor shells, `@viewfoundry/react` exposes optional hooks on `ViewFoundryProvider`:

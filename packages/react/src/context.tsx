@@ -7,6 +7,7 @@ export type ViewFoundryContextValue = {
   registry: ComponentRegistry;
   selection: SelectionState;
   mode: 'preview' | 'edit';
+  styleTokens?: Record<string, string | number>;
   onSelectNode?: (nodeId: string | null) => void;
   wrapEditNode?: (node: ViewNode, element: ReactNode, parent: ViewNode | null) => ReactNode;
   renderGridDropLayer?: (node: ViewNode) => ReactNode;
@@ -19,6 +20,7 @@ export type ViewFoundryProviderProps = {
   registry: ComponentRegistry;
   selection?: SelectionState;
   mode?: 'preview' | 'edit';
+  styleTokens?: Record<string, string | number>;
   onSelectNode?: (nodeId: string | null) => void;
   wrapEditNode?: (node: ViewNode, element: ReactNode, parent: ViewNode | null) => ReactNode;
   renderGridDropLayer?: (node: ViewNode) => ReactNode;
@@ -30,6 +32,7 @@ export function ViewFoundryProvider({
   registry,
   selection = createSelection(),
   mode = 'preview',
+  styleTokens,
   onSelectNode,
   wrapEditNode,
   renderGridDropLayer,
@@ -42,6 +45,7 @@ export function ViewFoundryProvider({
         registry,
         selection,
         mode,
+        styleTokens,
         onSelectNode,
         wrapEditNode,
         renderGridDropLayer,

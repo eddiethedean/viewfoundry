@@ -4,9 +4,11 @@ import { CanvasSurface, type CanvasSurfaceProps } from './CanvasSurface.js';
 import { DraggableNode } from './dnd/DraggableNode.js';
 import { GridDropLayer } from './dnd/GridDropLayer.js';
 
-export type CanvasProps = Record<string, never>;
+export type CanvasProps = {
+  styleTokens?: Record<string, string | number>;
+};
 
-export function Canvas(_props: CanvasProps) {
+export function Canvas({ styleTokens }: CanvasProps) {
   const registry = useEditorState((s) => s.registry);
   const studioMode = useEditorState((s) => s.studioMode);
   const isEdit = studioMode === 'edit';
@@ -37,6 +39,7 @@ export function Canvas(_props: CanvasProps) {
 
   return (
     <CanvasSurface
+      styleTokens={styleTokens}
       wrapEditNode={isEdit ? wrapEditNode : undefined}
       renderGridDropLayer={isEdit ? renderGridDropLayer : undefined}
     />

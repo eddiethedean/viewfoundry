@@ -5,7 +5,9 @@ import {
   moveNode,
   setNodeLayout,
   setNodeProp,
+  setStyleProp,
   updateNodeProps,
+  updateNodeStyle,
 } from './commands.js';
 import { isGridContainer } from './grid.js';
 import { findNode, findNodeLocation, isDescendant } from './nodes.js';
@@ -18,7 +20,9 @@ import type {
   MoveNodePayload,
   SetNodeLayoutPayload,
   SetNodePropPayload,
+  SetStylePropPayload,
   UpdateNodePropsPayload,
+  UpdateNodeStylePayload,
   ValidationResult,
   ViewDocument,
   ViewNode,
@@ -32,7 +36,9 @@ export type DocumentCommand =
   | { type: 'moveNode'; payload: MoveNodePayload }
   | { type: 'setNodeLayout'; payload: SetNodeLayoutPayload }
   | { type: 'updateNodeProps'; payload: UpdateNodePropsPayload }
-  | { type: 'setNodeProp'; payload: SetNodePropPayload };
+  | { type: 'setNodeProp'; payload: SetNodePropPayload }
+  | { type: 'setStyleProp'; payload: SetStylePropPayload }
+  | { type: 'updateNodeStyle'; payload: UpdateNodeStylePayload };
 
 export type ApplyCommandOptions = {
   /** Validates node props after prop-mutating commands. */
@@ -190,6 +196,16 @@ export function applyCommand(
       const result = setNodeProp(document, command.payload);
       if (!result.ok) return result;
       return validateCommandResult(result.document, registry, options, command.payload.nodeId);
+    }
+    case 'setStyleProp': {
+      const result = setStyleProp(document, command.payload);
+      if (!result.ok) return result;
+      return validateCommandResult(result.document, registry);
+    }
+    case 'updateNodeStyle': {
+      const result = updateNodeStyle(document, command.payload);
+      if (!result.ok) return result;
+      return validateCommandResult(result.document, registry);
     }
     default: {
       const _exhaustive: never = command;

@@ -13,6 +13,7 @@ import {
   resolveGridTracks,
 } from './grid.js';
 import { collectNodeIds, walkNodes } from './nodes.js';
+import { validateStyle } from './style.js';
 
 export type ValidateDocumentOptions = {
   allowMissingComponents?: boolean;
@@ -139,6 +140,11 @@ export function validateDocument(
           }
         }
       }
+    }
+
+    if (node.style) {
+      const styleResult = validateStyle(node.style, `node:${node.id}.style`);
+      issues.push(...styleResult.issues);
     }
   });
 

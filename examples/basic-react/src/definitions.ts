@@ -101,6 +101,12 @@ export const TextDefinition = defineComponent(Text, {
   },
 });
 
+export const styleTokens = {
+  'color.primary': '#3182ce',
+  'color.secondary': '#718096',
+  'spacing.md': 16,
+};
+
 export const demoRegistry = createRegistry([
   ButtonDefinition,
   CardDefinition,

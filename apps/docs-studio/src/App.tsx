@@ -5,7 +5,7 @@ import { ViewFoundryEditor } from '@viewfoundry/editor';
 import { generateTsx } from '@viewfoundry/codegen';
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';
-import { demoRegistry, importMap } from '@demo/definitions.js';
+import { demoRegistry, importMap, styleTokens } from '@demo/definitions.js';
 
 const STORAGE_KEY = 'viewfoundry-docs-studio-document';
 
@@ -33,6 +33,7 @@ export default function App() {
       document,
       imports: importMap,
       componentName: 'DocsStudioView',
+      styleTokens,
     });
     setExportedCode(
       warnings.length > 0
@@ -50,6 +51,7 @@ export default function App() {
         onChange={setDocument}
         onExport={handleExport}
         className="docs-studio-editor"
+        styleTokens={styleTokens}
       />
       <div className="docs-studio-drawer-actions">
         <button type="button" onClick={() => setShowJson((v) => !v)}>

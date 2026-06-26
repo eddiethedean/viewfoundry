@@ -3,7 +3,7 @@ import { generateTsx } from '@viewfoundry/codegen';
 import { validateDocument, type ViewDocument } from '@viewfoundry/core';
 
 export function printHelp() {
-  console.log(`viewfoundry v0.3.0
+  console.log(`viewfoundry v0.4.0
 
 Usage:
   viewfoundry export <input.json> [output.tsx]

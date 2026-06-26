@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
-import type { NodeLayout, ViewDocument, ViewNode } from './types.js';
+import { cloneStyle } from './style.js';
+import type { NodeLayout, StyleTokenMap, ViewDocument, ViewNode } from './types.js';
 
 export function createDocument(overrides?: Partial<ViewDocument>): ViewDocument {
   return {
@@ -20,6 +21,7 @@ export function createNode(
   children?: ViewNode[],
   id?: string,
   layout?: NodeLayout,
+  style?: StyleTokenMap,
 ): ViewNode {
   return {
     id: id ?? nanoid(8),
@@ -27,6 +29,7 @@ export function createNode(
     ...(props && Object.keys(props).length > 0 ? { props } : {}),
     ...(children && children.length > 0 ? { children } : {}),
     ...(layout ? { layout: cloneLayout(layout) } : {}),
+    ...(style && Object.keys(style).length > 0 ? { style: cloneStyle(style) } : {}),
   };
 }
 
@@ -42,6 +45,7 @@ export function cloneNode(node: ViewNode, idGenerator: () => string = () => nano
     type: node.type,
     ...(node.props ? { props: { ...node.props } } : {}),
     ...(node.layout ? { layout: cloneLayout(node.layout) } : {}),
+    ...(node.style ? { style: cloneStyle(node.style) } : {}),
     ...(node.children
       ? { children: node.children.map((child) => cloneNode(child, idGenerator)) }
       : {}),

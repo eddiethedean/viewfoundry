@@ -1,5 +1,10 @@
 import type { ViewDocument, ViewNode } from '@viewfoundry/core';
-import { isGridContainer, placementToCss, sortChildrenByGridOrder } from '@viewfoundry/core';
+import {
+  isGridContainer,
+  placementToCss,
+  resolveStyleValue,
+  sortChildrenByGridOrder,
+} from '@viewfoundry/core';
 import {
   isValidIdentifier,
   isValidImportPath,
@@ -20,6 +25,7 @@ export type CodegenInput = {
   document: ViewDocument;
   imports: ComponentImportMap;
   componentName?: string;
+  styleTokens?: Record<string, string | number>;
 };
 
 export type CodegenOutput = {
@@ -71,18 +77,51 @@ function renderGridStyleAttr(node: ViewNode, parent: ViewNode | null): string {
   return ` style={{ ${entries.join(', ')} }}`;
 }
 
+function buildMergedStyleObject(
+  node: ViewNode,
+  styleTokens?: Record<string, string | number>,
+): Record<string, string | number> | null {
+  const propsStyle =
+    node.props?.style && typeof node.props.style === 'object' && !Array.isArray(node.props.style)
+      ? (node.props.style as Record<string, string | number>)
+      : {};
+  const nodeStyleEntries = Object.entries(node.style ?? {}).map(([key, value]) => [
+    key,
+    resolveStyleValue(value, styleTokens),
+  ]);
+  const merged = { ...propsStyle, ...Object.fromEntries(nodeStyleEntries) };
+  return Object.keys(merged).length > 0 ? merged : null;
+}
+
+function renderStyleProp(
+  node: ViewNode,
+  warnings: string[],
+  styleTokens?: Record<string, string | number>,
+): string | null {
+  const merged = buildMergedStyleObject(node, styleTokens);
+  if (!merged) return null;
+  const formatted = formatPropValue(merged, warnings, `${node.type}.style`);
+  if (formatted === null) return null;
+  return `style=${formatted}`;
+}
+
 function renderProps(
   node: ViewNode,
   warnings: string[],
   hasChildNodes: boolean,
   _parent: ViewNode | null,
+  styleTokens?: Record<string, string | number>,
 ): string {
   const props = { ...(node.props ?? {}) };
   if (typeof props.children === 'string' && !hasChildNodes) {
     delete props.children;
   }
+  delete props.style;
 
   const parts: string[] = [];
+  const styleProp = renderStyleProp(node, warnings, styleTokens);
+  if (styleProp) parts.push(styleProp);
+
   for (const [key, value] of Object.entries(props)) {
     if (key === 'children') continue;
     if (!isValidIdentifier(key)) {
@@ -107,6 +146,7 @@ function renderNode(
   warnings: string[],
   indent: number,
   parent: ViewNode | null = null,
+  styleTokens?: Record<string, string | number>,
 ): string {
   const pad = '  '.repeat(indent);
   const hasChildNodes = Boolean(node.children && node.children.length > 0);
@@ -118,10 +158,10 @@ function renderNode(
       return `${pad}<></>`;
     }
     if (node.children.length === 1) {
-      return renderNode(node.children[0], imports, warnings, indent, node);
+      return renderNode(node.children[0], imports, warnings, indent, node, styleTokens);
     }
     const children = node.children
-      .map((child) => renderNode(child, imports, warnings, indent + 1, node))
+      .map((child) => renderNode(child, imports, warnings, indent + 1, node, styleTokens))
       .join('\n');
     return `${pad}<>\n${children}\n${pad}</>`;
   }
@@ -137,7 +177,7 @@ function renderNode(
     return `${pad}{/* Missing component: ${sanitizeCommentText(node.type)} */}`;
   }
 
-  const propsStr = renderProps(node, warnings, hasChildNodes, parent);
+  const propsStr = renderProps(node, warnings, hasChildNodes, parent, styleTokens);
   const tag = importInfo.exportName;
 
   let rendered: string;
@@ -147,7 +187,7 @@ function renderNode(
       ? sortChildrenByGridOrder(node.children!)
       : node.children!;
     const children = childNodes
-      .map((child) => renderNode(child, imports, warnings, indent + 1, node))
+      .map((child) => renderNode(child, imports, warnings, indent + 1, node, styleTokens))
       .join('\n');
     rendered = `${pad}<${tag}${propsStr}>\n${children}\n${pad}</${tag}>`;
   } else if (stringChild !== null) {
@@ -211,7 +251,7 @@ export function generateTsx(input: CodegenInput): CodegenOutput {
   collectTypes(input.document.root, usedTypes);
 
   const imports = buildImportStatements(input.imports, usedTypes, warnings);
-  const body = renderNode(input.document.root, input.imports, warnings, 2);
+  const body = renderNode(input.document.root, input.imports, warnings, 2, null, input.styleTokens);
 
   const code = [
     imports,

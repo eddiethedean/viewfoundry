@@ -27,3 +27,11 @@ export type {
 export { defineComponent } from './component.js';
 export type { DefineComponentOptions } from './component.js';
 export { createDefaultProps, validateProps } from './validation.js';
+export {
+  STYLE_FIELD_DEFS,
+  STYLE_FIELD_GROUPS,
+  getStyleFieldsByGroup,
+  isKnownStyleKey,
+  validateStyleProp,
+} from './style-fields.js';
+export type { StyleFieldDef, StyleFieldGroup, StyleFieldKind } from './style-fields.js';

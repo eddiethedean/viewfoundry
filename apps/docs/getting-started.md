@@ -2,19 +2,19 @@
 
 ## Install
 
-Install the packages you need at the **same version** (currently **0.3.0**):
+Install the packages you need at the **same version** (currently **0.4.0**):
 
 ```bash
-npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0 @viewfoundry/codegen@0.3.0
+npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0 @viewfoundry/codegen@0.3.0
+pnpm add @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
 ```
 
-Package semver (`0.3.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
+Package semver (`0.4.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
 
 ## Minimal example
 
@@ -189,11 +189,30 @@ function Preview({ document, registry }) {
 
 Empty canvases bootstrap a default grid. Drag components from the palette onto cells, or reposition nodes on the grid. See the [Grid layout guide](grid-layout.md).
 
+## Style Editor (v0.4.0)
+
+In Edit mode, use the **Component | Style** toolbar switcher. Style mode edits `node.style` (spacing, colors, typography, etc.) separately from schema-backed component props. Optional token presets:
+
+```tsx
+<ViewFoundryEditor
+  registry={registry}
+  document={document}
+  onChange={setDocument}
+  styleTokens={{
+    'color.primary': '#3182ce',
+    'spacing.md': 16,
+  }}
+/>
+```
+
+See [Migration from 0.3 → 0.4](migration-0.3-0.4.md).
+
 ## Next steps
 
 - [Try the Studio](studio.md) — interactive editor in your browser
 - [Grid layout guide](grid-layout.md)
 - [Package overview](packages/index.md)
 - [Architecture](architecture.md)
-- [Migration from 0.2 → 0.3](migration-0.2-0.3.md) if upgrading
+- [Migration from 0.2 → 0.3](migration-0.2-0.3.md) if upgrading from 0.2
+- [Migration from 0.3 → 0.4](migration-0.3-0.4.md) for Style Editor
 - [FAQ](faq.md) and [Troubleshooting](troubleshooting.md)

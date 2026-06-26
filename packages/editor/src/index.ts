@@ -14,3 +14,5 @@ export { LayersPanel } from './LayersPanel.js';
 export type { LayersPanelProps } from './LayersPanel.js';
 export { createEditorStore } from './store.js';
 export type { EditorStore, EditorStoreApi, StudioMode, EditSubMode } from './store.js';
+export { StyleInspector } from './StyleInspector.js';
+export type { StyleInspectorProps } from './StyleInspector.js';

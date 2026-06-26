@@ -7,6 +7,7 @@ export type ToolbarProps = {
 export function Toolbar({ onExport }: ToolbarProps) {
   const store = useEditorStore();
   const studioMode = useEditorState((s) => s.studioMode);
+  const editSubMode = useEditorState((s) => s.editSubMode);
   const canUndo = useEditorState((s) => s.canUndo());
   const canRedo = useEditorState((s) => s.canRedo());
   const lastError = useEditorState((s) => s.lastError);
@@ -34,8 +35,27 @@ export function Toolbar({ onExport }: ToolbarProps) {
       </div>
 
       {isEdit && (
-        <div className="vf-toolbar-group vf-toolbar-submode" aria-label="Edit sub-mode">
-          <span className="vf-toolbar-submode-active">Component</span>
+        <div
+          className="vf-toolbar-group vf-toolbar-submode"
+          role="group"
+          aria-label="Edit sub-mode"
+        >
+          <button
+            type="button"
+            className={editSubMode === 'component' ? 'vf-toolbar-submode-active' : ''}
+            aria-pressed={editSubMode === 'component'}
+            onClick={() => store.getState().setEditSubMode('component')}
+          >
+            Component
+          </button>
+          <button
+            type="button"
+            className={editSubMode === 'style' ? 'vf-toolbar-submode-active' : ''}
+            aria-pressed={editSubMode === 'style'}
+            onClick={() => store.getState().setEditSubMode('style')}
+          >
+            Style
+          </button>
         </div>
       )}
 

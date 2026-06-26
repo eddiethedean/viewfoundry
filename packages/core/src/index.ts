@@ -4,6 +4,9 @@ export type {
   ViewNode,
   GridPlacement,
   NodeLayout,
+  TokenReference,
+  StyleValue,
+  StyleTokenMap,
   PropField,
   PropSchema,
   ComponentDefinition,
@@ -19,6 +22,8 @@ export type {
   SetNodeLayoutPayload,
   UpdateNodePropsPayload,
   SetNodePropPayload,
+  SetStylePropPayload,
+  UpdateNodeStylePayload,
   CommandResult,
 } from './types.js';
 
@@ -38,6 +43,19 @@ export { createRegistry } from './registry.js';
 export { validateDocument, validateGridLayout } from './validation.js';
 export type { ValidateDocumentOptions } from './validation.js';
 export {
+  validateStyle,
+  cloneStyle,
+  resolveStyleValue,
+  KNOWN_STYLE_KEYS,
+  DISPLAY_VALUES,
+  FLEX_DIRECTION_VALUES,
+  ALIGN_ITEMS_VALUES,
+  JUSTIFY_CONTENT_VALUES,
+  TEXT_ALIGN_VALUES,
+  OVERFLOW_VALUES,
+  BORDER_STYLE_VALUES,
+} from './style.js';
+export {
   insertNode,
   deleteNode,
   duplicateNode,
@@ -45,6 +63,8 @@ export {
   setNodeLayout,
   updateNodeProps,
   setNodeProp,
+  setStyleProp,
+  updateNodeStyle,
 } from './commands.js';
 export {
   isGridContainer,

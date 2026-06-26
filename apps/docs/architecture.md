@@ -67,7 +67,7 @@ This site is built with Sphinx and MyST. The [embedded Studio](studio.md) is a s
 | Version     | Status       | Theme                                                                                                                              |
 | ----------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
 | v0.3.0      | **Released** | Grid layout and canvas drag-and-drop                                                                                               |
-| v0.4.0      | Planned      | Style Editor sub-mode                                                                                                              |
+| v0.4.0      | **Released** | Style Editor sub-mode                                                                                                              |
 | v0.5.0      | Planned      | `viewfoundry init`, Vite plugin, more examples                                                                                     |
 | v0.6.0      | **Released** | Read the Docs site with embedded Studio                                                                                            |
 | v0.7.0      | Planned      | LessonKit integration                                                                                                              |

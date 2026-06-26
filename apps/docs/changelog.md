@@ -2,6 +2,17 @@
 
 Package versions are lockstep-published under the same semver. The canonical changelog lives on GitHub: [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md).
 
+## [0.4.0] — June 2026
+
+### Added
+
+- Style Editor sub-mode: **Component | Style** in the toolbar
+- `node.style` (`StyleTokenMap`) separate from component `props`
+- Style commands, validation, and grouped Style inspector
+- Optional `styleTokens` on provider/editor; codegen inline style emission
+
+See [Migration from 0.3 → 0.4](migration-0.3-0.4.md).
+
 ## [0.3.0] — June 2026
 
 ### Added

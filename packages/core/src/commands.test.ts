@@ -10,6 +10,8 @@ import {
   setNodeLayout,
   updateNodeProps,
   setNodeProp,
+  setStyleProp,
+  updateNodeStyle,
   createHistory,
   pushHistory,
   undo,
@@ -218,6 +220,43 @@ describe('commands', () => {
     if (result.ok) {
       const node = findNode(result.document.root, 'btn1');
       expect(node?.props?.disabled).toBe(true);
+    }
+  });
+
+  it('sets and removes style props', () => {
+    const doc = makeDoc();
+    let result = setStyleProp(doc, { nodeId: 'btn1', key: 'margin', value: 8 });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const node = findNode(result.document.root, 'btn1');
+      expect(node?.style?.margin).toBe(8);
+    }
+    if (result.ok) {
+      result = setStyleProp(result.document, {
+        nodeId: 'btn1',
+        key: 'margin',
+        value: undefined,
+      });
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        const node = findNode(result.document.root, 'btn1');
+        expect(node?.style).toBeUndefined();
+      }
+    }
+  });
+
+  it('merges style with updateNodeStyle', () => {
+    const doc = makeDoc();
+    let result = setStyleProp(doc, { nodeId: 'btn1', key: 'margin', value: 8 });
+    if (!result.ok) throw new Error(result.error);
+    result = updateNodeStyle(result.document, {
+      nodeId: 'btn1',
+      style: { padding: 16, color: '#fff' },
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const node = findNode(result.document.root, 'btn1');
+      expect(node?.style).toEqual({ margin: 8, padding: 16, color: '#fff' });
     }
   });
 });

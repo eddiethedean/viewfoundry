@@ -294,4 +294,74 @@ describe('ViewFoundryEditor', () => {
     expect(card?.children).toHaveLength(1);
     expect(card?.children?.[0].type).toBe('Button');
   });
+
+  it('switches to Style sub-mode and hides palette', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    await user.click(screen.getByRole('button', { name: 'Style' }));
+
+    expect(screen.queryByText('Components')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Style' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('Layers')).toBeInTheDocument();
+  });
+
+  it('preserves selection when switching sub-modes', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Styled' }, [], 'btn1')];
+    renderEditor(doc, { onChange });
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: /btn1/ }));
+
+    await user.click(screen.getByRole('button', { name: 'Style' }));
+    await user.click(screen.getByRole('button', { name: 'Component' }));
+
+    expect(screen.getByText('Inspector')).toBeInTheDocument();
+  });
+
+  it('updates node.style from Style inspector', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Styled' }, [], 'btn1')];
+    renderEditor(doc, { onChange });
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: /btn1/ }));
+    await user.click(screen.getByRole('button', { name: 'Style' }));
+
+    const marginInput = screen.getByLabelText('Margin');
+    await user.clear(marginInput);
+    await user.type(marginInput, '12');
+
+    const updated = latestDocument(onChange);
+    const node = findNode(updated.root, 'btn1');
+    expect(node?.style?.margin).toBe(12);
+  });
+
+  it('undoes style changes while preserving selection', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Styled' }, [], 'btn1')];
+    renderEditor(doc, { onChange });
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: /btn1/ }));
+    await user.click(screen.getByRole('button', { name: 'Style' }));
+
+    const marginInput = screen.getByLabelText('Margin');
+    await user.clear(marginInput);
+    await user.type(marginInput, '8');
+
+    fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
+    const reverted = latestDocument(onChange);
+    expect(findNode(reverted.root, 'btn1')?.style?.margin).toBeUndefined();
+  });
 });

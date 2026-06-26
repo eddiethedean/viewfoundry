@@ -7,7 +7,10 @@ import type {
   MoveNodePayload,
   SetNodeLayoutPayload,
   SetNodePropPayload,
+  SetStylePropPayload,
+  StyleTokenMap,
   UpdateNodePropsPayload,
+  UpdateNodeStylePayload,
   ViewDocument,
   ViewNode,
 } from './types.js';
@@ -200,5 +203,45 @@ export function setNodeProp(document: ViewDocument, payload: SetNodePropPayload)
     ...n,
     props: { ...(n.props ?? {}), [payload.key]: payload.value },
   }));
+  return success({ ...document, root: newRoot });
+}
+
+function applyStyleToNode(node: ViewNode, style: StyleTokenMap | undefined): ViewNode {
+  if (!style || Object.keys(style).length === 0) {
+    const { style: _style, ...rest } = node;
+    return rest;
+  }
+  return { ...node, style: { ...style } };
+}
+
+export function setStyleProp(document: ViewDocument, payload: SetStylePropPayload): CommandResult {
+  const node = findNode(document.root, payload.nodeId);
+  if (!node) {
+    return failure(`Node not found: ${payload.nodeId}`);
+  }
+  const newRoot = updateNodeInTree(document.root, payload.nodeId, (n) => {
+    const current = { ...(n.style ?? {}) };
+    if (payload.value === undefined) {
+      delete current[payload.key];
+    } else {
+      current[payload.key] = payload.value;
+    }
+    return applyStyleToNode(n, Object.keys(current).length > 0 ? current : undefined);
+  });
+  return success({ ...document, root: newRoot });
+}
+
+export function updateNodeStyle(
+  document: ViewDocument,
+  payload: UpdateNodeStylePayload,
+): CommandResult {
+  const node = findNode(document.root, payload.nodeId);
+  if (!node) {
+    return failure(`Node not found: ${payload.nodeId}`);
+  }
+  const newRoot = updateNodeInTree(document.root, payload.nodeId, (n) => {
+    const merged = { ...(n.style ?? {}), ...payload.style };
+    return applyStyleToNode(n, Object.keys(merged).length > 0 ? merged : undefined);
+  });
   return success({ ...document, root: newRoot });
 }

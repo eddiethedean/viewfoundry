@@ -126,6 +126,15 @@ Grid containers (registered components like `Grid` / `Row`) define track counts 
 
 See [Grid layout guide](https://viewfoundry.readthedocs.io/en/latest/grid-layout.html) for editor and codegen behavior.
 
+## Style (shipped v0.4.0)
+
+`style` stores presentation values separately from schema-backed `props`:
+
+- spacing, size, colors, typography, border, layout, opacity
+- JSON-serializable strings or numbers; optional token references (e.g. `color.primary`)
+
+See [Migration 0.3 → 0.4](https://viewfoundry.readthedocs.io/en/latest/migration-0.3-0.4.html).
+
 ## Validation rules
 
 A document is valid when:
@@ -137,6 +146,7 @@ A document is valid when:
 5. Every prop conforms to its field schema.
 6. Child constraints are respected.
 7. Grid placements are in bounds and non-overlapping within layout containers.
+8. Style values conform to validation rules when `node.style` is present.
 
 ## Future additions
 
@@ -190,9 +200,9 @@ Named slot trees on `ViewNode`. See [SLOTS.md](SLOTS.md).
 
 Bindings, variables, and conditions. See [DATA_BINDING.md](DATA_BINDING.md).
 
-### Style Editor mode (planned v0.4.0)
+### Style Editor mode (shipped v0.4.0)
 
-The `style` field will power **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It stores presentation values separately from schema-backed `props`:
+The `style` field powers **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It stores presentation values separately from schema-backed `props`:
 
 - spacing (`margin`, `padding`, `gap`)
 - size (`width`, `height`, `minWidth`, `maxWidth`)

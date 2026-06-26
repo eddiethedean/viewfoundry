@@ -10,9 +10,12 @@ import {
   insertFromPalette,
   inspector,
   layers,
+  palette,
   resetDocument,
   selectLayer,
+  setEditSubMode,
   setStudioMode,
+  styleInspector,
   toolbar,
 } from './helpers.js';
 
@@ -158,5 +161,33 @@ test.describe('editor workflows', () => {
       const button = firstGridChild(doc);
       return button?.props?.variant === 'secondary';
     });
+  });
+
+  test('edits node.style in Style sub-mode', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await selectLayer(page, /^Button\b/);
+    await setEditSubMode(page, 'Style');
+
+    await expect(palette(page)).toBeHidden();
+    await expect(styleInspector(page)).toBeVisible();
+
+    const marginInput = styleInspector(page).getByLabel('Margin');
+    await marginInput.fill('12');
+
+    await expectStoredDocument(page, (doc) => firstGridChild(doc)?.style?.margin === 12);
+
+    await toolbar(page).getByRole('button', { name: 'Undo' }).click();
+    await expectStoredDocument(page, (doc) => firstGridChild(doc)?.style?.margin === undefined);
+  });
+
+  test('preserves selection when switching Component and Style sub-modes', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await selectLayer(page, /^Button\b/);
+
+    await setEditSubMode(page, 'Style');
+    await expect(styleInspector(page).locator('.vf-inspector-meta')).toContainText('Button');
+
+    await setEditSubMode(page, 'Component');
+    await expect(inspector(page).locator('.vf-inspector-meta')).toContainText('Button');
   });
 });

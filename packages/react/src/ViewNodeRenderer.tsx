@@ -7,6 +7,7 @@ import {
   getGridContainerStyle,
   getGridPlacementClass,
 } from './grid-styles.js';
+import { mergeStyles, resolveStyleMap } from './style-utils.js';
 
 export type MissingComponentFallbackProps = {
   type: string;
@@ -66,8 +67,15 @@ export function ViewNodeRenderer({
   parent = null,
   renderChildren = true,
 }: ViewNodeRendererProps) {
-  const { registry, mode, selection, onSelectNode, wrapEditNode, renderGridDropLayer } =
-    useViewFoundryContext();
+  const {
+    registry,
+    mode,
+    selection,
+    styleTokens,
+    onSelectNode,
+    wrapEditNode,
+    renderGridDropLayer,
+  } = useViewFoundryContext();
   const Component = resolveComponent(node.type, registry);
   const isSelected = selection.selectedNodeIds.includes(node.id);
   const isEditMode = mode === 'edit';
@@ -83,11 +91,14 @@ export function ViewNodeRenderer({
     delete props.children;
   }
 
-  const mergedStyle: CSSProperties = {
-    ...((props.style as CSSProperties | undefined) ?? {}),
-    ...(isEditMode || needsPlacementWrapper ? {} : (placementStyle ?? {})),
-    ...(gridContainerStyle ?? {}),
-  };
+  const nodeStyle = resolveStyleMap(node.style, styleTokens);
+
+  const mergedStyle: CSSProperties = mergeStyles(
+    (props.style as CSSProperties | undefined) ?? {},
+    nodeStyle,
+    isEditMode || needsPlacementWrapper ? {} : placementStyle,
+    gridContainerStyle,
+  );
   if (Object.keys(mergedStyle).length > 0) {
     props.style = mergedStyle;
   }

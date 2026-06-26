@@ -2,6 +2,25 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.4.0] — June 2026
+
+### Added
+
+- **Style Editor** sub-mode (Edit only): toolbar **Component | Style** switcher
+- `style?: StyleTokenMap` on `ViewNode` for presentation separate from `props`
+- Style commands: `setStyleProp`, `updateNodeStyle` with shared undo/redo
+- `StyleInspector` with grouped controls (spacing, colors, typography, border, layout, opacity)
+- `validateStyle()` and document validation for style values
+- `@viewfoundry/schema` style field metadata (`STYLE_FIELD_DEFS`, `getStyleFieldsByGroup`)
+- `styleTokens` on `ViewFoundryProvider` and `ViewFoundryEditor` for optional design presets
+- `resolveStyleMap()` in `@viewfoundry/react`; codegen emits merged inline `style` props
+- Playwright e2e coverage for Style sub-mode editing and undo
+
+### Changed
+
+- Undo/redo preserves selection when the selected node still exists in the restored document
+- Style mode hides the component palette; layers panel remains for selection
+
 ## [0.3.0] — June 2026
 
 ### Added
@@ -68,6 +87,7 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Visual editor MVP with palette, canvas, inspector, layers
 - TSX codegen and `examples/basic-react`
 
+[0.4.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/eddiethedean/viewfoundry/releases/tag/v0.2.0
 [0.1.0]: https://github.com/eddiethedean/viewfoundry/releases/tag/v0.1.0

@@ -6,6 +6,7 @@ import { Toolbar } from './Toolbar.js';
 import { Palette } from './Palette.js';
 import { Canvas } from './Canvas.js';
 import { Inspector } from './Inspector.js';
+import { StyleInspector } from './StyleInspector.js';
 import { LayersPanel } from './LayersPanel.js';
 import { EditorDndShell } from './EditorDndShell.js';
 import { useEditorStore, useEditorState } from './EditorContext.js';
@@ -19,6 +20,7 @@ export type ViewFoundryEditorProps = {
   className?: string;
   defaultStudioMode?: StudioMode;
   onStudioModeChange?: (mode: StudioMode) => void;
+  styleTokens?: Record<string, string | number>;
 };
 
 function KeyboardShortcuts() {
@@ -88,13 +90,23 @@ function isKeyboardShortcutBlocked(target: EventTarget | null): boolean {
   return Boolean(target.closest('.vf-toolbar'));
 }
 
-function EditorLayout({ onExport, className }: { onExport?: () => void; className?: string }) {
+function EditorLayout({
+  onExport,
+  className,
+  styleTokens,
+}: {
+  onExport?: () => void;
+  className?: string;
+  styleTokens?: Record<string, string | number>;
+}) {
   const studioMode = useEditorState((s) => s.studioMode);
+  const editSubMode = useEditorState((s) => s.editSubMode);
   const isEdit = studioMode === 'edit';
+  const isStyleMode = isEdit && editSubMode === 'style';
 
   return (
     <div
-      className={`vf-editor${isEdit ? '' : ' vf-editor--live'}${className ? ` ${className}` : ''}`}
+      className={`vf-editor${isEdit ? '' : ' vf-editor--live'}${isStyleMode ? ' vf-editor--style' : ''}${className ? ` ${className}` : ''}`}
     >
       <KeyboardShortcuts />
       <Toolbar onExport={onExport} />
@@ -102,16 +114,16 @@ function EditorLayout({ onExport, className }: { onExport?: () => void; classNam
         <div className="vf-editor-body">
           {isEdit && (
             <aside className="vf-editor-sidebar vf-editor-sidebar-left">
-              <Palette />
+              {!isStyleMode && <Palette />}
               <LayersPanel />
             </aside>
           )}
           <main className="vf-editor-main">
-            <Canvas />
+            <Canvas styleTokens={styleTokens} />
           </main>
           {isEdit && (
             <aside className="vf-editor-sidebar vf-editor-sidebar-right">
-              <Inspector />
+              {isStyleMode ? <StyleInspector styleTokens={styleTokens} /> : <Inspector />}
             </aside>
           )}
         </div>
@@ -128,6 +140,7 @@ export function ViewFoundryEditor({
   className,
   defaultStudioMode,
   onStudioModeChange,
+  styleTokens,
 }: ViewFoundryEditorProps) {
   return (
     <EditorProvider
@@ -137,7 +150,7 @@ export function ViewFoundryEditor({
       defaultStudioMode={defaultStudioMode}
       onStudioModeChange={onStudioModeChange}
     >
-      <EditorLayout onExport={onExport} className={className} />
+      <EditorLayout onExport={onExport} className={className} styleTokens={styleTokens} />
     </EditorProvider>
   );
 }

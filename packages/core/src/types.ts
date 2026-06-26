@@ -9,6 +9,12 @@ export type NodeLayout = {
   grid?: GridPlacement;
 };
 
+export type TokenReference = string;
+
+export type StyleValue = string | number | TokenReference;
+
+export type StyleTokenMap = Record<string, StyleValue>;
+
 export type ViewDocumentMeta = {
   name?: string;
   description?: string;
@@ -28,6 +34,7 @@ export type ViewNode = {
   props?: Record<string, unknown>;
   children?: ViewNode[];
   layout?: NodeLayout;
+  style?: StyleTokenMap;
 };
 
 export type PropField<TValue = unknown> = {
@@ -121,6 +128,17 @@ export type SetNodePropPayload = {
   nodeId: string;
   key: string;
   value: unknown;
+};
+
+export type SetStylePropPayload = {
+  nodeId: string;
+  key: string;
+  value: StyleValue | undefined;
+};
+
+export type UpdateNodeStylePayload = {
+  nodeId: string;
+  style: StyleTokenMap;
 };
 
 export type CommandResult<T = void> =

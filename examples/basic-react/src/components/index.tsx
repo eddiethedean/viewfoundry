@@ -4,11 +4,12 @@ type ButtonProps = {
   children?: ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost';
   disabled?: boolean;
+  style?: CSSProperties;
 };
 
-export function Button({ children, variant = 'primary', disabled }: ButtonProps) {
+export function Button({ children, variant = 'primary', disabled, style }: ButtonProps) {
   return (
-    <button className={`demo-button demo-button--${variant}`} disabled={disabled}>
+    <button className={`demo-button demo-button--${variant}`} disabled={disabled} style={style}>
       {children}
     </button>
   );

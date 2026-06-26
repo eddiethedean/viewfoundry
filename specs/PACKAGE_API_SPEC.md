@@ -1,6 +1,6 @@
 # Package API Spec
 
-This document describes the public API surface for ViewFoundry packages at **v0.3.x**.
+This document describes the public API surface for ViewFoundry packages at **v0.4.x**.
 
 ## Versioning policy (0.x)
 
@@ -12,7 +12,7 @@ This document describes the public API surface for ViewFoundry packages at **v0.
 Install all ViewFoundry packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0 @viewfoundry/codegen@0.3.0 @viewfoundry/cli@0.3.0
+npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0 @viewfoundry/cli@0.4.0
 ```
 
 ## `@viewfoundry/core`
@@ -22,9 +22,12 @@ npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react
 ```ts
 export type ViewDocument;
 export type ViewDocumentMeta;
-export type ViewNode; // includes optional layout?: NodeLayout
+export type ViewNode; // includes optional layout?: NodeLayout, style?: StyleTokenMap
 export type GridPlacement;
 export type NodeLayout;
+export type TokenReference;
+export type StyleValue;
+export type StyleTokenMap;
 export type PropField;
 export type PropSchema;
 export type ComponentDefinition;
@@ -49,6 +52,7 @@ export function createNode(
   children?: ViewNode[],
   id?: string,
   layout?: NodeLayout,
+  style?: StyleTokenMap,
 ): ViewNode;
 export function cloneNode(node: ViewNode): ViewNode;
 ```
@@ -66,6 +70,12 @@ export function validateGridLayout(
   document: ViewDocument,
   registry?: ComponentRegistry,
 ): ValidationResult;
+export function validateStyle(style: StyleTokenMap, pathPrefix?: string): ValidationResult;
+export function cloneStyle(style: StyleTokenMap): StyleTokenMap;
+export function resolveStyleValue(
+  value: StyleValue,
+  tokens?: Record<string, string | number>,
+): string | number;
 ```
 
 ### Grid helpers
@@ -107,6 +117,11 @@ export function updateNodeProps(
   payload: UpdateNodePropsPayload,
 ): CommandResult;
 export function setNodeProp(document: ViewDocument, payload: SetNodePropPayload): CommandResult;
+export function setStyleProp(document: ViewDocument, payload: SetStylePropPayload): CommandResult;
+export function updateNodeStyle(
+  document: ViewDocument,
+  payload: UpdateNodeStylePayload,
+): CommandResult;
 ```
 
 `updateNodeProps` **replaces** the entire `props` object. `setNodeProp` merges a single key.
@@ -185,14 +200,23 @@ export function validateProps(schema: PropSchema, props: Record<string, unknown>
 export function getSelectValues(
   field: SelectFieldOptions | RadioFieldOptions,
 ): string[] | undefined;
+export const STYLE_FIELD_DEFS;
+export const STYLE_FIELD_GROUPS;
+export function getStyleFieldsByGroup(group: StyleFieldGroup): StyleFieldDef[];
+export function validateStyleProp(key: string, value: StyleValue | undefined): ValidationResult;
 ```
 
-**Peer dependency:** `@viewfoundry/core@^0.3.0`
+**Peer dependency:** `@viewfoundry/core@^0.4.0`
 
 ## `@viewfoundry/react`
 
 ```tsx
 export function ViewFoundryProvider(props: ViewFoundryProviderProps): JSX.Element;
+// ViewFoundryProviderProps.styleTokens?: Record<string, string | number>
+export function resolveStyleMap(
+  style: StyleTokenMap | undefined,
+  tokens?: Record<string, string | number>,
+): CSSProperties;
 export function ViewRenderer(props: ViewRendererProps): JSX.Element;
 export function ViewNodeRenderer(props: ViewNodeRendererProps): JSX.Element;
 export function useViewDocument(): ViewDocument;
@@ -202,12 +226,16 @@ export function useViewSelection(): SelectionState;
 
 Styles: `@viewfoundry/react/styles.css` (selection overlays, missing-component fallback).
 
-**Peer dependencies:** `@viewfoundry/core@^0.3.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.4.0`, `react`, `react-dom`
 
 ## `@viewfoundry/editor`
 
 ```tsx
 export function ViewFoundryEditor(props: ViewFoundryEditorProps): JSX.Element;
+// ViewFoundryEditorProps.styleTokens?: Record<string, string | number>
+export function StyleInspector(props: StyleInspectorProps): JSX.Element;
+export type EditSubMode = 'component' | 'style';
+// EditorStore: setEditSubMode, setStyleProp, updateStyle
 export function EditorProvider(props: EditorProviderProps): JSX.Element;
 export function useEditorStore(): EditorStoreApi;
 export function useEditorState<T>(selector: (state: EditorStore) => T): T;
@@ -224,18 +252,19 @@ export function Toolbar(props: ToolbarProps): JSX.Element;
 
 Styles: `@viewfoundry/editor/styles.css` **and** `@viewfoundry/react/styles.css` when using the full editor.
 
-**Peer dependencies:** `@viewfoundry/core@^0.3.0`, `@viewfoundry/react@^0.3.0`, `@viewfoundry/schema@^0.3.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.4.0`, `@viewfoundry/react@^0.4.0`, `@viewfoundry/schema@^0.4.0`, `react`, `react-dom`
 
 ## `@viewfoundry/codegen`
 
 ```ts
 export function generateTsx(input: CodegenInput): CodegenOutput;
+// CodegenInput.styleTokens?: Record<string, string | number>
 export function generateJson(document: ViewDocument): string;
 ```
 
 Sanitizes `componentName`, import paths, export names, and prop keys. Emits warnings for rejected values.
 
-**Peer dependency:** `@viewfoundry/core@^0.3.0`
+**Peer dependency:** `@viewfoundry/core@^0.4.0`
 
 ## `@viewfoundry/cli`
 

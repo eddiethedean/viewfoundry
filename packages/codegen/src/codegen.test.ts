@@ -201,6 +201,73 @@ describe('generateTsx', () => {
     expect(code).toMatch(/<div style=\{\{ gridColumn: '2 \/ 4', gridRow: '1' \}\}>/);
     expect(code).toContain('<Button>{"A"}</Button>');
   });
+
+  it('emits node.style as inline style prop', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Styled' }, [], 'b1', undefined, {
+        margin: 8,
+        backgroundColor: '#ff0000',
+      }),
+    ];
+    const { code } = generateTsx({ document: doc, imports });
+    expect(code).toContain('style={{"margin":8,"backgroundColor":"#ff0000"}}');
+  });
+
+  it('merges props.style with node.style favoring node.style', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode(
+        'Button',
+        { children: 'Merged', style: { margin: 4, color: '#000' } },
+        [],
+        'b1',
+        undefined,
+        { margin: 8, padding: 16 },
+      ),
+    ];
+    const { code } = generateTsx({ document: doc, imports });
+    expect(code).toContain('"margin":8');
+    expect(code).toContain('"padding":16');
+    expect(code).toContain('"color":"#000"');
+  });
+
+  it('resolves style tokens when styleTokens provided', () => {
+    const doc = createDocument();
+    doc.root.children = [
+      createNode('Button', { children: 'Token' }, [], 'b1', undefined, {
+        color: 'color.primary',
+      }),
+    ];
+    const { code } = generateTsx({
+      document: doc,
+      imports,
+      styleTokens: { 'color.primary': '#336699' },
+    });
+    expect(code).toContain('"color":"#336699"');
+  });
+
+  it('emits grid wrapper and node.style on component', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode(
+      'Button',
+      { children: 'Both' },
+      [],
+      'b1',
+      { grid: { column: 1, row: 1 } },
+      { margin: 4 },
+    );
+    grid.children = [button];
+    doc.root.children = [grid];
+    const gridImports = {
+      Grid: { importPath: './components', exportName: 'Grid' },
+      Button: { importPath: './components', exportName: 'Button' },
+    };
+    const { code } = generateTsx({ document: doc, imports: gridImports });
+    expect(code).toContain("gridColumn: '1'");
+    expect(code).toContain('style={{"margin":4}}');
+  });
 });
 
 describe('generateJson', () => {

@@ -4,6 +4,7 @@ import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import { useEditorState, useEditorStore } from './EditorContext.js';
 
 export type CanvasSurfaceProps = {
+  styleTokens?: Record<string, string | number>;
   wrapEditNode?: (
     node: ViewNode,
     element: React.ReactNode,
@@ -12,7 +13,11 @@ export type CanvasSurfaceProps = {
   renderGridDropLayer?: (node: ViewNode) => React.ReactNode;
 };
 
-export function CanvasSurface({ wrapEditNode, renderGridDropLayer }: CanvasSurfaceProps) {
+export function CanvasSurface({
+  styleTokens,
+  wrapEditNode,
+  renderGridDropLayer,
+}: CanvasSurfaceProps) {
   const store = useEditorStore();
   const document = useEditorState((s) => s.document);
   const registry = useEditorState((s) => s.registry);
@@ -58,6 +63,7 @@ export function CanvasSurface({ wrapEditNode, renderGridDropLayer }: CanvasSurfa
           registry={registry}
           selection={selection}
           mode={isEdit ? 'edit' : 'preview'}
+          styleTokens={styleTokens}
           onSelectNode={isEdit ? (nodeId) => store.getState().selectNode(nodeId) : undefined}
           wrapEditNode={wrapEditNode}
           renderGridDropLayer={renderGridDropLayer}
