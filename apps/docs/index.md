@@ -46,15 +46,15 @@ migration-0.4-0.5
 
 ## I want to…
 
-| Goal | Start here |
-| ---- | ---------- |
-| Scaffold a new Vite + React app | [Getting started — Quick start (CLI)](getting-started.md#quick-start-recommended) |
-| Add ViewFoundry to an existing Vite app | [Integrate into an existing app](integrate-existing-app.md) |
-| Try the editor without installing | [Open the Studio](studio.md) |
-| Render saved JSON without the editor | [Production patterns — runtime-only](production-patterns.md#editor-vs-runtime-packages) |
-| Export or validate TSX in CI | [Production patterns — CI validation](production-patterns.md#ci-validation) |
-| Understand package vs document versioning | [FAQ](faq.md) |
-| Browse all three reference apps | [Example applications](examples.md) |
+| Goal                                      | Start here                                                                              |
+| ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| Scaffold a new Vite + React app           | [Getting started — Quick start (CLI)](getting-started.md#quick-start-recommended)       |
+| Add ViewFoundry to an existing Vite app   | [Integrate into an existing app](integrate-existing-app.md)                             |
+| Try the editor without installing         | [Open the Studio](studio.md)                                                            |
+| Render saved JSON without the editor      | [Production patterns — runtime-only](production-patterns.md#editor-vs-runtime-packages) |
+| Export or validate TSX in CI              | [Production patterns — CI validation](production-patterns.md#ci-validation)             |
+| Understand package vs document versioning | [FAQ](faq.md)                                                                           |
+| Browse all three reference apps           | [Example applications](examples.md)                                                     |
 
 ## Quick links
 

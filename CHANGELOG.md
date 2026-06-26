@@ -2,24 +2,6 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
-## [Unreleased]
-
-### Fixed
-
-- Vite plugin path containment for document reads and codegen output; HMR soft-fails on invalid JSON while serving the last valid document
-- Init template `{{ VERSION }}` token replacement; CLI help uses package version dynamically
-- `syncDocument` validates inbound documents; version-only external updates no longer reset editor history
-- `resetDocument` in examples uses HMR-updated seed via ref after document file edits
-- Codegen rejects JS reserved words as export names and absolute import paths
-- Core commands: grid auto-placement on insert, same-parent move index adjustment, grid reorder after delete, layout cleared on duplicate to non-grid parents
-- Grid move/nudge guard failures surface `lastError` in the editor store
-- Grid validation rejects containers exceeding 64 tracks
-
-### Changed
-
-- CLI errors on unknown flags; `--imports` and `--tokens` require values
-- CI fails when CLI templates drift from examples (`pnpm sync:templates`)
-
 ## [0.5.0] — June 2026
 
 ### Added
@@ -34,6 +16,19 @@ All notable changes to ViewFoundry packages are documented here. Package version
 
 - **`examples/basic-react`** — file-based `viewfoundry/document.json` with Vite plugin; localStorage remains optional persistence
 - Integration docs updated for init path and Vite document workflow
+- CLI errors on unknown flags; `--imports` and `--tokens` require values
+- CI fails when CLI templates drift from examples (`pnpm sync:templates`)
+
+### Fixed
+
+- Vite plugin path containment for document reads and codegen output; HMR soft-fails on invalid JSON while serving the last valid document
+- Init template `{{ VERSION }}` token replacement; CLI help uses package version dynamically
+- `syncDocument` validates inbound documents; version-only external updates no longer reset editor history
+- `resetDocument` in examples uses HMR-updated seed via ref after document file edits
+- Codegen rejects JS reserved words as export names and absolute import paths
+- Core commands: grid auto-placement on insert, same-parent move index adjustment, grid reorder after delete, layout cleared on duplicate to non-grid parents
+- Grid move/nudge guard failures surface `lastError` in the editor store
+- Grid validation rejects containers exceeding 64 tracks
 
 ## [0.4.1] — June 2026
 

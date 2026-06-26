@@ -26,14 +26,14 @@ Selection is preserved when switching sub-modes.
 
 ## Keyboard shortcuts
 
-| Shortcut                           | Action                                   |
-| ---------------------------------- | ---------------------------------------- |
-| `Delete` / `Backspace`             | Delete selected node                     |
-| `Cmd/Ctrl+Z`                       | Undo                                     |
-| `Cmd/Ctrl+Shift+Z` or `Cmd/Ctrl+Y` | Redo                                     |
-| `Cmd/Ctrl+D`                       | Duplicate selected node                  |
+| Shortcut                           | Action                                    |
+| ---------------------------------- | ----------------------------------------- |
+| `Delete` / `Backspace`             | Delete selected node                      |
+| `Cmd/Ctrl+Z`                       | Undo                                      |
+| `Cmd/Ctrl+Shift+Z` or `Cmd/Ctrl+Y` | Redo                                      |
+| `Cmd/Ctrl+D`                       | Duplicate selected node                   |
 | Arrow keys                         | Nudge grid placement (grid children only) |
-| `Escape`                           | Clear selection; cancel in-progress drag |
+| `Escape`                           | Clear selection; cancel in-progress drag  |
 
 Clipboard copy/paste shortcuts are planned for a future release — see the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CLIPBOARD_AND_BLOCKS.md).
 

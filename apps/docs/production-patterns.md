@@ -4,10 +4,10 @@ Guidance for shipping ViewFoundry beyond local development: split editor from ru
 
 ## Editor vs runtime packages
 
-| Need | Packages |
-| ---- | -------- |
+| Need                                   | Packages                                                                                                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Full visual editor in admin/builder UI | `@viewfoundry/core`, `@viewfoundry/schema`, `@viewfoundry/react`, `@viewfoundry/editor`, `@viewfoundry/codegen` (+ `@viewfoundry/vite` for file HMR in dev) |
-| End-user app / production preview only | `@viewfoundry/core`, `@viewfoundry/react` (and `@viewfoundry/schema` if you validate server-side) |
+| End-user app / production preview only | `@viewfoundry/core`, `@viewfoundry/react` (and `@viewfoundry/schema` if you validate server-side)                                                           |
 
 Runtime-only rendering does **not** require `@viewfoundry/editor` or its CSS:
 
@@ -17,7 +17,7 @@ import '@viewfoundry/react/styles.css';
 
 <ViewFoundryProvider document={document} registry={registry} mode="preview">
   <ViewRenderer />
-</ViewFoundryProvider>
+</ViewFoundryProvider>;
 ```
 
 Lazy-load the editor in admin routes so production bundles stay smaller:
@@ -86,9 +86,9 @@ In-app export with your import map remains the recommended path for production T
 
 ## Bundler support
 
-| Bundler | Status |
-| ------- | ------ |
-| Vite 5/6 | Supported — `@viewfoundry/vite` plugin, all examples |
+| Bundler                        | Status                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Vite 5/6                       | Supported — `@viewfoundry/vite` plugin, all examples                                                    |
 | Other (Webpack, Next.js, etc.) | Use packages directly; no official plugin yet — embed ESM packages and manage document loading yourself |
 
 ## Security

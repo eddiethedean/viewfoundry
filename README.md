@@ -95,15 +95,15 @@ See [Example applications](https://viewfoundry.readthedocs.io/en/latest/examples
 
 ## Where to read what
 
-| Source                                                         | Audience                                   | Trust level                       |
-| -------------------------------------------------------------- | ------------------------------------------ | --------------------------------- |
-| [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/) | Adopters — install, embed, grid, FAQ       | **Primary user guides**           |
-| [Package API spec](https://viewfoundry.readthedocs.io/en/latest/package-api-spec.html) | Integrators — full public API | **API contract** (synced from GitHub) |
-| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)       | Source of truth for API spec on GitHub     | **API contract source**           |
-| [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                       | Maintainers — studio + developer UX bars   | **Release acceptance**            |
-| [`docs/`](docs/)                                               | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**) |
-| [`CHANGELOG.md`](CHANGELOG.md)                                 | Everyone — release notes                   | Current                           |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md)                           | Contributors                               | Current                           |
+| Source                                                                                 | Audience                                   | Trust level                           |
+| -------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/)                         | Adopters — install, embed, grid, FAQ       | **Primary user guides**               |
+| [Package API spec](https://viewfoundry.readthedocs.io/en/latest/package-api-spec.html) | Integrators — full public API              | **API contract** (synced from GitHub) |
+| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)                               | Source of truth for API spec on GitHub     | **API contract source**               |
+| [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                                               | Maintainers — studio + developer UX bars   | **Release acceptance**                |
+| [`docs/`](docs/)                                                                       | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**)     |
+| [`CHANGELOG.md`](CHANGELOG.md)                                                         | Everyone — release notes                   | Current                               |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)                                                   | Contributors                               | Current                               |
 
 ## Documentation
 

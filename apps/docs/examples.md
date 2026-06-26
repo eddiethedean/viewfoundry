@@ -2,11 +2,11 @@
 
 ViewFoundry ships three reference applications in the monorepo. Each maps to a **`viewfoundry init`** template so you can scaffold the same layout without cloning the repo.
 
-| Example / template | Init flag | What it demonstrates |
-| ------------------ | --------- | -------------------- |
-| [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react) | `--template default` | Minimal embed: Button, Card, Stack, Grid, Row, Heading, Text; localStorage; TSX export |
-| [`examples/landing-page`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/landing-page) | `--template landing-page` | Marketing single-page: hero, feature grid, CTA; style tokens |
-| [`examples/dashboard-builder`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/dashboard-builder) | `--template dashboard-builder` | Dashboard grid: sidebar, stat cards, dense placement |
+| Example / template                                                                                               | Init flag                      | What it demonstrates                                                                   |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------- |
+| [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react)             | `--template default`           | Minimal embed: Button, Card, Stack, Grid, Row, Heading, Text; localStorage; TSX export |
+| [`examples/landing-page`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/landing-page)           | `--template landing-page`      | Marketing single-page: hero, feature grid, CTA; style tokens                           |
+| [`examples/dashboard-builder`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/dashboard-builder) | `--template dashboard-builder` | Dashboard grid: sidebar, stat cards, dense placement                                   |
 
 ## Quick start (no clone)
 
