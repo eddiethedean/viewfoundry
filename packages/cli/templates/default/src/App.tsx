@@ -104,7 +104,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry {{ VERSION }} — Basic React</h1>
+        <h1>ViewFoundry {{VERSION}} — Basic React</h1>
       </header>
       {loadWarning && (
         <div className="load-warning" role="alert" data-testid="load-warning">
