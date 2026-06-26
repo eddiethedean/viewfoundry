@@ -9,8 +9,8 @@ build:
     python: '3.12'
     nodejs: '20'
   commands:
-    - corepack enable
-    - corepack prepare pnpm@9.15.9 --activate
+    # RTD uses asdf for Node; global pnpm is more reliable than corepack shims here.
+    - npm install -g pnpm@9.15.9
     - pnpm install --frozen-lockfile
     - pip install -r apps/docs/requirements.txt
     - node scripts/build-docs.mjs

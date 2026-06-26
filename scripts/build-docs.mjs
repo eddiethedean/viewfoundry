@@ -17,8 +17,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docsDir = join(root, 'apps/docs');
 const studioDist = join(root, 'apps/docs-studio/dist');
 const staticStudio = join(docsDir, '_static/studio');
-const outputDir =
-  process.env.READTHEDOCS_OUTPUT || process.env.SPHINX_OUTPUT || join(docsDir, '_build/html');
+const outputDir = process.env.READTHEDOCS_OUTPUT
+  ? join(process.env.READTHEDOCS_OUTPUT, 'html')
+  : process.env.SPHINX_OUTPUT || join(docsDir, '_build/html');
 
 function run(command) {
   execSync(command, { cwd: root, stdio: 'inherit' });
@@ -37,6 +38,7 @@ cpSync(studioDist, staticStudio, { recursive: true });
 
 console.log(`Running sphinx-build → ${outputDir}`);
 mkdirSync(outputDir, { recursive: true });
-run(`python3 -m sphinx -b html "${docsDir}" "${outputDir}"`);
+const python = process.env.READTHEDOCS ? 'python' : 'python3';
+run(`${python} -m sphinx -b html "${docsDir}" "${outputDir}"`);
 
 console.log('Documentation build complete.');
