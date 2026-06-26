@@ -39,6 +39,10 @@ rmSync(staticStudio, { recursive: true, force: true });
 mkdirSync(join(docsDir, '_static'), { recursive: true });
 cpSync(studioDist, staticStudio, { recursive: true });
 
+// Drop stale hashed studio assets from prior local builds (Sphinx merges _static/).
+const outputStudio = join(outputDir, '_static/studio');
+rmSync(outputStudio, { recursive: true, force: true });
+
 console.log(`Running sphinx-build → ${outputDir}`);
 mkdirSync(outputDir, { recursive: true });
 const python = process.env.READTHEDOCS ? 'python' : 'python3';

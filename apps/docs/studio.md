@@ -4,11 +4,17 @@ This page embeds a working **ViewFoundryEditor** build served from the same docu
 
 Use **Edit** mode to drag components from the palette, edit props in the **Component** inspector or **Style** sub-mode, and undo/redo. Switch to **Live** to interact with the rendered output in the same viewport.
 
+<p>
+  <a href="_static/studio/index.html" target="_blank" rel="noopener noreferrer">
+    Open the Studio in a new tab
+  </a>
+  (recommended if the embed below is blank or fails to load).
+</p>
+
 <div class="studio-embed">
   <iframe
+    id="viewfoundry-studio-embed"
     title="ViewFoundry Studio"
-    src="_static/studio/index.html"
-    loading="lazy"
   ></iframe>
   <p class="studio-embed-caption">
     Embedded studio — uses the same demo components as <code>examples/basic-react</code>.
@@ -16,6 +22,14 @@ Use **Edit** mode to drag components from the palette, edit props in the **Compo
     <strong>Show JSON</strong> below the editor for the raw document.
   </p>
 </div>
+
+<script>
+  (function () {
+    var iframe = document.getElementById('viewfoundry-studio-embed');
+    if (!iframe) return;
+    iframe.src = new URL('_static/studio/index.html', window.location.href).href;
+  })();
+</script>
 
 ## Build pipeline
 

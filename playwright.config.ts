@@ -21,13 +21,30 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: 'docs-studio.spec.ts',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'docs-studio',
+      testMatch: 'docs-studio.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://127.0.0.1:8080',
+      },
+    },
   ],
-  webServer: {
-    command: `pnpm --filter basic-react exec vite preview --host 127.0.0.1 --port ${port}`,
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: `pnpm --filter basic-react exec vite preview --host 127.0.0.1 --port ${port}`,
+      url: baseURL,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+    {
+      command: 'python3 -m http.server 8080 --directory apps/docs/_build/html',
+      url: 'http://127.0.0.1:8080/studio.html',
+      reuseExistingServer: !process.env.CI,
+      timeout: 30_000,
+    },
+  ],
 });
