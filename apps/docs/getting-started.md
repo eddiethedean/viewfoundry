@@ -6,21 +6,21 @@
 - **React 18 or 19** with a bundler (Vite recommended)
 - **TypeScript** (examples use TS; JS works with typed imports from packages)
 
-Install all `@viewfoundry/*` packages at the **same version** (currently `0.4.0`).
+Install all `@viewfoundry/*` packages at the **same version** (currently `0.4.1`).
 
 ## Install
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+pnpm add @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
-Package semver (`0.4.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
+Package semver (`0.4.1`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
 
 ## Minimal example
 

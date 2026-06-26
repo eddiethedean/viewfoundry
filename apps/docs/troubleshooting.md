@@ -5,7 +5,7 @@
 Install all `@viewfoundry/*` packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
 Mixed versions (e.g. `core@0.3.0` with `editor@0.4.0`) cause peer dependency warnings and subtle runtime bugs.

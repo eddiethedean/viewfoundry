@@ -21,7 +21,7 @@ No clone required:
 2. **Install packages** in your app (all at the same version):
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
 3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a paste-in embed example, or [Integrate into an existing app](https://viewfoundry.readthedocs.io/en/latest/integrate-existing-app.html) for folder layout and Vite setup.
@@ -43,7 +43,7 @@ pnpm docs:build # Sphinx + embedded studio
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for PR expectations.
 
-## Packages (0.4.0)
+## Packages (0.4.1)
 
 See the [package overview](https://viewfoundry.readthedocs.io/en/latest/packages/index.html) for API details.
 
@@ -61,7 +61,7 @@ Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md
 
 ### 0.x stability
 
-ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.4.0`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
+ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.4.1`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
 
 ## Usage
 

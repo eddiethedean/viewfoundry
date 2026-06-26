@@ -7,7 +7,7 @@ ViewFoundry **0.4.0** adds the Style Editor sub-mode and a `style` field on `Vie
 Upgrade all packages together:
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
 ## Document model

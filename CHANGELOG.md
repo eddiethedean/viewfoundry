@@ -2,6 +2,31 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.4.1] — June 2026
+
+### Added
+
+- `MAX_GRID_CELLS` (64) export and grid track cap in `@viewfoundry/core`
+- CLI `export` flags: `--imports`, `--tokens`, and `--strict`
+- `examples/basic-react` banner when saved localStorage document fails validation
+- Expanded unit and Playwright e2e coverage (redo, nested grid codegen, CLI export, invalid storage)
+
+### Changed
+
+- External tree sync via `syncDocument` pushes the current document onto the undo stack before replacing it; meta-only parent updates sync without resetting history
+- Codegen folds grid placement into nested grid container `style` (matches React runtime); emits explicit `false` boolean props
+- `validateDocument` rejects children when `acceptsChildren` is not truthy (aligned with `applyCommand`)
+- `applyCommand` validates node props on `insertNode` and `duplicateNode` when `validateNodeProps` is wired
+
+### Fixed
+
+- `moveNode` auto-grows target grid rows/columns for cross-container drops
+- Partial `setNodeLayout` / `insertNode` layout merges preserve spans when growing grids
+- Controlled embed meta-only updates no longer blocked in `EditorContext`
+- `isStaleInboundDocument` narrowed to immediate prior snapshot (allows intentional revert to older saves)
+- Schema validation for `image` and `json` field kinds; invalid regex issue paths
+- CLI path traversal guard; keyboard shortcuts disabled during drag; unknown palette types set `lastError`
+
 ## [0.4.0] — June 2026
 
 ### Added
@@ -20,7 +45,7 @@ All notable changes to ViewFoundry packages are documented here. Package version
 
 - Undo/redo preserves selection when the selected node still exists in the restored document
 - Style mode hides the component palette; layers panel remains for selection
-- `syncDocument` clears the redo stack while preserving undo history (controlled embed contract)
+- `syncDocument` clears the redo stack on external document replacement (controlled embed contract; tree sync undo push in **0.4.1**)
 
 ### Fixed
 
@@ -99,6 +124,7 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Visual editor MVP with palette, canvas, inspector, layers
 - TSX codegen and `examples/basic-react`
 
+[0.4.1]: https://github.com/eddiethedean/viewfoundry/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/eddiethedean/viewfoundry/releases/tag/v0.2.0

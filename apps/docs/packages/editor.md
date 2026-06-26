@@ -69,7 +69,7 @@ When using `createEditorStore` or `useEditorStore`:
 
 Style mutations flow through `@viewfoundry/core` commands (`setStyleProp`, `updateNodeStyle`).
 
-Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.4.0` for ViewFoundry packages).
+Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.4.1` for ViewFoundry packages).
 
 Full API contract: [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).
 

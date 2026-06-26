@@ -44,4 +44,4 @@ Example `import-map.json`:
 
 `export` requires an import map for usable output. Pass `--imports` with a JSON map, or use `generateTsx` in app code with your import map and `styleTokens`, matching [Component registration](../component-registration.md).
 
-Peer dependency: `@viewfoundry/core@^0.4.0`.
+Peer dependency: `@viewfoundry/core@^0.4.1`.

@@ -6,7 +6,7 @@ This folder contains **maintainer planning specs** — design intent, roadmap, a
 
 **Last reviewed for v0.4.0:** COMMANDS_AND_HISTORY, CODEGEN_SPEC, TESTING_STRATEGY (see individual files).
 
-## Shipped in v0.4.x (npm `0.4.0`)
+## Shipped in v0.4.x (npm `0.4.1`)
 
 | Spec                                               | Topic                                                         |
 | -------------------------------------------------- | ------------------------------------------------------------- |
@@ -30,7 +30,7 @@ This folder contains **maintainer planning specs** — design intent, roadmap, a
 
 ## Version legend
 
-- **npm semver** (`0.4.0`) — published `@viewfoundry/*` package versions (all packages share one version).
+- **npm semver** (`0.4.1`) — published `@viewfoundry/*` package versions (all packages share one version).
 - **Document schema** (`ViewDocument.version: '0.1'`) — JSON document format version.
 - **Roadmap milestones** (`v0.5.0`, `v1.6.0`, …) — planned feature bundles; not always tied to the next npm bump.
 

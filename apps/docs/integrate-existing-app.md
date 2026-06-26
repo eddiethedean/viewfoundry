@@ -5,15 +5,15 @@ This guide walks through adding ViewFoundry to a project that already uses Vite 
 ## Prerequisites
 
 - Node.js 20+, React 18 or 19, Vite 5 or 6
-- All `@viewfoundry/*` packages at the same version (currently `0.4.0`)
+- All `@viewfoundry/*` packages at the same version (currently `0.4.1`)
 
 ## 1. Install packages
 
 ```bash
-npm install @viewfoundry/core@0.4.0 @viewfoundry/schema@0.4.0 @viewfoundry/react@0.4.0 @viewfoundry/editor@0.4.0 @viewfoundry/codegen@0.4.0
+npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
 ```
 
-Optional: `@viewfoundry/cli@0.4.0` for `validate` / `export` from the command line. `@viewfoundry/vite@0.4.0` is a no-op stub until v0.5.0.
+Optional: `@viewfoundry/cli@0.4.1` for `validate` / `export` from the command line. `@viewfoundry/vite@0.4.1` is a no-op stub until v0.5.0.
 
 ## 2. Recommended folder layout
 

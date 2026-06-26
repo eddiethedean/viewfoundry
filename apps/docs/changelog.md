@@ -2,6 +2,20 @@
 
 Package versions are lockstep-published under the same semver. The canonical changelog lives on GitHub: [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md).
 
+## [0.4.1] — June 2026
+
+Bugfix and hardening release. Upgrade all `@viewfoundry/*` packages together.
+
+### Fixed
+
+- Grid `moveNode` auto-grow, partial layout merge, and 64-cell track cap
+- Controlled embed sync history, meta-only updates, and stale inbound detection
+- Schema `image`/`json` validation; `acceptsChildren` alignment; insert/duplicate prop validation
+- Codegen nested grid placement parity with React; CLI `--imports` / `--tokens` / `--strict`
+- Editor keyboard/drag guards and unknown-component error feedback
+
+See [Migration from 0.3 → 0.4](migration-0.3-0.4.md) for Style Editor (0.4.0). [Full changelog on GitHub →](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md)
+
 ## [0.4.0] — June 2026
 
 ### Added

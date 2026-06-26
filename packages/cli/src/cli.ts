@@ -4,7 +4,7 @@ import { generateTsx, type ComponentImportMap } from '@viewfoundry/codegen';
 import { validateDocument, type ViewDocument } from '@viewfoundry/core';
 
 export function printHelp() {
-  console.log(`viewfoundry v0.4.0
+  console.log(`viewfoundry v0.4.1
 
 Usage:
   viewfoundry export <input.json> [output.tsx] [--imports map.json] [--tokens tokens.json] [--strict]
