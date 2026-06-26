@@ -68,17 +68,26 @@ export function updateNodeInTree(
   };
 }
 
+function removeFirstNodeFromTree(root: ViewNode, nodeId: string): ViewNode {
+  if (!root.children) return root;
+  const index = root.children.findIndex((child) => child.id === nodeId);
+  if (index >= 0) {
+    return {
+      ...root,
+      children: [...root.children.slice(0, index), ...root.children.slice(index + 1)],
+    };
+  }
+  return {
+    ...root,
+    children: root.children.map((child) => removeFirstNodeFromTree(child, nodeId)),
+  };
+}
+
 export function removeNodeFromTree(root: ViewNode, nodeId: string): ViewNode {
   if (root.id === nodeId) {
     throw new Error('Cannot remove root node');
   }
-  if (!root.children) return root;
-  return {
-    ...root,
-    children: root.children
-      .filter((child) => child.id !== nodeId)
-      .map((child) => removeNodeFromTree(child, nodeId)),
-  };
+  return removeFirstNodeFromTree(root, nodeId);
 }
 
 /** Returns true if `nodeId` is the same as or nested under `ancestorId`. */

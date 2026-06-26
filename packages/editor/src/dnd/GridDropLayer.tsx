@@ -5,7 +5,7 @@ import { gridContainerStyle, resolveGridTracks } from '@viewfoundry/core';
 import { GridCellDroppable } from './GridCellDroppable.js';
 import { parseNodeDragId, parsePaletteDragId } from './types.js';
 
-const MAX_GRID_CELLS = 12;
+const MAX_GRID_CELLS = 64;
 
 export type GridDropLayerProps = {
   node: ViewNode;
@@ -24,7 +24,7 @@ export function GridDropLayer({ node, activeCell, canDrop }: GridDropLayerProps)
         : null);
   }
   const tracks = resolveGridTracks(node);
-  const columns = Math.min(tracks.columns, MAX_GRID_CELLS);
+  const columns = Math.min(Math.max(tracks.columns, 1), MAX_GRID_CELLS);
   const rows = Math.min(Math.max(tracks.rows, 1), MAX_GRID_CELLS);
   const layerStyle: CSSProperties = {
     ...gridContainerStyle({ ...tracks, columns, rows }),

@@ -28,6 +28,7 @@ export type {
 } from './types.js';
 
 export { createDocument, createNode, cloneNode } from './document.js';
+export { documentTreeEqual } from './document-utils.js';
 export {
   findNode,
   findNodeLocation,

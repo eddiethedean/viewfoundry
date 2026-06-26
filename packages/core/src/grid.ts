@@ -24,11 +24,16 @@ export function isGridContainer(type: string): type is GridContainerType {
 }
 
 export function normalizePlacement(placement?: GridPlacement): PlacementRect {
+  const toInt = (value: unknown, fallback: number): number => {
+    if (typeof value === 'number' && Number.isInteger(value) && value >= 1) return value;
+    return fallback;
+  };
+
   return {
-    column: placement?.column ?? 1,
-    row: placement?.row ?? 1,
-    colSpan: placement?.colSpan ?? 1,
-    rowSpan: placement?.rowSpan ?? 1,
+    column: toInt(placement?.column, 1),
+    row: toInt(placement?.row, 1),
+    colSpan: toInt(placement?.colSpan, 1),
+    rowSpan: toInt(placement?.rowSpan, 1),
   };
 }
 
@@ -96,27 +101,40 @@ export function autoPlaceNextCell(existingChildren: ViewNode[], tracks: GridTrac
     }
   }
 
+  if (tracks.rows === 1) {
+    return { column: tracks.columns + 1, row: 1, colSpan: 1, rowSpan: 1 };
+  }
+
   const nextRow = tracks.rows + 1;
   return { column: 1, row: nextRow, colSpan: 1, rowSpan: 1 };
 }
 
-/** Expands a grid parent's `rows` prop when placement exceeds current track count. */
+/** Expands a grid or row parent when placement exceeds current track count. */
 export function growGridRowsIfNeeded(
   root: ViewNode,
   parentId: string,
   placement: GridPlacement,
 ): ViewNode {
   const parent = findNode(root, parentId);
-  if (!parent || parent.type !== 'Grid') return root;
+  if (!parent || !isGridContainer(parent.type)) return root;
 
   const rect = normalizePlacement(placement);
-  const neededRows = rect.row + rect.rowSpan - 1;
   const tracks = resolveGridTracks(parent);
-  if (neededRows <= tracks.rows) return root;
 
+  if (parent.type === 'Grid') {
+    const neededRows = rect.row + rect.rowSpan - 1;
+    if (neededRows <= tracks.rows) return root;
+    return updateNodeInTree(root, parentId, (node) => ({
+      ...node,
+      props: { ...(node.props ?? {}), rows: neededRows },
+    }));
+  }
+
+  const neededColumns = rect.column + rect.colSpan - 1;
+  if (neededColumns <= tracks.columns) return root;
   return updateNodeInTree(root, parentId, (node) => ({
     ...node,
-    props: { ...(node.props ?? {}), rows: neededRows },
+    props: { ...(node.props ?? {}), columns: neededColumns },
   }));
 }
 

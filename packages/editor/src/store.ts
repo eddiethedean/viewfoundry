@@ -33,6 +33,7 @@ import {
   type ViewNode,
 } from '@viewfoundry/core';
 import { validateProps } from '@viewfoundry/schema';
+import { documentTreeEqual } from './sync-utils.js';
 
 export type StudioMode = 'edit' | 'live';
 export type EditSubMode = 'component' | 'style';
@@ -65,8 +66,8 @@ export type EditorStore = {
   deleteSelected: () => void;
   duplicateSelected: () => void;
   updateProp: (key: string, value: unknown) => void;
-  setStyleProp: (key: string, value: StyleValue | undefined) => void;
-  updateStyle: (style: StyleTokenMap) => void;
+  setStyleProp: (nodeId: string, key: string, value: StyleValue | undefined) => void;
+  updateStyle: (nodeId: string, style: StyleTokenMap) => void;
   undo: () => void;
   redo: () => void;
   canUndo: () => boolean;
@@ -199,16 +200,31 @@ export function createEditorStore(
 
     syncDocument: (document) => {
       const state = get();
-      if (JSON.stringify(state.document) === JSON.stringify(document)) return;
+      if (documentTreeEqual(state.document, document)) {
+        if (JSON.stringify(state.document.meta ?? null) !== JSON.stringify(document.meta ?? null)) {
+          set({ document: { ...state.document, meta: document.meta } });
+        }
+        return;
+      }
       set({
         document,
-        history: { ...state.history, present: document, future: [] },
+        history: {
+          ...state.history,
+          present: document,
+          future: [],
+        },
+        selection: preserveSelection(state.selection, document),
         lastError: null,
       });
     },
 
     revertDocument: (document) => {
-      set({ document });
+      const state = get();
+      set({
+        document,
+        history: { ...state.history, present: document },
+      });
+      onChange?.(document);
     },
 
     selectNode: (nodeId) => {
@@ -403,8 +419,7 @@ export function createEditorStore(
       );
     },
 
-    setStyleProp: (key, value) => {
-      const nodeId = getPrimarySelection(get().selection);
+    setStyleProp: (nodeId, key, value) => {
       if (!nodeId) return;
       const { registry, document } = get();
       handleCommandResult(
@@ -420,8 +435,7 @@ export function createEditorStore(
       );
     },
 
-    updateStyle: (style) => {
-      const nodeId = getPrimarySelection(get().selection);
+    updateStyle: (nodeId, style) => {
       if (!nodeId) return;
       const { registry, document } = get();
       handleCommandResult(

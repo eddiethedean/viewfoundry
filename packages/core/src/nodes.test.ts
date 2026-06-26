@@ -77,4 +77,14 @@ describe('nodes', () => {
     const root = createDocument().root;
     expect(() => removeNodeFromTree(root, 'root')).toThrow(/Cannot remove root/);
   });
+
+  it('removeNodeFromTree removes only the first matching id', () => {
+    const duplicate = createNode('Button', {}, [], 'dup');
+    const root = createDocument().root;
+    root.children = [duplicate, { ...duplicate, props: { children: 'copy' } }];
+
+    const updated = removeNodeFromTree(root, 'dup');
+    expect(updated.children).toHaveLength(1);
+    expect(updated.children?.[0].id).toBe('dup');
+  });
 });

@@ -96,6 +96,27 @@ describe('grid utilities', () => {
     );
   });
 
+  it('auto-places next column when a row container is full', () => {
+    const row = createNode('Row', { columns: 2 });
+    const tracks = resolveGridTracks(row);
+    const children = [
+      createNode('Button', {}, [], 'b1', { grid: { column: 1, row: 1 } }),
+      createNode('Button', {}, [], 'b2', { grid: { column: 2, row: 1 } }),
+    ];
+    expect(autoPlaceNextCell(children, tracks)).toEqual({
+      column: 3,
+      row: 1,
+      colSpan: 1,
+      rowSpan: 1,
+    });
+  });
+
+  it('growGridRowsIfNeeded expands row columns when placement exceeds width', () => {
+    const row = createNode('Row', { columns: 2 }, [], 'row1');
+    const grown = growGridRowsIfNeeded(row, 'row1', { column: 3, row: 1 });
+    expect(grown.props?.columns).toBe(3);
+  });
+
   it('parses grid drop ids', () => {
     expect(gridDropId('grid1', 2, 3)).toBe('grid:grid1:2:3');
     expect(parseGridDropId('grid:grid1:2:3')).toEqual({

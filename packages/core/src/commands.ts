@@ -21,6 +21,7 @@ import {
   isGridContainer,
   resolveGridTracks,
   sortChildrenByGridOrder,
+  normalizePlacement,
 } from './grid.js';
 import {
   findNode,
@@ -48,9 +49,16 @@ function reorderParentChildren(root: ViewNode, parentId: string): ViewNode {
 
 function applyLayoutToNode(node: ViewNode, layout?: GridPlacement): ViewNode {
   if (layout === undefined) return node;
+  const existing = normalizePlacement(node.layout?.grid);
+  const merged: GridPlacement = {
+    column: layout.column ?? existing.column,
+    row: layout.row ?? existing.row,
+    colSpan: layout.colSpan ?? existing.colSpan,
+    rowSpan: layout.rowSpan ?? existing.rowSpan,
+  };
   return {
     ...node,
-    layout: { ...node.layout, grid: layout },
+    layout: { ...node.layout, grid: merged },
   };
 }
 
@@ -67,6 +75,9 @@ export function insertNode(document: ViewDocument, payload: InsertNodePayload): 
   const parent = findNode(document.root, payload.parentId);
   if (!parent) {
     return failure(`Parent node not found: ${payload.parentId}`);
+  }
+  if (findNode(document.root, payload.node.id)) {
+    return failure(`Duplicate node ID: ${payload.node.id}`);
   }
   let root = document.root;
   if (payload.layout && isGridContainer(parent.type)) {
@@ -170,9 +181,11 @@ export function setNodeLayout(
     return failure(`Node not found: ${payload.nodeId}`);
   }
   const location = findNodeLocation(document.root, payload.nodeId);
-  let newRoot = updateNodeInTree(document.root, payload.nodeId, (n) =>
-    applyLayoutToNode(n, payload.layout),
-  );
+  let root = document.root;
+  if (location?.parent && isGridContainer(location.parent.type)) {
+    root = growGridRowsIfNeeded(root, location.parent.id, payload.layout);
+  }
+  let newRoot = updateNodeInTree(root, payload.nodeId, (n) => applyLayoutToNode(n, payload.layout));
   if (location?.parent && isGridContainer(location.parent.type)) {
     newRoot = reorderParentChildren(newRoot, location.parent.id);
   }

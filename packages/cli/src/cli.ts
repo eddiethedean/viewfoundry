@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { relative, resolve } from 'node:path';
 import { generateTsx } from '@viewfoundry/codegen';
 import { validateDocument, type ViewDocument } from '@viewfoundry/core';
 
@@ -22,6 +23,15 @@ export function loadDocument(path: string): ViewDocument {
   return JSON.parse(raw) as ViewDocument;
 }
 
+export function resolveSafeOutputPath(outputPath: string, cwd = process.cwd()): string | null {
+  const resolved = resolve(cwd, outputPath);
+  const rel = relative(cwd, resolved);
+  if (rel.startsWith('..')) {
+    return null;
+  }
+  return resolved;
+}
+
 export type RunCliResult = {
   exitCode: number;
 };
@@ -35,6 +45,11 @@ export function runCli(argv: string[]): RunCliResult {
       const outputPath = args[1] ?? 'GeneratedView.tsx';
       if (!inputPath) {
         console.error('Error: input JSON path required');
+        return { exitCode: 1 };
+      }
+      const safeOutputPath = resolveSafeOutputPath(outputPath);
+      if (!safeOutputPath) {
+        console.error('Error: output path must stay within the current working directory');
         return { exitCode: 1 };
       }
       let document: ViewDocument;
@@ -55,8 +70,8 @@ export function runCli(argv: string[]): RunCliResult {
         return { exitCode: 1 };
       }
       const { code, warnings } = generateTsx({ document, imports: {} });
-      writeFileSync(outputPath, code);
-      console.log(`Wrote ${outputPath}`);
+      writeFileSync(safeOutputPath, code);
+      console.log(`Wrote ${safeOutputPath}`);
       for (const w of warnings) console.warn(`Warning: ${w}`);
       return { exitCode: 0 };
     }

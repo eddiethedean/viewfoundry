@@ -43,7 +43,7 @@ export function cloneNode(node: ViewNode, idGenerator: () => string = () => nano
   return {
     id: idGenerator(),
     type: node.type,
-    ...(node.props ? { props: { ...node.props } } : {}),
+    ...(node.props ? { props: structuredClone(node.props) } : {}),
     ...(node.layout ? { layout: cloneLayout(node.layout) } : {}),
     ...(node.style ? { style: cloneStyle(node.style) } : {}),
     ...(node.children

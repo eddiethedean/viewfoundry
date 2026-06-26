@@ -50,7 +50,7 @@ function KeyboardShortcuts() {
         e.preventDefault();
         store.getState().redo();
       }
-      if (mod && e.key === 'd') {
+      if (mod && e.key === 'd' && !isKeyboardShortcutBlocked(e.target)) {
         e.preventDefault();
         store.getState().duplicateSelected();
       }

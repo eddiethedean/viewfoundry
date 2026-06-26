@@ -64,6 +64,7 @@ When using `createEditorStore` or `useEditorStore`:
 | `syncDocument(document)`           | Merge external document without clearing undo |
 | `setEditSubMode(mode)`             | Switch Component/Style sub-mode               |
 | `setStyleProp(nodeId, key, value)` | Set one style key on a node                   |
+| `updateStyle(nodeId, style)`       | Merge style keys on a node                    |
 | `updateStyle(nodeId, partial)`     | Merge style keys on a node                    |
 
 Style mutations flow through `@viewfoundry/core` commands (`setStyleProp`, `updateNodeStyle`).

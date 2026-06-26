@@ -73,7 +73,7 @@ function formatPropValue(value: unknown, warnings: string[], path: string): stri
 function renderGridStyleAttr(node: ViewNode, parent: ViewNode | null): string {
   if (!parent || !isGridContainer(parent.type) || !node.layout?.grid) return '';
   const css = placementToCss(node.layout.grid);
-  const entries = Object.entries(css).map(([key, value]) => `${key}: '${value}'`);
+  const entries = Object.entries(css).map(([key, value]) => `${key}: ${JSON.stringify(value)}`);
   return ` style={{ ${entries.join(', ')} }}`;
 }
 

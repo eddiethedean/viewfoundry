@@ -15,6 +15,32 @@ function isEmpty(value: unknown): boolean {
   return value === undefined || value === null || value === '';
 }
 
+function testPattern(
+  pattern: string,
+  value: string,
+  path: string,
+  issues: ValidationIssue[],
+): boolean {
+  try {
+    if (!new RegExp(pattern).test(value)) {
+      issues.push({
+        path,
+        message: `Value does not match pattern`,
+        code: 'PATTERN',
+      });
+      return false;
+    }
+    return true;
+  } catch {
+    issues.push({
+      path: `schema.${path}`,
+      message: `Invalid validation pattern`,
+      code: 'INVALID_PATTERN',
+    });
+    return false;
+  }
+}
+
 export function validateProps(
   schema: PropSchema,
   props: Record<string, unknown>,
@@ -24,10 +50,11 @@ export function validateProps(
   for (const [key, field] of Object.entries(schema)) {
     if (!field) continue;
     const value = props[key];
+    const path = `props.${key}`;
 
     if (field.required && isEmpty(value)) {
       issues.push({
-        path: `props.${key}`,
+        path,
         message: `${field.label ?? key} is required`,
         code: 'REQUIRED',
       });
@@ -39,7 +66,7 @@ export function validateProps(
     if (field.kind === 'number') {
       if (typeof value !== 'number' || !Number.isFinite(value)) {
         issues.push({
-          path: `props.${key}`,
+          path,
           message: `${field.label ?? key} must be a finite number`,
           code: 'INVALID_TYPE',
         });
@@ -49,14 +76,14 @@ export function validateProps(
       const max = field.max as number | undefined;
       if (min !== undefined && value < min) {
         issues.push({
-          path: `props.${key}`,
+          path,
           message: `Value must be at least ${min}`,
           code: 'MIN',
         });
       }
       if (max !== undefined && value > max) {
         issues.push({
-          path: `props.${key}`,
+          path,
           message: `Value must be at most ${max}`,
           code: 'MAX',
         });
@@ -65,38 +92,57 @@ export function validateProps(
 
     if (field.kind === 'boolean' && typeof value !== 'boolean') {
       issues.push({
-        path: `props.${key}`,
+        path,
         message: `${field.label ?? key} must be true or false`,
         code: 'INVALID_TYPE',
       });
     }
 
-    if ((field.kind === 'select' || field.kind === 'radio') && typeof value === 'string') {
+    if (field.kind === 'select' || field.kind === 'radio') {
+      if (typeof value !== 'string') {
+        issues.push({
+          path,
+          message: `${field.label ?? key} must be a string option`,
+          code: 'INVALID_TYPE',
+        });
+        continue;
+      }
       const allowed = getSelectValues(field as Parameters<typeof getSelectValues>[0]);
       if (allowed && !allowed.includes(value)) {
         issues.push({
-          path: `props.${key}`,
+          path,
           message: `Invalid option: ${value}`,
           code: 'INVALID_OPTION',
         });
       }
     }
 
-    if (field.kind === 'text' || field.kind === 'url') {
+    if (
+      field.kind === 'text' ||
+      field.kind === 'textarea' ||
+      field.kind === 'url' ||
+      field.kind === 'color'
+    ) {
       if (typeof value !== 'string') {
         issues.push({
-          path: `props.${key}`,
+          path,
           message: `${field.label ?? key} must be text`,
           code: 'INVALID_TYPE',
         });
         continue;
       }
       const pattern = field.pattern as string | undefined;
-      if (pattern && !new RegExp(pattern).test(value)) {
+      if (pattern) {
+        testPattern(pattern, value, path, issues);
+      }
+    }
+
+    if (field.kind === 'json') {
+      if (typeof value === 'function') {
         issues.push({
-          path: `props.${key}`,
-          message: `Value does not match pattern`,
-          code: 'PATTERN',
+          path,
+          message: `${field.label ?? key} must be JSON-serializable`,
+          code: 'INVALID_TYPE',
         });
       }
     }

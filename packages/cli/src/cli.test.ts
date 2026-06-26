@@ -1,14 +1,19 @@
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createDocument, createNode } from '@viewfoundry/core';
-import { loadDocument, printHelp, runCli } from './cli.js';
+import { loadDocument, printHelp, resolveSafeOutputPath, runCli } from './cli.js';
 
 describe('runCli', () => {
   const tempDirs: string[] = [];
 
   afterEach(() => {
+    try {
+      unlinkSync(resolve('GeneratedView.tsx'));
+    } catch {
+      // ignore if export test did not run
+    }
     tempDirs.length = 0;
     vi.restoreAllMocks();
   });
@@ -38,14 +43,14 @@ describe('runCli', () => {
     const doc = createDocument();
     doc.root.children = [createNode('Button', { children: 'Hi' }, [], 'b1')];
     const inputPath = writeFixture('doc.json', doc);
-    const outputPath = join(makeTempDir(), 'GeneratedView.tsx');
+    const outputName = 'GeneratedView.tsx';
 
     const log = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const result = runCli(['export', inputPath, outputPath]);
+    const result = runCli(['export', inputPath, outputName]);
 
     expect(result.exitCode).toBe(0);
-    expect(readFileSync(outputPath, 'utf-8')).toContain('export function GeneratedView()');
-    expect(log).toHaveBeenCalledWith(`Wrote ${outputPath}`);
+    expect(readFileSync(outputName, 'utf-8')).toContain('export function GeneratedView()');
+    expect(log).toHaveBeenCalledWith(`Wrote ${resolve(process.cwd(), outputName)}`);
   });
 
   it('errors when export input path is missing', () => {
@@ -94,6 +99,22 @@ describe('runCli', () => {
     const result = runCli(['validate', inputPath]);
     expect(result.exitCode).toBe(1);
     expect(error).toHaveBeenCalledWith('Invalid ViewFoundry document:');
+  });
+
+  it('errors when export output path escapes working directory', () => {
+    const doc = createDocument();
+    const inputPath = writeFixture('doc.json', doc);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = runCli(['export', inputPath, '../outside.tsx']);
+    expect(result.exitCode).toBe(1);
+    expect(error).toHaveBeenCalledWith(
+      'Error: output path must stay within the current working directory',
+    );
+  });
+
+  it('resolveSafeOutputPath rejects traversal', () => {
+    expect(resolveSafeOutputPath('../escape.tsx')).toBeNull();
+    expect(resolveSafeOutputPath('GeneratedView.tsx')).not.toBeNull();
   });
 
   it('errors on unknown command', () => {

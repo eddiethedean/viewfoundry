@@ -196,9 +196,9 @@ describe('generateTsx', () => {
       Button: { importPath: './components', exportName: 'Button' },
     };
     const { code } = generateTsx({ document: doc, imports: gridImports });
-    expect(code).toContain("gridColumn: '2 / 4'");
-    expect(code).toContain("gridRow: '1'");
-    expect(code).toMatch(/<div style=\{\{ gridColumn: '2 \/ 4', gridRow: '1' \}\}>/);
+    expect(code).toContain('gridColumn: "2 / 4"');
+    expect(code).toContain('gridRow: "1"');
+    expect(code).toMatch(/<div style=\{\{ gridColumn: "2 \/ 4", gridRow: "1" \}\}>/);
     expect(code).toContain('<Button>{"A"}</Button>');
   });
 
@@ -276,7 +276,7 @@ describe('generateTsx', () => {
       Button: { importPath: './components', exportName: 'Button' },
     };
     const { code } = generateTsx({ document: doc, imports: gridImports });
-    expect(code).toContain("gridColumn: '1 / 3'");
+    expect(code).toContain('gridColumn: "1 / 3"');
     expect(code).toContain('style={{"margin":4}}');
     expect(code).not.toContain('"gridColumn":"9"');
   });
@@ -299,8 +299,28 @@ describe('generateTsx', () => {
       Button: { importPath: './components', exportName: 'Button' },
     };
     const { code } = generateTsx({ document: doc, imports: gridImports });
-    expect(code).toContain("gridColumn: '1'");
+    expect(code).toContain('gridColumn: "1"');
     expect(code).toContain('style={{"margin":4}}');
+  });
+
+  it('coerces invalid grid placement values to safe defaults in output', () => {
+    const doc = createDocument();
+    const grid = createNode('Grid', { columns: 2, rows: 2 }, [], 'grid1');
+    const button = createNode('Button', { children: 'X' }, [], 'b1', {
+      grid: {
+        column: "1' }}></div><script>alert(1)</script><div x='" as unknown as number,
+        row: 1,
+      },
+    });
+    grid.children = [button];
+    doc.root.children = [grid];
+    const gridImports = {
+      Grid: { importPath: './components', exportName: 'Grid' },
+      Button: { importPath: './components', exportName: 'Button' },
+    };
+    const { code } = generateTsx({ document: doc, imports: gridImports });
+    expect(code).toContain('gridColumn: "1"');
+    expect(code).not.toContain('</script>');
   });
 });
 

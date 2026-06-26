@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import type { ComponentRegistry, ViewDocument } from '@viewfoundry/core';
 import { createEditorStore, type EditorStoreApi, type StudioMode } from './store.js';
+import { isStaleInboundDocument } from './sync-utils.js';
 
 const EditorStoreContext = createContext<EditorStoreApi | null>(null);
 
@@ -35,7 +36,7 @@ export function EditorProvider({
         registry,
         document,
         (doc) => {
-          lastEmittedDocumentRef.current = JSON.stringify(doc);
+          lastEmittedDocumentRef.current = JSON.stringify(doc.root);
           onChangeRef.current?.(doc);
         },
         {
@@ -52,8 +53,9 @@ export function EditorProvider({
 
   useEffect(() => {
     if (!document) return;
-    const serialized = JSON.stringify(document);
-    if (serialized === lastEmittedDocumentRef.current) return;
+    const state = store.getState();
+    if (JSON.stringify(document.root) === lastEmittedDocumentRef.current) return;
+    if (isStaleInboundDocument(document, state.document, state.history)) return;
     store.getState().syncDocument(document);
   }, [document, store]);
 

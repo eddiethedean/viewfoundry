@@ -46,6 +46,10 @@ function StyleFieldControl({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
     setLocalValue(value);
   }, [value, field.key]);
 
@@ -242,11 +246,13 @@ function StyleFieldControl({
 }
 
 function AdvancedStyleFields({
+  nodeId,
   style,
   onCommit,
 }: {
+  nodeId: string;
   style: Record<string, StyleValue>;
-  onCommit: (key: string, value: StyleValue | undefined) => void;
+  onCommit: (nodeId: string, key: string, value: StyleValue | undefined) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [pendingKey, setPendingKey] = useState('');
@@ -257,12 +263,22 @@ function AdvancedStyleFields({
   const advancedEntries = Object.entries(style).filter(([key]) => !knownKeys.has(key));
   const debounceRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
+  useEffect(
+    () => () => {
+      for (const timer of debounceRef.current.values()) {
+        clearTimeout(timer);
+      }
+      debounceRef.current.clear();
+    },
+    [],
+  );
+
   const scheduleCommit = (key: string, value: StyleValue | undefined, immediate = false) => {
     if (immediate) {
       const pending = debounceRef.current.get(key);
       if (pending) clearTimeout(pending);
       debounceRef.current.delete(key);
-      onCommit(key, value);
+      onCommit(nodeId, key, value);
       return;
     }
     const existing = debounceRef.current.get(key);
@@ -271,7 +287,7 @@ function AdvancedStyleFields({
       key,
       setTimeout(() => {
         debounceRef.current.delete(key);
-        onCommit(key, value);
+        onCommit(nodeId, key, value);
       }, STYLE_COMMIT_DEBOUNCE_MS),
     );
   };
@@ -318,6 +334,7 @@ function AdvancedStyleFields({
                 const key = pendingKey.trim();
                 if (!key || !/^[a-z][a-zA-Z0-9]*$/.test(key)) return;
                 setPendingKey('');
+                onCommit(nodeId, key, undefined);
               }}
             />
           </label>
@@ -339,8 +356,8 @@ export function StyleInspector({ styleTokens }: StyleInspectorProps) {
   const tokenOptions = styleTokens ? Object.keys(styleTokens) : [];
 
   const handleCommit = useCallback(
-    (key: string, value: StyleValue | undefined) => {
-      store.getState().setStyleProp(key, value);
+    (targetNodeId: string, key: string, value: StyleValue | undefined) => {
+      store.getState().setStyleProp(targetNodeId, key, value);
     },
     [store],
   );
@@ -385,18 +402,18 @@ export function StyleInspector({ styleTokens }: StyleInspectorProps) {
               <h3 className="vf-style-section-title">{GROUP_LABELS[group]}</h3>
               {fields.map((field) => (
                 <StyleFieldControl
-                  key={field.key}
+                  key={`${nodeId}-${field.key}`}
                   field={field}
                   value={style[field.key]}
                   tokenOptions={field.kind === 'color' ? tokenOptions : []}
                   styleTokens={styleTokens}
-                  onCommit={(value) => handleCommit(field.key, value)}
+                  onCommit={(value) => handleCommit(nodeId, field.key, value)}
                 />
               ))}
             </section>
           );
         })}
-        <AdvancedStyleFields style={style} onCommit={handleCommit} />
+        <AdvancedStyleFields nodeId={nodeId} style={style} onCommit={handleCommit} />
         {Object.keys(style).some((key) => !isKnownStyleKey(key)) && (
           <p className="vf-inspector-hint">Custom properties appear under Advanced.</p>
         )}

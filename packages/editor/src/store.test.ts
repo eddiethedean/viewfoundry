@@ -115,16 +115,17 @@ describe('createEditorStore', () => {
     expect(getPrimarySelection(store.getState().selection)).toBe(children[1].id);
   });
 
-  it('revertDocument restores document without clearing history', () => {
-    const store = createEditorStore(registry, createDocument());
+  it('revertDocument restores document and syncs history.present', () => {
+    const onChange = vi.fn();
+    const store = createEditorStore(registry, createDocument(), onChange);
     store.getState().insertComponent('Button');
-    const beforeHistory = store.getState().history;
     const snapshot = createDocument();
 
     store.getState().revertDocument(snapshot);
 
     expect(store.getState().document).toEqual(snapshot);
-    expect(store.getState().history).toBe(beforeHistory);
+    expect(store.getState().history.present).toEqual(snapshot);
+    expect(onChange).toHaveBeenCalledWith(snapshot);
   });
 
   it('syncDocument updates present without resetting history or calling onChange', () => {
@@ -143,17 +144,33 @@ describe('createEditorStore', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it('syncDocument clears the redo stack', () => {
+  it('syncDocument clears redo only when tree content changes', () => {
     const store = createEditorStore(registry, createDocument());
     store.getState().insertComponent('Button');
     store.getState().undo();
     expect(store.getState().history.future.length).toBeGreaterThan(0);
 
-    const external = structuredClone(store.getState().document);
-    external.meta = { name: 'Synced checkpoint' };
+    const metaOnly = structuredClone(store.getState().document);
+    metaOnly.meta = { name: 'Meta only' };
+    store.getState().syncDocument(metaOnly);
+    expect(store.getState().history.future.length).toBeGreaterThan(0);
+
+    const external = createDocument();
+    external.root.children = [createNode('Card', {}, [], 'card1')];
+    store.getState().syncDocument(external);
+    expect(store.getState().history.future).toHaveLength(0);
+  });
+
+  it('syncDocument clears selection when selected node is removed', () => {
+    const doc = createDocument();
+    doc.root.children = [createNode('Button', { children: 'Hi' }, [], 'btn1')];
+    const store = createEditorStore(registry, doc);
+    store.getState().selectNode('btn1');
+
+    const external = createDocument();
     store.getState().syncDocument(external);
 
-    expect(store.getState().history.future).toHaveLength(0);
+    expect(getPrimarySelection(store.getState().selection)).toBeUndefined();
   });
 
   it('insertComponent targets existing grid when nothing is selected', () => {

@@ -1,5 +1,7 @@
 import type {
   ComponentRegistry,
+  GridPlacement,
+  StyleTokenMap,
   ValidationIssue,
   ValidationResult,
   ViewDocument,
@@ -19,6 +21,24 @@ export type ValidateDocumentOptions = {
   allowMissingComponents?: boolean;
 };
 
+function validateGridPlacementFields(
+  placement: GridPlacement,
+  path: string,
+  issues: ValidationIssue[],
+): void {
+  for (const key of ['column', 'row', 'colSpan', 'rowSpan'] as const) {
+    const value = placement[key];
+    if (value === undefined) continue;
+    if (typeof value !== 'number' || !Number.isInteger(value) || value < 1) {
+      issues.push({
+        path,
+        message: `Grid ${key} must be a positive integer`,
+        code: 'INVALID_GRID_PLACEMENT',
+      });
+    }
+  }
+}
+
 function validateGridChildren(parent: ViewNode, issues: ValidationIssue[]): void {
   if (!isGridContainer(parent.type) || !parent.children) return;
 
@@ -36,6 +56,7 @@ function validateGridChildren(parent: ViewNode, issues: ValidationIssue[]): void
     }
 
     const rect = normalizePlacement(child.layout.grid);
+    validateGridPlacementFields(child.layout.grid, `node:${child.id}.layout.grid`, issues);
     if (!isPlacementInBounds(rect, tracks)) {
       issues.push({
         path: `node:${child.id}`,
@@ -116,7 +137,7 @@ export function validateDocument(
     seen.add(id);
   }
 
-  walkNodes(document.root, (node) => {
+  walkNodes(document.root, (node, _parent) => {
     if (node.type === 'Root') return;
 
     if (registry && !options.allowMissingComponents && !registry.has(node.type)) {
@@ -142,9 +163,22 @@ export function validateDocument(
       }
     }
 
+    if (node.layout?.grid) {
+      validateGridPlacementFields(node.layout.grid, `node:${node.id}.layout.grid`, issues);
+    }
+
     if (node.style) {
       const styleResult = validateStyle(node.style, `node:${node.id}.style`);
       issues.push(...styleResult.issues);
+    }
+
+    const propsStyle = node.props?.style;
+    if (propsStyle && typeof propsStyle === 'object' && !Array.isArray(propsStyle)) {
+      const propsStyleResult = validateStyle(
+        propsStyle as StyleTokenMap,
+        `node:${node.id}.props.style`,
+      );
+      issues.push(...propsStyleResult.issues);
     }
   });
 
