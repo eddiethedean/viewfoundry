@@ -1,83 +1,96 @@
 import { expect, test } from '@playwright/test';
+import {
+  bootstrapGridWithButton,
+  demoButton,
+  getStoredDocument,
+  insertFromPalette,
+  inspector,
+  layers,
+  layerButton,
+  palette,
+  resetDocument,
+  selectLayer,
+  setStudioMode,
+  toolbar,
+} from './helpers.js';
 
 test.describe('basic-react example', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.evaluate(() => localStorage.clear());
-    await page.reload();
+    await resetDocument(page);
   });
 
   test('opens in Edit mode with editor chrome', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /ViewFoundry/ })).toBeVisible();
-    await expect(
-      page.locator('.vf-palette').getByText('Components', { exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.locator('.vf-inspector').getByText('Inspector', { exact: true }),
-    ).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Edit', pressed: true })).toBeVisible();
+    await expect(palette(page).getByText('Components', { exact: true })).toBeVisible();
+    await expect(inspector(page).getByText('Inspector', { exact: true })).toBeVisible();
+    await expect(layers(page).getByText('Layers', { exact: true })).toBeVisible();
+    await expect(toolbar(page).getByRole('button', { name: 'Edit', pressed: true })).toBeVisible();
+    await expect(toolbar(page).getByRole('button', { name: 'Undo' })).toBeDisabled();
+    await expect(toolbar(page).getByRole('button', { name: 'Redo' })).toBeDisabled();
   });
 
   test('inserts a component from the palette with grid bootstrap', async ({ page }) => {
-    const palette = page.locator('.vf-palette');
-    await palette.getByRole('button', { name: 'Button', exact: true }).click();
+    await bootstrapGridWithButton(page);
 
-    await expect(page.locator('.vf-layers').getByRole('button', { name: /Grid/ })).toBeVisible();
-    await expect(page.locator('.vf-layers').getByRole('button', { name: /Button/ })).toBeVisible();
-    await expect(page.locator('.demo-button')).toBeVisible();
+    await expect(demoButton(page, 'Click me')).toBeVisible();
 
-    const stored = await page.evaluate(() =>
-      localStorage.getItem('viewfoundry-basic-react-document'),
-    );
-    expect(stored).toContain('"layout"');
-    expect(stored).toContain('"grid"');
+    const stored = await getStoredDocument(page);
+    expect(stored).not.toBeNull();
+    expect(JSON.stringify(stored)).toContain('"layout"');
+    expect(JSON.stringify(stored)).toContain('"grid"');
   });
 
   test('inserts into a selected grid container', async ({ page }) => {
-    const palette = page.locator('.vf-palette');
-    await palette.getByRole('button', { name: 'Grid', exact: true }).click();
-
-    const gridLayer = page.locator('.vf-layers').getByRole('button', { name: /Grid/ });
-    await gridLayer.click();
-    await palette.getByRole('button', { name: 'Heading', exact: true }).click();
+    await insertFromPalette(page, 'Grid');
+    await selectLayer(page, /^Grid\b/);
+    await insertFromPalette(page, 'Heading');
 
     await expect(page.locator('.demo-grid')).toBeVisible();
-    await expect(page.locator('.vf-layers').getByRole('button', { name: /Heading/ })).toBeVisible();
+    await expect(layerButton(page, /^Heading\b/)).toBeVisible();
 
-    const stored = await page.evaluate(() =>
-      localStorage.getItem('viewfoundry-basic-react-document'),
-    );
-    expect(stored).toContain('"layout"');
+    const stored = await getStoredDocument(page);
+    expect(stored).not.toBeNull();
+    expect(JSON.stringify(stored)).toContain('"layout"');
   });
 
   test('toggles Live mode and keeps the canvas interactive', async ({ page }) => {
-    const palette = page.locator('.vf-palette');
-    await palette.getByRole('button', { name: 'Button', exact: true }).click();
+    await bootstrapGridWithButton(page);
 
-    await page.getByRole('button', { name: 'Live' }).click();
+    await setStudioMode(page, 'Live');
 
     await expect(page.getByText('Components')).toBeHidden();
-    await expect(page.locator('.vf-inspector')).toBeHidden();
-    await expect(page.getByRole('button', { name: 'Click me' })).toBeVisible();
+    await expect(inspector(page)).toBeHidden();
+    await expect(layers(page)).toBeHidden();
+    await expect(toolbar(page).getByRole('button', { name: 'Undo' })).toBeHidden();
+    await expect(demoButton(page, 'Click me')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Edit' }).click();
-    await expect(
-      page.locator('.vf-palette').getByText('Components', { exact: true }),
-    ).toBeVisible();
+    await setStudioMode(page, 'Edit');
+    await expect(palette(page).getByText('Components', { exact: true })).toBeVisible();
   });
 
   test('exports TSX from the toolbar', async ({ page }) => {
-    const palette = page.locator('.vf-palette');
-    await palette.getByRole('button', { name: 'Button', exact: true }).click();
+    await bootstrapGridWithButton(page);
 
-    await page.getByRole('button', { name: 'Export TSX' }).click();
+    await toolbar(page).getByRole('button', { name: 'Export TSX' }).click();
 
     const drawer = page.getByRole('dialog', { name: 'Generated TSX' });
     await expect(drawer).toBeVisible();
     await expect(drawer.locator('pre')).toContainText('export function DemoView');
     await expect(drawer.locator('pre')).toContainText('Click me');
+    await expect(drawer.locator('pre')).toContainText('Button');
 
     await drawer.getByRole('button', { name: 'Close' }).click();
     await expect(drawer).toBeHidden();
+  });
+
+  test('filters the palette with search', async ({ page }) => {
+    const search = palette(page).getByPlaceholder('Search components...');
+    await search.fill('Heading');
+
+    await expect(palette(page).getByRole('button', { name: 'Heading', exact: true })).toBeVisible();
+    await expect(palette(page).getByRole('button', { name: 'Button', exact: true })).toBeHidden();
+
+    await search.fill('');
+    await expect(palette(page).getByRole('button', { name: 'Button', exact: true })).toBeVisible();
   });
 });

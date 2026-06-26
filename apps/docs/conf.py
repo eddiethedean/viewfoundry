@@ -2,14 +2,22 @@
 
 from __future__ import annotations
 
+import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 project = "ViewFoundry"
 author = "ViewFoundry contributors"
 copyright = f"{datetime.now().year}, {author}"
-release = "0.2.0"
-version = "0.2.0"
+
+_root_pkg = json.loads(
+    (Path(__file__).resolve().parent.parent.parent / "package.json").read_text(
+        encoding="utf-8"
+    )
+)
+release = _root_pkg["version"]
+version = release
 
 extensions = [
     "myst_parser",

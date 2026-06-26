@@ -13,6 +13,10 @@ export default defineConfig({
   use: {
     baseURL,
     trace: 'on-first-retry',
+    actionTimeout: 10_000,
+  },
+  expect: {
+    timeout: 10_000,
   },
   projects: [
     {

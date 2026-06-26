@@ -21,4 +21,4 @@ import '@viewfoundry/react/styles.css';
 
 `Palette`, `Canvas`, `Inspector`, `LayersPanel`, `Toolbar`, and `createEditorStore` are exported for custom editor shells.
 
-Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.2.0` for ViewFoundry packages).
+Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.3.0` for ViewFoundry packages).

@@ -12,7 +12,7 @@ The document model must be:
 - suitable for JSON storage
 - suitable for TSX code generation
 
-## Initial model
+## Current model (v0.3.0)
 
 ```ts
 export type ViewDocument = {
@@ -28,13 +28,33 @@ export type ViewDocumentMeta = {
   updatedAt?: string;
 };
 
+export type GridPlacement = {
+  column?: number;
+  row?: number;
+  colSpan?: number;
+  rowSpan?: number;
+};
+
+export type NodeLayout = {
+  grid?: GridPlacement;
+  /** grid container track definition when node is a layout container */
+  tracks?: {
+    columns?: number | string;
+    rows?: number | string;
+    gap?: number | string;
+  };
+};
+
 export type ViewNode = {
   id: string;
   type: string;
   props?: Record<string, unknown>;
   children?: ViewNode[];
+  layout?: NodeLayout;
 };
 ```
+
+Package semver (`0.3.0`) is separate from `ViewDocument.version` (`'0.1'`). New optional fields like `layout` are added during `0.x` without bumping the document schema version.
 
 ## Node identity
 
@@ -69,7 +89,7 @@ Recommended default:
 
 ## Children
 
-`children` should initially be a simple ordered array.
+`children` is a simple ordered array. Grid reading order in the editor follows `layout.grid` placement when present.
 
 Future slot support can extend this to named slots:
 
@@ -78,13 +98,13 @@ children?: ViewNode[];
 slots?: Record<string, ViewNode[]>;
 ```
 
-Do not implement `slots` in the first MVP unless necessary.
+Do not implement `slots` until a release requires them.
 
 ## Props
 
 Props are arbitrary JSON-compatible values but should be validated against registered component prop schemas.
 
-Allowed MVP prop value types:
+Allowed prop value types:
 
 - string
 - number
@@ -94,6 +114,17 @@ Allowed MVP prop value types:
 - plain objects
 
 Avoid functions in document JSON. For callbacks/actions, use action references later.
+
+## Layout (shipped v0.3.0)
+
+`layout.grid` stores CSS Grid child placement separately from `props`:
+
+- `column`, `row` — 1-based cell origin
+- `colSpan`, `rowSpan` — span across tracks
+
+Grid containers (registered components like `Grid` / `Row`) define track counts and gap via `props`. Validation rejects out-of-bounds spans and overlapping placements within a container.
+
+See [Grid layout guide](https://viewfoundry.readthedocs.io/en/latest/grid-layout.html) for editor and codegen behavior.
 
 ## Validation rules
 
@@ -105,6 +136,7 @@ A document is valid when:
 4. Every node type exists in the registry, unless missing components are explicitly allowed.
 5. Every prop conforms to its field schema.
 6. Child constraints are respected.
+7. Grid placements are in bounds and non-overlapping within layout containers.
 
 ## Future additions
 
@@ -123,12 +155,13 @@ export type ViewNode = {
   conditions?: ConditionExpression[];
   repeat?: RepeatExpression;
   style?: StyleTokenMap;
+  layout?: NodeLayout;
 };
 ```
 
-### Style Editor mode
+### Style Editor mode (planned v0.4.0)
 
-The `style` field powers **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It stores presentation values separately from schema-backed `props`:
+The `style` field will power **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It stores presentation values separately from schema-backed `props`:
 
 - spacing (`margin`, `padding`, `gap`)
 - size (`width`, `height`, `minWidth`, `maxWidth`)
@@ -139,28 +172,3 @@ The `style` field powers **Style Editor mode** (see `docs/EDITOR_SPEC.md`). It s
 - opacity and overflow
 
 Styles must remain JSON-serializable. Avoid functions. Codegen should map `style` to JSX `style` objects or registered class/token helpers.
-
-### Grid layout
-
-Grid placement powers the layout drag/drop system (see `docs/EDITOR_SPEC.md`). Stored separately from `props` and `style` where possible:
-
-```ts
-export type GridPlacement = {
-  column?: number;
-  row?: number;
-  colSpan?: number;
-  rowSpan?: number;
-};
-
-export type NodeLayout = {
-  grid?: GridPlacement;
-  /** grid container track definition when node is a layout container */
-  tracks?: {
-    columns?: number | string;
-    rows?: number | string;
-    gap?: number | string;
-  };
-};
-```
-
-Add `layout?: NodeLayout` to `ViewNode` in **v0.3.0**. Validation should reject out-of-bounds spans and overlapping placements according to container rules.

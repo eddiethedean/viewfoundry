@@ -43,6 +43,12 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: Install Sphinx
+        run: pip install -r apps/docs/requirements.txt
+
+      - name: Build docs
+        run: pnpm docs:build
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 

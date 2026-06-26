@@ -7,7 +7,12 @@ ViewFoundry is an embeddable visual editor framework for React applications. Reg
 :caption: Guide
 
 getting-started
+grid-layout
 architecture
+migration-0.2-0.3
+faq
+troubleshooting
+changelog
 packages/index
 studio
 ```
@@ -16,6 +21,7 @@ studio
 
 - [Try the Studio](studio.md) — interactive editor embedded in these docs
 - [Getting started](getting-started.md) — install and embed `ViewFoundryEditor`
+- [Grid layout](grid-layout.md) — v0.3.0 layout model and drag-and-drop
 - [Package overview](packages/index.md) — `@viewfoundry/core`, `schema`, `react`, `editor`, and more
 - [GitHub repository](https://github.com/eddiethedean/viewfoundry)
 

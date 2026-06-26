@@ -31,15 +31,25 @@ type ViewDocument = {
   meta?: { name?: string; description?: string };
 };
 
+type GridPlacement = {
+  column?: number;
+  row?: number;
+  colSpan?: number;
+  rowSpan?: number;
+};
+
 type ViewNode = {
   id: string;
   type: string;
   props?: Record<string, unknown>;
   children?: ViewNode[];
+  layout?: { grid?: GridPlacement };
 };
 ```
 
-Documents are validated with `validateDocument()` and mutated through `applyCommand()` for registry-aware inserts and updates.
+Documents are validated with `validateDocument()` and mutated through `applyCommand()` for registry-aware inserts and updates. Grid placement is validated for bounds and overlaps within layout containers.
+
+See the [Grid layout guide](grid-layout.md) for editor and codegen behavior.
 
 ## Data flow
 
@@ -53,4 +63,12 @@ This site is built with Sphinx and MyST. The [embedded Studio](studio.md) is a s
 
 ## Roadmap
 
-Grid layout drag/drop (v0.3.0), Style Editor (v0.4.0), CLI scaffolding (v0.5.0), and LessonKit integration (v0.7.0) are planned. See the repository `docs/ROADMAP.md` for details.
+| Version | Status       | Theme                                          |
+| ------- | ------------ | ---------------------------------------------- |
+| v0.3.0  | **Released** | Grid layout and canvas drag-and-drop           |
+| v0.4.0  | Planned      | Style Editor sub-mode                          |
+| v0.5.0  | Planned      | `viewfoundry init`, Vite plugin, more examples |
+| v0.6.0  | **Released** | Read the Docs site with embedded Studio        |
+| v0.7.0  | Planned      | LessonKit integration                          |
+
+See the repository [`docs/ROADMAP.md`](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for full release notes.

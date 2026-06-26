@@ -11,15 +11,35 @@ ViewFoundry is an embeddable visual editor framework for React applications. **D
 
 Register your real components. ViewFoundry gives you a no-code editor, canvas, property inspector, document model, serialization, history, and code generation.
 
-## Quick start
+## Try it
+
+No clone required:
+
+1. **[Open the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html)** in your browser — Edit/Live toggle, grid layout, JSON and TSX export.
+2. **Install packages** in your app (all at the same version):
 
 ```bash
+npm install @viewfoundry/core@0.3.0 @viewfoundry/schema@0.3.0 @viewfoundry/react@0.3.0 @viewfoundry/editor@0.3.0 @viewfoundry/codegen@0.3.0
+```
+
+3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a copy-pasteable embed example.
+
+## Develop the monorepo
+
+Clone and run checks locally:
+
+```bash
+git clone https://github.com/eddiethedean/viewfoundry.git
+cd viewfoundry
 pnpm install
 pnpm build
 pnpm test
-pnpm test:e2e   # Playwright UI smoke tests (first run: pnpm exec playwright install chromium)
-pnpm dev        # runs examples/basic-react
+pnpm test:e2e   # first run: pnpm exec playwright install chromium
+pnpm dev        # examples/basic-react
+pnpm docs:build # Sphinx + embedded studio
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for PR expectations.
 
 ## Packages (0.3.0)
 
@@ -35,7 +55,7 @@ See the [package overview](https://viewfoundry.readthedocs.io/en/latest/packages
 | `@viewfoundry/vite`    | Vite plugin stub (no-op until v0.5.0)        |
 | `@viewfoundry/cli`     | `viewfoundry export` / `validate` CLI        |
 
-Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md) and [specs/PACKAGE_API_SPEC.md](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).
+Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md](CHANGELOG.md) and [specs/PACKAGE_API_SPEC.md](specs/PACKAGE_API_SPEC.md).
 
 ### 0.x stability
 
@@ -43,15 +63,33 @@ ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and op
 
 ## Usage
 
-For install steps, component registration, and embed patterns, see [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html).
+For install steps, component registration, codegen, and grid layout, see [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html).
 
 ```tsx
-import { defineComponent, text, select, boolean } from '@viewfoundry/schema';
+import { useState } from 'react';
+import { createDocument } from '@viewfoundry/core';
+import type { ViewDocument } from '@viewfoundry/core';
 import { createRegistry } from '@viewfoundry/core';
+import { defineComponent, text, select, boolean } from '@viewfoundry/schema';
 import { ViewFoundryEditor } from '@viewfoundry/editor';
-import { ViewRenderer } from '@viewfoundry/react';
 import '@viewfoundry/editor/styles.css';
 import '@viewfoundry/react/styles.css';
+
+function Button({
+  children = 'Click me',
+  variant = 'primary',
+  disabled = false,
+}: {
+  children?: string;
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
+}) {
+  return (
+    <button type="button" className={`btn btn-${variant}`} disabled={disabled}>
+      {children}
+    </button>
+  );
+}
 
 const ButtonDefinition = defineComponent(Button, {
   type: 'Button',
@@ -66,7 +104,11 @@ const ButtonDefinition = defineComponent(Button, {
 
 const registry = createRegistry([ButtonDefinition]);
 
-<ViewFoundryEditor registry={registry} onChange={(doc) => save(doc)} />;
+export default function App() {
+  const [document, setDocument] = useState<ViewDocument>(createDocument);
+
+  return <ViewFoundryEditor registry={registry} document={document} onChange={setDocument} />;
+}
 ```
 
 When using `@viewfoundry/editor`, import **both** `@viewfoundry/editor/styles.css` and `@viewfoundry/react/styles.css`. The editor stylesheet covers chrome; the react stylesheet covers canvas selection overlays and missing-component fallbacks.
@@ -80,14 +122,24 @@ import '@viewfoundry/react/styles.css';
 
 ## Example
 
-See [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react) for a full demo with Button, Card, Stack, Heading, and Text components, localStorage persistence, and TSX export. You can also [try the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html) in the browser without cloning the repo.
+See [`examples/basic-react`](examples/basic-react/README.md) for a full demo with Button, Card, Stack, Grid, Row, Heading, and Text components, localStorage persistence, and TSX export. You can also [try the Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html) in the browser without cloning the repo.
+
+## Where to read what
+
+| Source                                                         | Audience                                   | Trust level                       |
+| -------------------------------------------------------------- | ------------------------------------------ | --------------------------------- |
+| [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/) | Adopters — install, embed, grid, FAQ       | **Primary user guides**           |
+| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)       | Integrators — full public API              | **API contract**                  |
+| [`docs/`](docs/)                                               | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**) |
+| [`CHANGELOG.md`](CHANGELOG.md)                                 | Everyone — release notes                   | Current                           |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)                           | Contributors                               | Current                           |
 
 ## Documentation
 
-**Published docs:** [viewfoundry.readthedocs.io/en/latest](https://viewfoundry.readthedocs.io/en/latest/) — guides, [architecture](https://viewfoundry.readthedocs.io/en/latest/architecture.html), [package reference](https://viewfoundry.readthedocs.io/en/latest/packages/index.html), and an embedded Studio.
+**Published docs:** [viewfoundry.readthedocs.io/en/latest](https://viewfoundry.readthedocs.io/en/latest/) — guides, [architecture](https://viewfoundry.readthedocs.io/en/latest/architecture.html), [grid layout](https://viewfoundry.readthedocs.io/en/latest/grid-layout.html), [package reference](https://viewfoundry.readthedocs.io/en/latest/packages/index.html), and an embedded Studio.
 
-Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Source lives in [`apps/docs`](https://github.com/eddiethedean/viewfoundry/tree/main/apps/docs) and [`apps/docs-studio`](https://github.com/eddiethedean/viewfoundry/tree/main/apps/docs-studio).
+Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Source lives in [`apps/docs`](apps/docs) and [`apps/docs-studio`](apps/docs-studio).
 
-Planning specs live in [`docs/`](https://github.com/eddiethedean/viewfoundry/tree/main/docs). The implementation follows [docs/ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
+Planning specs in [`docs/`](docs/) describe intent and roadmap; they may lag implementation. The implementation follows [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Planned:** [v0.4.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.5.0](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v050---cli--examples) CLI scaffolding. See [docs/ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for the full release plan.
+**Planned:** [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.5.0](docs/ROADMAP.md#v050---cli--examples) CLI scaffolding. See [docs/ROADMAP.md](docs/ROADMAP.md) for the full release plan.
