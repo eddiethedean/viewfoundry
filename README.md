@@ -21,7 +21,7 @@ No clone required:
 2. **Install packages** in your app (all at the same version):
 
 ```bash
-npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
+npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0
 ```
 
 3. Follow [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html) for a paste-in embed example, or [Integrate into an existing app](https://viewfoundry.readthedocs.io/en/latest/integrate-existing-app.html) for folder layout and Vite setup.
@@ -43,25 +43,25 @@ pnpm docs:build # Sphinx + embedded studio
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for PR expectations.
 
-## Packages (0.4.1)
+## Packages (0.5.0)
 
 See the [package overview](https://viewfoundry.readthedocs.io/en/latest/packages/index.html) for API details.
 
-| Package                | Description                                  |
-| ---------------------- | -------------------------------------------- |
-| `@viewfoundry/core`    | Framework-agnostic document engine           |
-| `@viewfoundry/schema`  | Component definition and prop schema helpers |
-| `@viewfoundry/react`   | React runtime renderer                       |
-| `@viewfoundry/editor`  | Visual editor UI                             |
-| `@viewfoundry/codegen` | TSX code generation                          |
-| `@viewfoundry/vite`    | Vite plugin stub (no-op until v0.5.0)        |
-| `@viewfoundry/cli`     | `viewfoundry export` / `validate` CLI        |
+| Package                | Description                                       |
+| ---------------------- | ------------------------------------------------- |
+| `@viewfoundry/core`    | Framework-agnostic document engine                |
+| `@viewfoundry/schema`  | Component definition and prop schema helpers      |
+| `@viewfoundry/react`   | React runtime renderer                            |
+| `@viewfoundry/editor`  | Visual editor UI                                  |
+| `@viewfoundry/codegen` | TSX code generation                               |
+| `@viewfoundry/vite`    | Vite plugin — document HMR and validation overlay |
+| `@viewfoundry/cli`     | `init`, `validate`, and `export` commands         |
 
 Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md](CHANGELOG.md) and [specs/PACKAGE_API_SPEC.md](specs/PACKAGE_API_SPEC.md).
 
 ### 0.x stability
 
-ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.4.1`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
+ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and optional document fields. Package semver (`0.5.0`) is separate from document schema version (`ViewDocument.version: '0.1'`). `1.0.0` is reserved for a stable public API.
 
 ## Usage
 
@@ -145,4 +145,4 @@ Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Sourc
 
 Planning specs in [`docs/`](docs/) describe intent and roadmap; they may lag implementation. The implementation follows [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Planned (pre-1.0):** [v0.5–v0.9](docs/ROADMAP.md) CLI · Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Shipped:** [v0.4 Style Editor](docs/ROADMAP.md#v040---style-editor). **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins · [existing project import](docs/ROADMAP.md#v160---existing-project-import).
+**Planned (pre-1.0):** [v0.6–v0.9](docs/ROADMAP.md) Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Shipped:** [v0.5 CLI & examples](docs/ROADMAP.md#v050---cli--examples) · [v0.4 Style Editor](docs/ROADMAP.md#v040---style-editor). **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins · [existing project import](docs/ROADMAP.md#v160---existing-project-import).

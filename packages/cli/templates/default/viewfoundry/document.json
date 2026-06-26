@@ -1,0 +1,9 @@
+{
+  "version": "0.1",
+  "root": {
+    "id": "root",
+    "type": "Root",
+    "props": {},
+    "children": []
+  }
+}

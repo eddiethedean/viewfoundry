@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/editor",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Visual editor UI for ViewFoundry",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,9 +22,9 @@
     "dev": "tsup --watch"
   },
   "peerDependencies": {
-    "@viewfoundry/core": "^0.4.1",
-    "@viewfoundry/react": "^0.4.1",
-    "@viewfoundry/schema": "^0.4.1",
+    "@viewfoundry/core": "^0.5.0",
+    "@viewfoundry/react": "^0.5.0",
+    "@viewfoundry/schema": "^0.5.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },

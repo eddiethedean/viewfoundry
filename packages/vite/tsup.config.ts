@@ -5,5 +5,5 @@ export default defineConfig({
   format: ['esm'],
   dts: true,
   clean: true,
-  external: ['vite'],
+  external: ['vite', '@viewfoundry/core', '@viewfoundry/codegen'],
 });

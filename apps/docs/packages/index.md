@@ -14,7 +14,7 @@ cli
 vite
 ```
 
-Install all packages you use at the **same version** (currently `0.4.1`).
+Install all packages you use at the **same version** (currently `0.5.0`).
 
 | Package                | Role                                                    |
 | ---------------------- | ------------------------------------------------------- |
@@ -24,6 +24,7 @@ Install all packages you use at the **same version** (currently `0.4.1`).
 | `@viewfoundry/editor`  | `ViewFoundryEditor` and editor panels                   |
 | `@viewfoundry/codegen` | `generateTsx`, `generateJson`                           |
 | `@viewfoundry/cli`     | `viewfoundry validate` / `export`                       |
-| `@viewfoundry/vite`    | Stub plugin (no-op until v0.5.0)                        |
+| `@viewfoundry/vite`    | Document HMR and validation overlay via Vite plugin     |
+| `@viewfoundry/cli`     | `init`, `validate`, and `export`                        |
 
 See [PACKAGE_API_SPEC.md](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md) for the full public API surface.

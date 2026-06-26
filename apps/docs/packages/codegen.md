@@ -16,6 +16,6 @@ const { code, warnings } = generateTsx({
 
 `generateTsx` sanitizes component names, import paths, and prop keys. Unsupported values (functions, invalid identifiers) are omitted with warnings.
 
-Peer dependency: `@viewfoundry/core@^0.4.1`.
+Peer dependency: `@viewfoundry/core@^0.5.0`.
 
 Emits merged `style={{...}}` from `node.style` and `props.style`. Pass optional `styleTokens` to resolve token references at export time.

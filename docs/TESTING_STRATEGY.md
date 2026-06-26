@@ -82,7 +82,8 @@ File: `packages/cli/src/cli.test.ts`
 
 ## Future coverage (deferred)
 
-- `@viewfoundry/vite` plugin tests (v0.5.0)
+- `@viewfoundry/vite` plugin tests (v0.5.0) — [x]
+- `viewfoundry init` scaffold tests (v0.5.0) — [x]
 - Visual regression / layout tests
 
 Grid layout and canvas drag-and-drop are covered by unit tests in `@viewfoundry/core` / `@viewfoundry/editor` and e2e specs (`grid-layout.spec.ts`).

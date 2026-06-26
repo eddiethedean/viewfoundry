@@ -1,15 +1,29 @@
 # @viewfoundry/vite
 
-**Stub package.** This release ships a no-op Vite plugin placeholder so the package name is reserved on npm.
+Vite plugin for ViewFoundry — virtual document module, dev HMR, and optional codegen watch.
 
-The `viewfoundry()` plugin registers the name `viewfoundry` but does not transform modules or provide dev-server integration yet.
+## Install
 
-Full Vite integration is planned for **v0.5.0**. Do not depend on this package for production workflows until then.
+```bash
+npm install @viewfoundry/vite@0.5.0
+```
+
+Peer dependencies: `vite@^5 || ^6`, `@viewfoundry/core`, `@viewfoundry/codegen` (when using codegen watch).
+
+## Usage
 
 ```ts
 import { viewfoundry } from '@viewfoundry/vite';
 
-export default {
-  plugins: [viewfoundry()],
-};
+export default defineConfig({
+  plugins: [
+    react(),
+    viewfoundry({
+      document: 'viewfoundry/document.json',
+      codegen: { output: 'GeneratedView.tsx', imports: 'viewfoundry/imports.json' },
+    }),
+  ],
+});
 ```
+
+Import `virtual:viewfoundry/document` in application code. See [apps/docs/packages/vite.md](../apps/docs/packages/vite.md).

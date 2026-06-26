@@ -1,0 +1,105 @@
+{
+  "version": "0.1",
+  "root": {
+    "id": "root",
+    "type": "Root",
+    "props": {},
+    "children": [
+      {
+        "id": "page-grid",
+        "type": "Grid",
+        "props": {
+          "columns": 12,
+          "rows": 7,
+          "gap": 16,
+          "minRowHeight": 72
+        },
+        "children": [
+          {
+            "id": "hero-heading",
+            "type": "Heading",
+            "props": {
+              "children": "Build landing pages visually",
+              "level": "h1"
+            },
+            "layout": {
+              "grid": { "column": 2, "row": 1, "colSpan": 10, "rowSpan": 1 }
+            },
+            "style": { "textAlign": "center", "paddingTop": 24 }
+          },
+          {
+            "id": "hero-sub",
+            "type": "Text",
+            "props": {
+              "children": "Design hero sections, feature grids, and CTAs in the browser — then export React code your team can ship.",
+              "size": "lg"
+            },
+            "layout": {
+              "grid": { "column": 2, "row": 2, "colSpan": 10, "rowSpan": 1 }
+            },
+            "style": { "textAlign": "center", "color": "#718096" }
+          },
+          {
+            "id": "hero-cta",
+            "type": "Button",
+            "props": { "children": "Start building", "variant": "primary" },
+            "layout": {
+              "grid": { "column": 5, "row": 3, "colSpan": 4, "rowSpan": 1 }
+            }
+          },
+          {
+            "id": "feat-visual",
+            "type": "Card",
+            "props": { "title": "Visual editing" },
+            "layout": {
+              "grid": { "column": 2, "row": 5, "colSpan": 3, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "feat-visual-text",
+                "type": "Text",
+                "props": {
+                  "children": "Drag components onto a responsive grid with Edit and Live preview in one window."
+                }
+              }
+            ]
+          },
+          {
+            "id": "feat-style",
+            "type": "Card",
+            "props": { "title": "Style tokens" },
+            "layout": {
+              "grid": { "column": 5, "row": 5, "colSpan": 3, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "feat-style-text",
+                "type": "Text",
+                "props": {
+                  "children": "Tune spacing, colors, and typography with the Style sub-mode — no raw CSS required."
+                }
+              }
+            ]
+          },
+          {
+            "id": "feat-export",
+            "type": "Card",
+            "props": { "title": "TSX export" },
+            "layout": {
+              "grid": { "column": 8, "row": 5, "colSpan": 3, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "feat-export-text",
+                "type": "Text",
+                "props": {
+                  "children": "Export readable React components with import maps that match your project structure."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

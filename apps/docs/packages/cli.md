@@ -1,6 +1,37 @@
 # @viewfoundry/cli
 
-Command-line tools for ViewFoundry documents.
+Command-line tools for ViewFoundry projects and documents.
+
+## Quick start
+
+Scaffold a new project in three commands:
+
+```bash
+npx @viewfoundry/cli init my-app --template landing-page
+cd my-app
+npm install && npm run dev
+```
+
+## Init
+
+```bash
+viewfoundry init [dir] [--template default|landing-page|dashboard-builder] [--force]
+```
+
+| Template            | Description                                          |
+| ------------------- | ---------------------------------------------------- |
+| `default`           | Minimal embed (same shape as `examples/basic-react`) |
+| `landing-page`      | Single-page marketing layout with hero + features    |
+| `dashboard-builder` | Grid-heavy dashboard with sidebar and stat cards     |
+
+| Flag         | Description                         |
+| ------------ | ----------------------------------- |
+| `--template` | Template id (default: `default`)    |
+| `--force`    | Scaffold into a non-empty directory |
+
+Each template includes Vite, React, `@viewfoundry/vite`, a seed `viewfoundry/document.json`, and component registry stubs.
+
+## Validate and export
 
 ```bash
 npx @viewfoundry/cli validate ./page.json
@@ -9,39 +40,31 @@ npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --imports ./import-m
 npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --strict
 ```
 
-## Export options
+### Export options
 
 | Flag        | Description                                                              |
 | ----------- | ------------------------------------------------------------------------ |
-| `--imports` | JSON file mapping component `type` strings to import paths (see below)   |
+| `--imports` | JSON file mapping component `type` strings to import paths               |
 | `--tokens`  | JSON file with style token definitions for codegen                       |
 | `--strict`  | Exit non-zero when warnings include missing imports or unresolved tokens |
 
-Example `import-map.json`:
-
-```json
-{
-  "Button": { "importPath": "./components/Button", "exportName": "Button" },
-  "Grid": { "importPath": "./components/Grid", "exportName": "Grid" }
-}
-```
-
 ## Commands
 
-| Command    | Status        | Description                                                                                  |
-| ---------- | ------------- | -------------------------------------------------------------------------------------------- |
-| `validate` | **Works**     | Runs `validateDocument()` on a JSON file                                                     |
-| `export`   | **Works**     | Validates then writes TSX via `@viewfoundry/codegen`                                         |
-| `init`     | Stub (v0.5.0) | Use `examples/basic-react` or [Integrate into an existing app](../integrate-existing-app.md) |
+| Command    | Description                                          |
+| ---------- | ---------------------------------------------------- |
+| `init`     | Scaffold a ViewFoundry + Vite + React project        |
+| `validate` | Runs `validateDocument()` on a JSON file             |
+| `export`   | Validates then writes TSX via `@viewfoundry/codegen` |
 
 ## CLI vs in-app export
 
 | Use case                    | Approach                                                         |
 | --------------------------- | ---------------------------------------------------------------- |
+| New project                 | `viewfoundry init`                                               |
 | Admin panel "Export" button | `generateTsx` in app code with your import map and `styleTokens` |
 | CI validation of saved JSON | `viewfoundry validate`                                           |
 | One-off TSX file from JSON  | `viewfoundry export` (add import paths manually or post-process) |
 
-`export` requires an import map for usable output. Pass `--imports` with a JSON map, or use `generateTsx` in app code with your import map and `styleTokens`, matching [Component registration](../component-registration.md).
+Peer dependencies: `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0`.
 
-Peer dependency: `@viewfoundry/core@^0.4.1`.
+See also [Migration from 0.4 → 0.5](../migration-0.4-0.5.md).

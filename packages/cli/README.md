@@ -1,24 +1,22 @@
 # @viewfoundry/cli
 
-Command-line tools for ViewFoundry documents.
+Command-line tools for ViewFoundry.
 
-## Available commands
+## Commands
 
-| Command                                    | Status                                                 |
-| ------------------------------------------ | ------------------------------------------------------ |
-| `viewfoundry validate <file.json>`         | Uses `@viewfoundry/core` `validateDocument()`          |
-| `viewfoundry export <file.json> [out.tsx]` | Generates TSX via `@viewfoundry/codegen`               |
-| `viewfoundry init`                         | **Stub** — prints guidance; full scaffolding in v0.5.0 |
+| Command                | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `viewfoundry init`     | Scaffold a ViewFoundry + Vite + React project |
+| `viewfoundry validate` | Validate a ViewDocument JSON file             |
+| `viewfoundry export`   | Generate TSX from JSON                        |
 
-## Usage
+## Init
 
 ```bash
-npx @viewfoundry/cli validate ./page.json
-npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx
+npx @viewfoundry/cli init my-app --template landing-page
+cd my-app && npm install && npm run dev
 ```
 
-`export` validates the document before writing output. Provide an import map in application code when generating production-ready TSX; the CLI uses an empty import map and emits warnings for missing component imports.
+Templates: `default`, `landing-page`, `dashboard-builder`.
 
-## Stub notice
-
-`viewfoundry init` is not implemented in v0.3.x. Use `examples/basic-react` in the repository as a starting point until v0.5.0.
+See [apps/docs/packages/cli.md](../../apps/docs/packages/cli.md).

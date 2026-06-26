@@ -1,0 +1,164 @@
+{
+  "version": "0.1",
+  "root": {
+    "id": "root",
+    "type": "Root",
+    "props": {},
+    "children": [
+      {
+        "id": "dash-grid",
+        "type": "Grid",
+        "props": {
+          "columns": 12,
+          "rows": 6,
+          "gap": 12,
+          "minRowHeight": 64
+        },
+        "children": [
+          {
+            "id": "sidebar",
+            "type": "Card",
+            "props": { "title": "Navigation" },
+            "layout": {
+              "grid": { "column": 1, "row": 1, "colSpan": 2, "rowSpan": 6 }
+            },
+            "style": { "backgroundColor": "#1a202c", "color": "#e2e8f0", "padding": 16 },
+            "children": [
+              {
+                "id": "nav-overview",
+                "type": "Text",
+                "props": { "children": "Overview", "size": "md" }
+              },
+              {
+                "id": "nav-analytics",
+                "type": "Text",
+                "props": { "children": "Analytics", "size": "md" }
+              },
+              {
+                "id": "nav-settings",
+                "type": "Text",
+                "props": { "children": "Settings", "size": "md" }
+              }
+            ]
+          },
+          {
+            "id": "stat-users",
+            "type": "Card",
+            "props": { "title": "Users" },
+            "layout": {
+              "grid": { "column": 3, "row": 1, "colSpan": 2, "rowSpan": 1 }
+            },
+            "children": [
+              {
+                "id": "stat-users-val",
+                "type": "Heading",
+                "props": { "children": "12.4k", "level": "h2" }
+              }
+            ]
+          },
+          {
+            "id": "stat-revenue",
+            "type": "Card",
+            "props": { "title": "Revenue" },
+            "layout": {
+              "grid": { "column": 5, "row": 1, "colSpan": 2, "rowSpan": 1 }
+            },
+            "children": [
+              {
+                "id": "stat-revenue-val",
+                "type": "Heading",
+                "props": { "children": "$84.2k", "level": "h2" }
+              }
+            ]
+          },
+          {
+            "id": "stat-orders",
+            "type": "Card",
+            "props": { "title": "Orders" },
+            "layout": {
+              "grid": { "column": 7, "row": 1, "colSpan": 2, "rowSpan": 1 }
+            },
+            "children": [
+              {
+                "id": "stat-orders-val",
+                "type": "Heading",
+                "props": { "children": "1,892", "level": "h2" }
+              }
+            ]
+          },
+          {
+            "id": "stat-uptime",
+            "type": "Card",
+            "props": { "title": "Uptime" },
+            "layout": {
+              "grid": { "column": 9, "row": 1, "colSpan": 3, "rowSpan": 1 }
+            },
+            "children": [
+              {
+                "id": "stat-uptime-val",
+                "type": "Heading",
+                "props": { "children": "99.98%", "level": "h2" }
+              }
+            ]
+          },
+          {
+            "id": "chart-panel",
+            "type": "Card",
+            "props": { "title": "Traffic overview" },
+            "layout": {
+              "grid": { "column": 3, "row": 2, "colSpan": 6, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "chart-placeholder",
+                "type": "Text",
+                "props": {
+                  "children": "Chart placeholder — swap for your chart component in production.",
+                  "size": "sm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "activity-panel",
+            "type": "Card",
+            "props": { "title": "Recent activity" },
+            "layout": {
+              "grid": { "column": 9, "row": 2, "colSpan": 3, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "activity-1",
+                "type": "Text",
+                "props": { "children": "New signup — 2m ago", "size": "sm" }
+              },
+              {
+                "id": "activity-2",
+                "type": "Text",
+                "props": { "children": "Order #4821 shipped", "size": "sm" }
+              }
+            ]
+          },
+          {
+            "id": "table-panel",
+            "type": "Card",
+            "props": { "title": "Orders table" },
+            "layout": {
+              "grid": { "column": 3, "row": 4, "colSpan": 9, "rowSpan": 2 }
+            },
+            "children": [
+              {
+                "id": "table-placeholder",
+                "type": "Text",
+                "props": {
+                  "children": "Table placeholder — bind to your data source or repeat/list patterns in a later release.",
+                  "size": "sm"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

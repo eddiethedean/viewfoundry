@@ -56,6 +56,6 @@ import '@viewfoundry/react/styles.css';
 
 Use `mode="edit"` when embedding selection overlays without the full editor chrome.
 
-Peer dependencies: `@viewfoundry/core@^0.4.1`, `react`, `react-dom`.
+Peer dependencies: `@viewfoundry/core@^0.5.0`, `react`, `react-dom`.
 
 Full API contract: [`specs/PACKAGE_API_SPEC.md`](https://github.com/eddiethedean/viewfoundry/blob/main/specs/PACKAGE_API_SPEC.md).

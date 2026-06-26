@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, unlinkSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -170,5 +170,20 @@ describe('runCli', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     const result = runCli(['export', inputPath, outputName, '--strict']);
     expect(result.exitCode).toBe(1);
+  });
+
+  it('scaffolds a project with init', () => {
+    const dir = makeTempDir();
+    const previousCwd = process.cwd();
+    process.chdir(dir);
+    try {
+      const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const result = runCli(['init', 'demo-app', '--template', 'default']);
+      expect(result.exitCode).toBe(0);
+      expect(log).toHaveBeenCalled();
+      expect(existsSync(join(dir, 'demo-app', 'viewfoundry/document.json'))).toBe(true);
+    } finally {
+      process.chdir(previousCwd);
+    }
   });
 });

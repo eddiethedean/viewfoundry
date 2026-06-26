@@ -5,15 +5,15 @@ This guide walks through adding ViewFoundry to a project that already uses Vite 
 ## Prerequisites
 
 - Node.js 20+, React 18 or 19, Vite 5 or 6
-- All `@viewfoundry/*` packages at the same version (currently `0.4.1`)
+- All `@viewfoundry/*` packages at the same version (currently `0.5.0`)
 
 ## 1. Install packages
 
 ```bash
-npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
+npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0
 ```
 
-Optional: `@viewfoundry/cli@0.4.1` for `validate` / `export` from the command line. `@viewfoundry/vite@0.4.1` is a no-op stub until v0.5.0.
+Optional: `@viewfoundry/cli@0.5.0` for `validate` / `export` / `init`. `@viewfoundry/vite@0.5.0` loads `viewfoundry/document.json` with dev HMR.
 
 ## 2. Recommended folder layout
 
@@ -109,9 +109,7 @@ Import **both** stylesheets. Missing `@viewfoundry/react/styles.css` breaks sele
 
 ## 5. Vite configuration
 
-No special Vite config is required. ViewFoundry packages are standard ESM npm modules.
-
-Optional (no-op until v0.5.0):
+ViewFoundry packages are standard ESM npm modules. For file-based documents and dev HMR, add `@viewfoundry/vite`:
 
 ```ts
 // vite.config.ts
@@ -120,9 +118,30 @@ import react from '@vitejs/plugin-react';
 import { viewfoundry } from '@viewfoundry/vite';
 
 export default defineConfig({
-  plugins: [react(), viewfoundry()],
+  plugins: [
+    react(),
+    viewfoundry({
+      document: 'viewfoundry/document.json',
+      codegen: {
+        output: 'GeneratedView.tsx',
+        imports: 'viewfoundry/imports.json',
+        tokens: 'viewfoundry/tokens.json',
+      },
+    }),
+  ],
 });
 ```
+
+In your editor shell:
+
+```ts
+import seedDocument from 'virtual:viewfoundry/document';
+
+// use seedDocument as initial state; optional localStorage on top
+// handle import.meta.hot for viewfoundry:document-update (see packages/vite.md)
+```
+
+See [@viewfoundry/vite](packages/vite.md) and [Migration from 0.4 → 0.5](migration-0.4-0.5.md).
 
 ## 6. Controlled vs uncontrolled document
 

@@ -14,6 +14,7 @@ editor-shortcuts
 architecture
 migration-0.2-0.3
 migration-0.3-0.4
+migration-0.4-0.5
 faq
 troubleshooting
 changelog
@@ -28,9 +29,10 @@ studio
 - [Integrate into an existing app](integrate-existing-app.md) — Vite + React folder layout and embed patterns
 - [Grid layout](grid-layout.md) — v0.3.0 layout model and drag-and-drop
 - [Migration 0.3 → 0.4](migration-0.3-0.4.md) — Style Editor and `node.style`
+- [Migration 0.4 → 0.5](migration-0.4-0.5.md) — CLI init and Vite document HMR
 - [Package overview](packages/index.md) — `@viewfoundry/core`, `schema`, `react`, `editor`, and more
 - [GitHub repository](https://github.com/eddiethedean/viewfoundry)
 
 ## Status
 
-ViewFoundry **v0.4.1** is early-access software. Package semver (`0.4.1`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for CLI scaffolding, interactions, and [loading existing React projects](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v160---existing-project-import) (planned v1.6.0).
+ViewFoundry **v0.5.0** is early-access software. Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for interactions, routing, and [loading existing React projects](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md#v160---existing-project-import) (planned v1.6.0).

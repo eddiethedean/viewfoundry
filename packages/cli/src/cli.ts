@@ -2,19 +2,24 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 import { generateTsx, type ComponentImportMap } from '@viewfoundry/codegen';
 import { validateDocument, type ViewDocument } from '@viewfoundry/core';
+import { parseInitArgs, printInitNextSteps, runInit } from './init.js';
 
 export function printHelp() {
-  console.log(`viewfoundry v0.4.1
+  console.log(`viewfoundry v0.5.0
 
 Usage:
+  viewfoundry init [dir] [--template default|landing-page|dashboard-builder] [--force]
   viewfoundry export <input.json> [output.tsx] [--imports map.json] [--tokens tokens.json] [--strict]
   viewfoundry validate <input.json>
-  viewfoundry init
 
 Commands:
+  init      Scaffold a new ViewFoundry + Vite + React project
   export    Generate TSX from a ViewFoundry JSON document
   validate  Check that a JSON file is a valid ViewFoundry document
-  init      Print guidance for starting a new project (stub until v0.5.0)
+
+Init options:
+  --template   Template to use (default: default)
+  --force      Scaffold into a non-empty directory
 
 Options (export):
   --imports   JSON file mapping component types to import paths
@@ -193,11 +198,21 @@ export function runCli(argv: string[]): RunCliResult {
       console.log('Valid ViewFoundry document');
       return { exitCode: 0 };
     }
-    case 'init':
-      console.log(
-        'viewfoundry init is not yet implemented. Use examples/basic-react as a starting point.',
-      );
-      return { exitCode: 0 };
+    case 'init': {
+      try {
+        const parsed = parseInitArgs(args);
+        const result = runInit({ ...parsed, cwd: process.cwd() });
+        if (!result.ok) {
+          console.error(`Error: ${result.message}`);
+          return { exitCode: 1 };
+        }
+        printInitNextSteps(parsed.targetDir, parsed.template, process.cwd());
+        return { exitCode: 0 };
+      } catch (error) {
+        console.error(`Error: ${error instanceof Error ? error.message : 'Init failed'}`);
+        return { exitCode: 1 };
+      }
+    }
     case '--help':
     case '-h':
     case undefined:

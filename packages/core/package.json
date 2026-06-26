@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/core",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Framework-agnostic ViewFoundry document engine",
   "type": "module",
   "main": "./dist/index.js",

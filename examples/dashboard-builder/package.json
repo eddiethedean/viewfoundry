@@ -1,0 +1,29 @@
+{
+  "name": "dashboard-builder",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@viewfoundry/codegen": "workspace:*",
+    "@viewfoundry/core": "workspace:*",
+    "@viewfoundry/editor": "workspace:*",
+    "@viewfoundry/react": "workspace:*",
+    "@viewfoundry/schema": "workspace:*",
+    "@viewfoundry/vite": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.4"
+  }
+}

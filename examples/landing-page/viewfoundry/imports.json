@@ -1,0 +1,9 @@
+{
+  "Button": { "importPath": "./components", "exportName": "Button" },
+  "Card": { "importPath": "./components", "exportName": "Card" },
+  "Stack": { "importPath": "./components", "exportName": "Stack" },
+  "Grid": { "importPath": "./components", "exportName": "Grid" },
+  "Row": { "importPath": "./components", "exportName": "Row" },
+  "Heading": { "importPath": "./components", "exportName": "Heading" },
+  "Text": { "importPath": "./components", "exportName": "Text" }
+}

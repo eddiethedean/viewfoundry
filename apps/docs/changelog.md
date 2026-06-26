@@ -2,6 +2,18 @@
 
 Package versions are lockstep-published under the same semver. The canonical changelog lives on GitHub: [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md).
 
+## [0.5.0] — June 2026
+
+CLI scaffolding, Vite document HMR, and new examples. Upgrade all `@viewfoundry/*` packages together.
+
+### Added
+
+- `viewfoundry init` with three templates
+- `@viewfoundry/vite` virtual document module and validation overlay
+- `examples/landing-page` and `examples/dashboard-builder`
+
+See [Migration from 0.4 → 0.5](migration-0.4-0.5.md). [Full changelog on GitHub →](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md)
+
 ## [0.4.1] — June 2026
 
 Bugfix and hardening release. Upgrade all `@viewfoundry/*` packages together.

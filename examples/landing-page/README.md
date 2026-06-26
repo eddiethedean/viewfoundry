@@ -1,0 +1,28 @@
+# Landing page example
+
+A single-page marketing layout built with ViewFoundry: hero, feature cards, and CTA — seeded from `viewfoundry/document.json`.
+
+## What it demonstrates
+
+- Pre-built **landing page** document with grid placement
+- **Style tokens** for brand colors
+- **Edit / Live** studio, TSX export, and Vite document HMR via `@viewfoundry/vite`
+
+## Run locally
+
+From the monorepo root:
+
+```bash
+pnpm install
+pnpm build
+pnpm --filter landing-page dev
+```
+
+Open the URL Vite prints (usually `http://localhost:5173`).
+
+Edit `viewfoundry/document.json` while the dev server runs to hot-reload the canvas.
+
+## Learn more
+
+- [Getting started](https://viewfoundry.readthedocs.io/en/latest/getting-started.html)
+- [Grid layout guide](https://viewfoundry.readthedocs.io/en/latest/grid-layout.html)

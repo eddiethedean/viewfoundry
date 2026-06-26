@@ -1,6 +1,6 @@
 {
   "name": "viewfoundry",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "Embeddable visual editor framework for React applications",
@@ -17,7 +17,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "pnpm --filter basic-react dev",
+    "dev:landing": "pnpm --filter landing-page dev",
+    "dev:dashboard": "pnpm --filter dashboard-builder dev",
     "docs:build": "node scripts/build-docs.mjs",
+    "sync:templates": "node scripts/sync-cli-templates.mjs",
     "docs:dev": "pnpm --filter docs-studio dev",
     "docs:preview": "python3 -m http.server 8080 --directory apps/docs/_build/html"
   },

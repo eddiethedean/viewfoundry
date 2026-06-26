@@ -1,7 +1,7 @@
 {
   "name": "@viewfoundry/cli",
-  "version": "0.4.1",
-  "description": "CLI for ViewFoundry export and validation (init is a stub until v0.5.0)",
+  "version": "0.5.0",
+  "description": "CLI for ViewFoundry — init, export, and validate",
   "type": "module",
   "bin": {
     "viewfoundry": "./dist/bin.js"
@@ -10,6 +10,7 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "templates",
     "README.md"
   ],
   "scripts": {
@@ -17,8 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@viewfoundry/core": "^0.4.1",
-    "@viewfoundry/codegen": "^0.4.1"
+    "@viewfoundry/core": "^0.5.0",
+    "@viewfoundry/codegen": "^0.5.0"
   },
   "dependencies": {
     "@viewfoundry/codegen": "workspace:*",

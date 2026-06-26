@@ -119,6 +119,95 @@ importers:
       '@viewfoundry/schema':
         specifier: workspace:*
         version: link:../../packages/schema
+      '@viewfoundry/vite':
+        specifier: workspace:*
+        version: link:../../packages/vite
+      react:
+        specifier: ^19.1.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.2
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.1.2
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: ^4.4.1
+        version: 4.7.0(vite@6.4.3(@types/node@22.20.0))
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.3.4
+        version: 6.4.3(@types/node@22.20.0)
+
+  examples/dashboard-builder:
+    dependencies:
+      '@viewfoundry/codegen':
+        specifier: workspace:*
+        version: link:../../packages/codegen
+      '@viewfoundry/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@viewfoundry/editor':
+        specifier: workspace:*
+        version: link:../../packages/editor
+      '@viewfoundry/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@viewfoundry/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
+      '@viewfoundry/vite':
+        specifier: workspace:*
+        version: link:../../packages/vite
+      react:
+        specifier: ^19.1.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.2
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.1.2
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: ^4.4.1
+        version: 4.7.0(vite@6.4.3(@types/node@22.20.0))
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.3.4
+        version: 6.4.3(@types/node@22.20.0)
+
+  examples/landing-page:
+    dependencies:
+      '@viewfoundry/codegen':
+        specifier: workspace:*
+        version: link:../../packages/codegen
+      '@viewfoundry/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@viewfoundry/editor':
+        specifier: workspace:*
+        version: link:../../packages/editor
+      '@viewfoundry/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@viewfoundry/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
+      '@viewfoundry/vite':
+        specifier: workspace:*
+        version: link:../../packages/vite
       react:
         specifier: ^19.1.0
         version: 19.2.7
@@ -263,6 +352,13 @@ importers:
         version: 5.9.3
 
   packages/vite:
+    dependencies:
+      '@viewfoundry/codegen':
+        specifier: workspace:*
+        version: link:../codegen
+      '@viewfoundry/core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       tsup:
         specifier: ^8.4.0

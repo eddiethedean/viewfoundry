@@ -2,6 +2,21 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.5.0] — June 2026
+
+### Added
+
+- **`viewfoundry init`** — scaffold Vite + React projects from `default`, `landing-page`, and `dashboard-builder` templates
+- **`@viewfoundry/vite`** — `virtual:viewfoundry/document` module, document validation overlay, dev HMR, optional codegen watch
+- **`examples/landing-page`** and **`examples/dashboard-builder`** with seeded grid layouts
+- **`scripts/sync-cli-templates.mjs`** — keeps CLI templates in sync with examples
+- Unit tests for vite plugin and init command
+
+### Changed
+
+- **`examples/basic-react`** — file-based `viewfoundry/document.json` with Vite plugin; localStorage remains optional persistence
+- Integration docs updated for init path and Vite document workflow
+
 ## [0.4.1] — June 2026
 
 ### Added
@@ -124,6 +139,7 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Visual editor MVP with palette, canvas, inspector, layers
 - TSX codegen and `examples/basic-react`
 
+[0.5.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/eddiethedean/viewfoundry/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.2.0...v0.3.0

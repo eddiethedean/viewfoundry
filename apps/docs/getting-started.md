@@ -1,26 +1,41 @@
 # Getting started
 
+## Quick start (recommended)
+
+Scaffold a project with the CLI:
+
+```bash
+npx @viewfoundry/cli init my-app --template default
+cd my-app
+npm install
+npm run dev
+```
+
+Templates: `default` (minimal), `landing-page` (marketing layout), `dashboard-builder` (dashboard grid). See [CLI](packages/cli.md).
+
+Edit `viewfoundry/document.json` while the dev server runs — `@viewfoundry/vite` hot-reloads the canvas.
+
 ## Prerequisites
 
 - **Node.js 20+**
 - **React 18 or 19** with a bundler (Vite recommended)
 - **TypeScript** (examples use TS; JS works with typed imports from packages)
 
-Install all `@viewfoundry/*` packages at the **same version** (currently `0.4.1`).
+Install all `@viewfoundry/*` packages at the **same version** (currently `0.5.0`).
 
 ## Install
 
 ```bash
-npm install @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
+npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @viewfoundry/core@0.4.1 @viewfoundry/schema@0.4.1 @viewfoundry/react@0.4.1 @viewfoundry/editor@0.4.1 @viewfoundry/codegen@0.4.1
+pnpm add @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0
 ```
 
-Package semver (`0.4.1`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
+Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
 
 ## Minimal example
 
