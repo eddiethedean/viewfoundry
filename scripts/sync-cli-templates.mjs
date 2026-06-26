@@ -48,8 +48,8 @@ function transformReadme(content) {
 
 function transformText(content) {
   return content
-    .replaceAll('ViewFoundry 0.5.0', 'ViewFoundry {{VERSION}}')
-    .replaceAll('ViewFoundry {{ VERSION }}', 'ViewFoundry {{VERSION}}');
+    .replaceAll('ViewFoundry 0.5.0', 'ViewFoundry {{ VERSION }}')
+    .replaceAll('ViewFoundry {{VERSION}}', 'ViewFoundry {{ VERSION }}');
 }
 
 function copyTemplate(id, sourceRel) {
