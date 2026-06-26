@@ -1,27 +1,35 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createDocument, createNode, createRegistry } from '@viewfoundry/core';
+import { createDocument, createNode, findNode } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '../src/index.js';
+import { createDemoRegistry } from './test/fixtures.js';
 
-function Button({ children }: { children?: string }) {
-  return <button type="button">{children}</button>;
+const registry = createDemoRegistry();
+
+function renderEditor(
+  document = createDocument(),
+  options?: {
+    onChange?: (doc: ReturnType<typeof createDocument>) => void;
+    onStudioModeChange?: (mode: 'edit' | 'live') => void;
+    defaultStudioMode?: 'edit' | 'live';
+  },
+) {
+  return render(
+    <ViewFoundryEditor
+      registry={registry}
+      document={document}
+      onChange={options?.onChange ?? (() => {})}
+      onStudioModeChange={options?.onStudioModeChange}
+      defaultStudioMode={options?.defaultStudioMode}
+    />,
+  );
 }
 
-const registry = createRegistry([
-  {
-    type: 'Button',
-    label: 'Button',
-    category: 'Controls',
-    component: Button,
-    acceptsChildren: true,
-  },
-]);
-
-function renderEditor(document = createDocument()) {
-  return render(
-    <ViewFoundryEditor registry={registry} document={document} onChange={() => {}} />,
-  );
+function latestDocument(onChange: ReturnType<typeof vi.fn>) {
+  const lastCall = onChange.mock.calls.at(-1);
+  if (!lastCall) throw new Error('onChange was not called');
+  return lastCall[0] as ReturnType<typeof createDocument>;
 }
 
 describe('ViewFoundryEditor', () => {
@@ -56,16 +64,186 @@ describe('ViewFoundryEditor', () => {
     expect(screen.getByText('Inspector')).toBeInTheDocument();
   });
 
-  it('allows interactive components in Live mode', async () => {
+  it('runs component interactions in Live mode', async () => {
     const user = userEvent.setup();
     const doc = createDocument();
-    doc.root.children = [createNode('Button', { children: 'Click me' }, [], 'btn1')];
+    doc.root.children = [createNode('CounterButton', {}, [], 'counter1')];
 
-    renderEditor(doc);
+    const { container } = renderEditor(doc);
     await user.click(screen.getByRole('button', { name: 'Live' }));
 
-    const renderedButton = screen.getByRole('button', { name: 'Click me' });
-    await user.click(renderedButton);
-    expect(renderedButton).toBeInTheDocument();
+    expect(screen.queryByText('Components')).toBeNull();
+    expect(container.querySelector('.vf-node-wrapper')).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: /Count 0/ }));
+    expect(screen.getByRole('button', { name: /Count 1/ })).toBeInTheDocument();
+  });
+
+  it('inserts a component from the palette', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const doc = latestDocument(onChange);
+    expect(doc.root.children).toHaveLength(1);
+    expect(doc.root.children?.[0].type).toBe('Button');
+  });
+
+  it('shows inspector details after layer selection', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const doc = latestDocument(onChange);
+    const nodeId = doc.root.children?.[0].id;
+    if (!nodeId) throw new Error('node missing');
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
+
+    const inspector = screen.getByText('Inspector').closest('.vf-inspector');
+    if (!inspector) throw new Error('inspector missing');
+    expect(within(inspector).getByRole('textbox', { name: 'Text' })).toHaveValue('Click me');
+    expect(within(inspector).getByText(nodeId)).toBeInTheDocument();
+  });
+
+  it('updates props from the inspector', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const doc = latestDocument(onChange);
+    const nodeId = doc.root.children?.[0].id;
+    if (!nodeId) throw new Error('node missing');
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
+
+    const textInput = screen.getByRole('textbox', { name: 'Text' });
+    await user.clear(textInput);
+    await user.type(textInput, 'Save');
+
+    const updated = onChange.mock.calls.some(([nextDoc]) => {
+      const node = findNode(nextDoc.root, nodeId);
+      return node?.props?.children === 'Save';
+    });
+    expect(updated).toBe(true);
+  });
+
+  it('undoes and redoes palette insert from the toolbar', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const undoButton = screen.getByRole('button', { name: 'Undo' });
+    expect(undoButton).toBeDisabled();
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+    expect(latestDocument(onChange).root.children).toHaveLength(1);
+
+    expect(undoButton).toBeEnabled();
+    await user.click(undoButton);
+    expect(latestDocument(onChange).root.children).toHaveLength(0);
+
+    const redoButton = screen.getByRole('button', { name: 'Redo' });
+    await user.click(redoButton);
+    expect(latestDocument(onChange).root.children).toHaveLength(1);
+  });
+
+  it('deletes selected node from the toolbar', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const doc = latestDocument(onChange);
+    const nodeId = doc.root.children?.[0].id;
+    if (!nodeId) throw new Error('node missing');
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
+
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(latestDocument(onChange).root.children).toHaveLength(0);
+  });
+
+  it('duplicates selected node from the toolbar', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const doc = latestDocument(onChange);
+    const nodeId = doc.root.children?.[0].id;
+    if (!nodeId) throw new Error('node missing');
+
+    const layers = screen.getByText('Layers').closest('.vf-layers');
+    if (!layers) throw new Error('layers missing');
+    await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
+
+    await user.click(screen.getByRole('button', { name: 'Duplicate' }));
+
+    const children = latestDocument(onChange).root.children ?? [];
+    expect(children).toHaveLength(2);
+    expect(children[0].id).not.toBe(children[1].id);
+  });
+
+  it('preserves document content when switching to Live mode', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    await user.click(screen.getByRole('button', { name: 'Live' }));
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+  });
+
+  it('calls onStudioModeChange when toggling modes', async () => {
+    const user = userEvent.setup();
+    const onStudioModeChange = vi.fn();
+    renderEditor(createDocument(), { onStudioModeChange });
+
+    await user.click(screen.getByRole('button', { name: 'Live' }));
+    expect(onStudioModeChange).toHaveBeenCalledWith('live');
+  });
+
+  it('undoes insert via keyboard shortcut', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderEditor(createDocument(), { onChange });
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+    expect(latestDocument(onChange).root.children).toHaveLength(1);
+
+    fireEvent.keyDown(window, { key: 'z', ctrlKey: true });
+    expect(latestDocument(onChange).root.children).toHaveLength(0);
   });
 });

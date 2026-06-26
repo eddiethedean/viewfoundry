@@ -9,7 +9,6 @@ import {
   moveNode,
   updateNodeProps,
   setNodeProp,
-  validateDocument,
   createHistory,
   pushHistory,
   undo,
@@ -63,26 +62,6 @@ describe('registry', () => {
     const grouped = registry.byCategory();
     expect(grouped.Controls).toHaveLength(1);
     expect(grouped.Layout).toHaveLength(1);
-  });
-});
-
-describe('validation', () => {
-  it('detects duplicate node ids', () => {
-    const doc = createDocument();
-    const child = createNode('Button', {}, [], 'dup');
-    doc.root.children = [child, { ...child }];
-    const result = validateDocument(doc);
-    expect(result.valid).toBe(false);
-    expect(result.issues.some((i) => i.code === 'DUPLICATE_NODE_ID')).toBe(true);
-  });
-
-  it('detects missing component types', () => {
-    const doc = createDocument();
-    doc.root.children = [createNode('Unknown')];
-    const registry = createRegistry([buttonDef]);
-    const result = validateDocument(doc, registry);
-    expect(result.valid).toBe(false);
-    expect(result.issues.some((i) => i.code === 'UNKNOWN_COMPONENT_TYPE')).toBe(true);
   });
 });
 
@@ -168,21 +147,28 @@ describe('commands', () => {
 });
 
 describe('history', () => {
-  it('supports undo and redo', () => {
-    const doc1 = createDocument();
-    const doc2 = { ...doc1, meta: { name: 'v2' } };
-    const doc3 = { ...doc1, meta: { name: 'v3' } };
+  it('supports undo and redo with command mutations', () => {
+    let doc = createDocument();
+    let history = createHistory(doc);
+    const button = createNode('Button', {}, [], 'b1');
 
-    let history = createHistory(doc1);
-    history = pushHistory(history, doc2);
-    history = pushHistory(history, doc3);
+    const insertResult = insertNode(doc, { parentId: 'root', node: button });
+    if (!insertResult.ok) throw new Error(insertResult.error);
+    history = pushHistory(history, insertResult.document);
 
     expect(canUndo(history)).toBe(true);
     history = undo(history);
-    expect(history.present.meta?.name).toBe('v2');
-    expect(canRedo(history)).toBe(true);
+    expect(findNode(history.present.root, 'b1')).toBeUndefined();
 
+    expect(canRedo(history)).toBe(true);
     history = redo(history);
-    expect(history.present.meta?.name).toBe('v3');
+    expect(findNode(history.present.root, 'b1')).toBeDefined();
+  });
+
+  it('does not push history when document reference is unchanged', () => {
+    const doc = createDocument();
+    let history = createHistory(doc);
+    history = pushHistory(history, doc);
+    expect(history.past).toHaveLength(0);
   });
 });

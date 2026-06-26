@@ -10,11 +10,13 @@ import {
 } from '../src/index.js';
 
 describe('field builders', () => {
-  it('creates stable schema objects', () => {
-    const field = text({ label: 'Title', defaultValue: 'Hello' });
-    expect(field.kind).toBe('text');
-    expect(field.label).toBe('Title');
-    expect(field.defaultValue).toBe('Hello');
+  it.each([
+    ['text', text({ label: 'Title', defaultValue: 'Hello' }), 'text', 'Title'],
+    ['number', number({ label: 'Count', defaultValue: 1 }), 'number', 'Count'],
+    ['boolean', boolean({ label: 'Active', defaultValue: false }), 'boolean', 'Active'],
+  ] as const)('creates %s fields with label and kind', (_name, field, kind, label) => {
+    expect(field.kind).toBe(kind);
+    expect(field.label).toBe(label);
   });
 
   it('creates select fields with options', () => {
@@ -25,6 +27,7 @@ describe('field builders', () => {
     });
     expect(field.kind).toBe('select');
     expect(field.options).toHaveLength(2);
+    expect(field.defaultValue).toBe('primary');
   });
 });
 
@@ -41,6 +44,14 @@ describe('createDefaultProps', () => {
       active: false,
     });
   });
+
+  it('skips fields without defaultValue', () => {
+    const schema = {
+      title: text({ label: 'Title' }),
+      count: number({ defaultValue: 0 }),
+    };
+    expect(createDefaultProps(schema)).toEqual({ count: 0 });
+  });
 });
 
 describe('validateProps', () => {
@@ -56,10 +67,43 @@ describe('validateProps', () => {
     expect(result.issues.some((i) => i.code === 'REQUIRED')).toBe(true);
   });
 
+  it('treats empty string as missing for required fields', () => {
+    const result = validateProps({ title: text({ required: true }) }, { title: '' });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'REQUIRED')).toBe(true);
+  });
+
   it('validates select options', () => {
     const result = validateProps(schema, { title: 'Hi', variant: 'c', count: 5 });
     expect(result.valid).toBe(false);
     expect(result.issues.some((i) => i.code === 'INVALID_OPTION')).toBe(true);
+  });
+
+  it('rejects numbers below min', () => {
+    const result = validateProps({ count: number({ min: 0, max: 10 }) }, { count: -1 });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'MIN')).toBe(true);
+  });
+
+  it('rejects numbers above max', () => {
+    const result = validateProps({ count: number({ min: 0, max: 10 }) }, { count: 11 });
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'MAX')).toBe(true);
+  });
+
+  it('accepts numbers at boundaries', () => {
+    const countSchema = { count: number({ min: 0, max: 10 }) };
+    expect(validateProps(countSchema, { count: 0 }).valid).toBe(true);
+    expect(validateProps(countSchema, { count: 10 }).valid).toBe(true);
+  });
+
+  it('validates text pattern', () => {
+    const result = validateProps(
+      { slug: text({ pattern: '^[a-z]+$' }) },
+      { slug: 'Invalid-123' },
+    );
+    expect(result.valid).toBe(false);
+    expect(result.issues.some((i) => i.code === 'PATTERN')).toBe(true);
   });
 
   it('passes valid props', () => {
@@ -78,5 +122,16 @@ describe('defineComponent', () => {
       },
     });
     expect(def.defaultProps).toEqual({ children: 'Click me', disabled: false });
+  });
+
+  it('lets explicit defaultProps override schema defaults', () => {
+    const def = defineComponent(() => null, {
+      type: 'Button',
+      props: {
+        children: text({ defaultValue: 'Click me' }),
+      },
+      defaultProps: { children: 'Override' },
+    });
+    expect(def.defaultProps).toEqual({ children: 'Override' });
   });
 });
