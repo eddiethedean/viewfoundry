@@ -11,7 +11,18 @@ Use **Edit** mode to drag components from the palette, edit props in the **Compo
   (recommended if the embed below is blank or fails to load).
 </p>
 
-<div class="studio-embed">
+<div class="studio-embed" id="viewfoundry-studio-embed-root">
+  <div class="studio-embed-header">
+    <button
+      type="button"
+      class="studio-fullscreen-btn"
+      id="studio-fullscreen-toggle"
+      aria-label="Enter full screen"
+      aria-pressed="false"
+    >
+      Full screen
+    </button>
+  </div>
   <iframe
     id="viewfoundry-studio-embed"
     title="ViewFoundry Studio"
@@ -25,9 +36,73 @@ Use **Edit** mode to drag components from the palette, edit props in the **Compo
 
 <script>
   (function () {
+    var root = document.getElementById('viewfoundry-studio-embed-root');
     var iframe = document.getElementById('viewfoundry-studio-embed');
-    if (!iframe) return;
+    var toggle = document.getElementById('studio-fullscreen-toggle');
+    if (!root || !iframe || !toggle) return;
+
     iframe.src = new URL('_static/studio/index.html', window.location.href).href;
+
+    var fullscreenClass = 'studio-embed--fullscreen';
+
+    function nativeFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    function isNativeFullscreen() {
+      return nativeFullscreenElement() === root;
+    }
+
+    function isFullscreen() {
+      return root.classList.contains(fullscreenClass) || isNativeFullscreen();
+    }
+
+    function updateToggle() {
+      var on = isFullscreen();
+      toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      toggle.setAttribute('aria-label', on ? 'Exit full screen' : 'Enter full screen');
+      toggle.textContent = on ? 'Exit full screen' : 'Full screen';
+      document.body.classList.toggle('studio-embed-fullscreen-active', on);
+    }
+
+    function enterFullscreen() {
+      root.classList.add(fullscreenClass);
+      updateToggle();
+      var request = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (request) {
+        Promise.resolve(request.call(root)).catch(function () {
+          /* CSS overlay remains active */
+        });
+      }
+    }
+
+    function exitFullscreen() {
+      root.classList.remove(fullscreenClass);
+      if (isNativeFullscreen()) {
+        var exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      }
+      updateToggle();
+    }
+
+    toggle.addEventListener('click', function () {
+      if (isFullscreen()) exitFullscreen();
+      else enterFullscreen();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && isFullscreen()) {
+        exitFullscreen();
+      }
+    });
+
+    document.addEventListener('fullscreenchange', function () {
+      if (!isNativeFullscreen() && !root.classList.contains(fullscreenClass)) {
+        document.body.classList.remove('studio-embed-fullscreen-active');
+      }
+      updateToggle();
+    });
+    document.addEventListener('webkitfullscreenchange', updateToggle);
   })();
 </script>
 
