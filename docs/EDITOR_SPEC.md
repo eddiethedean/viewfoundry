@@ -39,7 +39,7 @@ Features:
 
 ### Layers panel
 
-Can be MVP or Phase 2, but should be added early.
+Can ship in v0.1.0 or early v0.2.x; should be added early.
 
 Features:
 
@@ -133,7 +133,7 @@ When **Edit** is active, users switch between structural and visual editing:
 
 ### Component Editor mode (default)
 
-Structural and behavioral editing. Ships in Phase 4 (Editor MVP).
+Structural and behavioral editing. Shipped in **v0.1.0**; refined through **v0.3.0** grid work.
 
 Features:
 
@@ -142,13 +142,13 @@ Features:
 - prop inspector driven by component schema
 - select, move, delete, duplicate, nest nodes
 - canvas selection and drop-target overlays
-- **grid layout drag/drop** for repositioning on canvas (Phase 5)
+- **grid layout drag/drop** for repositioning on canvas (**v0.3.0**)
 
 Use when building layout and wiring component props.
 
 ### Style Editor mode
 
-Visual presentation editing for the selected node. Planned in Phase 7.
+Visual presentation editing for the selected node. Planned in **v0.4.0**.
 
 Features:
 
@@ -182,7 +182,7 @@ Rules:
 
 ## Grid layout and layout drag/drop
 
-**This is a core product requirement.** ViewFoundry should make arranging components on a grid feel intuitive, precise, and satisfying. Phase 4 ships basic palette → canvas insert; **Phase 5** delivers the full grid system and layout drag/drop.
+**This is a core product requirement.** ViewFoundry should make arranging components on a grid feel intuitive, precise, and satisfying. **v0.1.0** ships basic palette → canvas insert; **v0.3.0** delivers the full grid system and layout drag/drop.
 
 ### Goals
 

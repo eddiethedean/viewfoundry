@@ -6,7 +6,7 @@ Read the docs in this repository first, especially:
 
 - `docs/PROJECT_BRIEF.md`
 - `docs/ARCHITECTURE.md`
-- `docs/IMPLEMENTATION_ROADMAP.md`
+- `docs/ROADMAP.md`
 
 Create the initial monorepo structure using pnpm workspaces.
 

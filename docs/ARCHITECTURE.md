@@ -128,7 +128,7 @@ Owns:
 - layers panel
 - inspector (prop inspector in Component Editor mode; style inspector in Style Editor mode)
 - toolbar with **Edit | Live** toggle (single viewport) and **Component | Style** edit sub-modes
-- **grid layout system** with canvas drag/drop for repositioning (Phase 5)
+- **grid layout system** with canvas drag/drop for repositioning (**v0.3.0**)
 - drag/drop (palette insert + layout moves)
 - keyboard shortcuts
 - editor shell
@@ -142,7 +142,7 @@ Depends on `@viewfoundry/core`, `@viewfoundry/schema`, and `@viewfoundry/react`.
 | **Edit** | Studio chrome on; Component or Style sub-mode for mutations |
 | **Live** | Same canvas viewport; chrome off; interactive runtime render |
 | Component (edit sub-mode) | Structure, nesting, schema-driven props, grid layout drag/drop |
-| Style (edit sub-mode) | Visual styling via `node.style` tokens (Phase 7) |
+| Style (edit sub-mode) | Visual styling via `node.style` tokens (**v0.4.0**) |
 
 ### `@viewfoundry/codegen`
 

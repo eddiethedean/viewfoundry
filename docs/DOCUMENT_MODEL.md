@@ -163,4 +163,4 @@ export type NodeLayout = {
 };
 ```
 
-Add `layout?: NodeLayout` to `ViewNode` when Phase 5 begins. Validation should reject out-of-bounds spans and overlapping placements according to container rules.
+Add `layout?: NodeLayout` to `ViewNode` in **v0.3.0**. Validation should reject out-of-bounds spans and overlapping placements according to container rules.

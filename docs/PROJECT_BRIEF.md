@@ -73,10 +73,12 @@ The MVP is successful when a developer can:
 
 After the MVP, the editor gains explicit modes (see `docs/EDITOR_SPEC.md`):
 
-- **Edit / Live** — toggle in one browser window; same canvas viewport (Phase 4, **critical**)
-- **Component Editor** — structure, nesting, and schema-driven props (Edit sub-mode / Phase 4)
-- **Grid layout drag/drop** — intuitive CSS Grid–based arrangement with satisfying canvas moves (Phase 5, **critical**)
-- **Style Editor** — visual styling via `node.style` tokens (Edit sub-mode / Phase 7)
+- **Edit / Live** — toggle in one browser window; same canvas viewport (**v0.2.0**, critical)
+- **Component Editor** — structure, nesting, and schema-driven props (Edit sub-mode; **v0.1.0**)
+- **Grid layout drag/drop** — intuitive CSS Grid–based arrangement with satisfying canvas moves (**v0.3.0**, critical)
+- **Style Editor** — visual styling via `node.style` tokens (Edit sub-mode; **v0.4.0**)
+
+See `docs/ROADMAP.md` for the full v0.X release plan.
 
 ## North star
 

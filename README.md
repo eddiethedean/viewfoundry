@@ -56,6 +56,6 @@ See `examples/basic-react` for a full demo with Button, Card, Stack, Heading, an
 
 ## Docs
 
-Planning and architecture specs live in `docs/`. The implementation follows `docs/IMPLEMENTATION_ROADMAP.md`.
+Planning and architecture specs live in `docs/`. The implementation follows `docs/ROADMAP.md`.
 
-**Planned:** Phase 4 adds **Edit / Live** toggle in a single viewport. Phase 5 adds grid layout drag/drop. Phase 7 adds Style Editor sub-mode. Phase 9 adds Read the Docs with an embedded studio.
+**Planned:** [v0.2.0](docs/ROADMAP.md#v020---edit--live-studio) Edit / Live single viewport · [v0.3.0](docs/ROADMAP.md#v030---grid-layout--dragdrop) grid drag/drop · [v0.4.0](docs/ROADMAP.md#v040---style-editor) Style Editor · [v0.6.0](docs/ROADMAP.md#v060---documentation-site) Read the Docs studio. See `docs/ROADMAP.md` for the full release plan.
