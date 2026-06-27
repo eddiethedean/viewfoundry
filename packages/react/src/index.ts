@@ -18,3 +18,17 @@ export {
   getGridContainerStyle,
   getGridPlacementClass,
 } from './grid-styles.js';
+export {
+  CodeFirstProvider,
+  useCodeFirstContext,
+  parseSourceLoc,
+  formatSourceLoc,
+  type CodeFirstProviderProps,
+  type ClickSelectionMode,
+} from './code-first-context.js';
+export { SourceBoundary, sourceLocFromTarget, sourceLocFromAttribute } from './SourceBoundary.js';
+export type { SourceBoundaryProps } from './SourceBoundary.js';
+export { BoardStage } from './BoardStage.js';
+export type { BoardStageProps } from './BoardStage.js';
+export { AstStageRenderer } from './AstStageRenderer.js';
+export type { AstStageRendererProps } from './AstStageRenderer.js';

@@ -10,6 +10,10 @@ import {
   VIRTUAL_DOCUMENT_ID,
 } from './document-module.js';
 import { pathsEqual, resolvePathWithinRoot } from './paths.js';
+import {
+  viewfoundryCodeFirst,
+  viewfoundryLocInjection,
+} from './code-first-plugin.js';
 
 export type ViewFoundryCodegenOptions = {
   output: string;
@@ -17,14 +21,40 @@ export type ViewFoundryCodegenOptions = {
   tokens?: string;
 };
 
+export { VIRTUAL_DOCUMENT_ID } from './document-module.js';
+export {
+  VIRTUAL_BOARDS_ID,
+  viewfoundryCodeFirst,
+  viewfoundryLocInjection,
+  type CodeFirstPluginOptions,
+} from './code-first-plugin.js';
+
+export type ViewFoundryViteMode = 'embed' | 'code-first';
+
 export type ViewFoundryViteOptions = {
+  /** Editing mode. Default: embed */
+  mode?: ViewFoundryViteMode;
   /** Path to ViewDocument JSON relative to project root. Default: viewfoundry/document.json */
   document?: string;
   /** Optional: regenerate TSX when the document changes */
   codegen?: ViewFoundryCodegenOptions;
+  /** Glob for board files when mode is code-first */
+  boards?: string;
 };
 
-export { VIRTUAL_DOCUMENT_ID } from './document-module.js';
+/** Unified plugin: embed document HMR and/or code-first boards + loc injection. */
+export function viewfoundryAll(options: ViewFoundryViteOptions = {}): Plugin[] {
+  const mode = options.mode ?? 'embed';
+  const plugins: Plugin[] = [];
+  if (mode === 'embed' || !options.mode) {
+    plugins.push(viewfoundry(options));
+  }
+  if (mode === 'code-first') {
+    plugins.push(viewfoundryCodeFirst({ boards: options.boards }));
+    plugins.push(viewfoundryLocInjection());
+  }
+  return plugins;
+}
 
 function loadJsonFile<T>(root: string, relativePath: string): T {
   const absolutePath = resolvePathWithinRoot(root, relativePath);

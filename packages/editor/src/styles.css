@@ -713,3 +713,128 @@
   background: var(--vf-text-faint);
   background-clip: padding-box;
 }
+
+/* Code-first mode */
+.vf-editor--code-first .vf-toolbar-viewport label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--vf-text-muted);
+}
+
+.vf-editor--code-first .vf-toolbar-viewport input {
+  width: 4rem;
+}
+
+.vf-toolbar-error {
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--vf-danger);
+  background: var(--vf-danger-bg);
+  border: 1px solid var(--vf-danger-border);
+  border-radius: var(--vf-radius-sm);
+}
+
+.vf-elements {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.vf-elements-source {
+  font-size: 11px;
+  color: var(--vf-text-faint);
+  word-break: break-all;
+}
+
+.vf-elements-tree {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+}
+
+.vf-elements-children {
+  list-style: none;
+  margin: 0;
+  padding-left: 12px;
+}
+
+.vf-elements-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  border: none;
+  border-radius: var(--vf-radius-sm);
+  background: transparent;
+  color: var(--vf-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.vf-elements-item:hover {
+  background: var(--vf-bg-muted);
+}
+
+.vf-elements-item--selected {
+  background: var(--vf-accent-subtle);
+  color: var(--vf-accent);
+}
+
+.vf-elements-empty,
+.vf-stage-empty {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--vf-text-muted);
+}
+
+.vf-source-boundary {
+  position: relative;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.vf-source-boundary:hover {
+  outline-color: var(--vf-accent);
+}
+
+.vf-source-boundary--selected {
+  outline: 2px solid var(--vf-accent);
+}
+
+.vf-board-stage {
+  padding: 16px;
+}
+
+.vf-board-stage-inner {
+  min-height: 100%;
+}
+
+.vf-cf-drag-ghost {
+  padding: 6px 12px;
+  background: var(--vf-bg-elevated);
+  border: 1px solid var(--vf-accent);
+  border-radius: var(--vf-radius-sm);
+  font-size: 12px;
+  color: var(--vf-text);
+  box-shadow: var(--vf-shadow-md);
+  pointer-events: none;
+}
+
+.vf-cf-draggable--dragging {
+  opacity: 0.4;
+}
+
+.vf-cf-drop-slot {
+  min-height: 4px;
+}
+
+.vf-cf-drop-slot--active {
+  min-height: 24px;
+  background: var(--vf-accent-subtle);
+  border: 1px dashed var(--vf-accent);
+  border-radius: var(--vf-radius-sm);
+}

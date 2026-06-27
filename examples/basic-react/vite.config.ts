@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { viewfoundry } from '@viewfoundry/vite';
+import { viewfoundry, viewfoundryCodeFirst, viewfoundryLocInjection } from '@viewfoundry/vite';
 
 export default defineConfig({
   plugins: [
@@ -12,6 +12,8 @@ export default defineConfig({
         tokens: 'viewfoundry/tokens.json',
       },
     }),
+    viewfoundryCodeFirst({ boards: 'src/**/*.board.tsx' }),
+    viewfoundryLocInjection(),
   ],
   server: { port: 5173 },
 });

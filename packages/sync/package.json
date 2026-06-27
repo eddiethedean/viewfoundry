@@ -1,0 +1,45 @@
+{
+  "name": "@viewfoundry/sync",
+  "version": "0.7.0",
+  "description": "TSX/JSX parse, source maps, and safe file patches for code-first editing",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "@viewfoundry/core": "^0.7.0"
+  },
+  "dependencies": {
+    "@viewfoundry/core": "workspace:*",
+    "magic-string": "^0.30.17",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eddiethedean/viewfoundry.git",
+    "directory": "packages/sync"
+  }
+}

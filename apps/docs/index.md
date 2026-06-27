@@ -7,6 +7,7 @@ ViewFoundry is an embeddable visual editor framework for React. Register your re
 :caption: Getting started
 
 getting-started
+code-first
 integrate-existing-app
 roadmap-and-direction
 studio

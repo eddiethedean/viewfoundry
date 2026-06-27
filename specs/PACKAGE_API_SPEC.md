@@ -1,22 +1,22 @@
 # Package API Spec
 
-This document describes the public API surface for ViewFoundry packages at **v0.5.x** (embed mode).
+This document describes the public API surface for ViewFoundry packages at **v0.7.x** (embed + code-first).
 
-## Planned APIs (v0.7+, not yet shipped)
+## Code-first APIs (v0.7.0)
 
-Code-first packages and editor props will be documented here as they release. See [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html) and repository [CODE_FIRST.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CODE_FIRST.md).
-
-| Package                 | Status       |
-| ----------------------- | ------------ |
-| `@viewfoundry/sync`     | Planned v0.7 |
-| `@viewfoundry/board`    | Planned v0.7 |
+| Package              | Status    |
+| -------------------- | --------- |
+| `@viewfoundry/sync`  | Shipped   |
+| `@viewfoundry/board` | Shipped   |
 | `@viewfoundry/discover` | Planned v0.9 |
+
+See [Code-first guide](https://viewfoundry.readthedocs.io/en/latest/code-first.html) and [CODE_FIRST.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CODE_FIRST.md).
 
 Embed-mode APIs below remain stable through v1.0.
 
 ## Versioning policy (0.x)
 
-- **Package semver** (`0.6.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
+- **Package semver** (`0.7.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
 - **Document version** (`ViewDocument.version: '0.1'`) is separate from package semver. It identifies the JSON document schema.
 - During `0.x`, minor releases may add optional document fields and APIs. Patch releases are backward compatible within the minor.
 - `1.0.0` is reserved for stable **code-first** public API with embed mode frozen — see [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
@@ -24,7 +24,7 @@ Embed-mode APIs below remain stable through v1.0.
 Install all ViewFoundry packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
+npm install @viewfoundry/core@0.7.0 @viewfoundry/schema@0.7.0 @viewfoundry/react@0.7.0 @viewfoundry/editor@0.7.0 @viewfoundry/codegen@0.7.0 @viewfoundry/cli@0.7.0 @viewfoundry/vite@0.7.0 @viewfoundry/sync@0.7.0 @viewfoundry/board@0.7.0
 ```
 
 ## `@viewfoundry/core`
@@ -51,6 +51,7 @@ export type ValidationResult;
 export type CommandResult<T = void>;
 export type DocumentCommand;
 export type ApplyCommandOptions;
+// File-edit (v0.7): SourceLocation, SourceElementId, FilePatch, FileCommand, FileHistoryState
 // Command payloads: InsertNodePayload, DeleteNodePayload, etc.
 ```
 
@@ -243,9 +244,30 @@ Styles: `@viewfoundry/react/styles.css` (selection overlays, missing-component f
 ## `@viewfoundry/editor`
 
 ```tsx
+// Embed mode (default)
+export type EmbedViewFoundryEditorProps = {
+  mode?: 'embed';
+  registry: ComponentRegistry;
+  document?: ViewDocument;
+  onChange?: (document: ViewDocument) => void;
+  // ...
+};
+
+// Code-first mode (v0.7)
+export type CodeFirstViewFoundryEditorProps = {
+  mode: 'code-first';
+  registry: ComponentRegistry;
+  board: BoardDefinition;
+  sourceFiles: Record<string, string>;
+  activeSourceFile: string;
+  onSourceFilesChange?: (files: Record<string, string>) => void;
+};
+
+export type ViewFoundryEditorProps = EmbedViewFoundryEditorProps | CodeFirstViewFoundryEditorProps;
+
 export function ViewFoundryEditor(props: ViewFoundryEditorProps): JSX.Element;
-// ViewFoundryEditorProps.styleTokens?: Record<string, string | number>
-export function StyleInspector(props: StyleInspectorProps): JSX.Element;
+export function CodeFirstEditorShell(props: CodeFirstEditorShellProps): JSX.Element;
+export function createCodeFirstStore(...): StoreApi<CodeFirstEditorStore>;
 export type EditSubMode = 'component' | 'style';
 // EditorStore: setEditSubMode, setStyleProp, updateStyle
 export function EditorProvider(props: EditorProviderProps): JSX.Element;
@@ -264,7 +286,42 @@ export function Toolbar(props: ToolbarProps): JSX.Element;
 
 Styles: `@viewfoundry/editor/styles.css` **and** `@viewfoundry/react/styles.css` when using the full editor.
 
-**Peer dependencies:** `@viewfoundry/core@^0.6.0`, `@viewfoundry/react@^0.6.0`, `@viewfoundry/schema@^0.6.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.7.0`, `@viewfoundry/react@^0.7.0`, `@viewfoundry/schema@^0.7.0`, `@viewfoundry/sync@^0.7.0`, `@viewfoundry/board@^0.7.0`, `react`, `react-dom`
+
+## `@viewfoundry/sync`
+
+TSX parse, source maps, and safe file patches for code-first editing.
+
+```ts
+export function parseSourceFile(file: string, content: string): ParsedSourceFile;
+export function findJsxElementAt(parsed: ParsedSourceFile, offset: number): ParsedJsxElement | undefined;
+export function buildSourceMap(parsed: ParsedSourceFile): Map<SourceElementId, SourceLocation>;
+export function extractJsxProps(content: string, element: ParsedJsxElement): Record<string, unknown>;
+export function patchInsertElement(content: string, payload: InsertJsxElementPayload): FileCommandResult;
+export function patchDeleteElement(content: string, payload: DeleteJsxElementPayload): FileCommandResult;
+export function patchMoveElement(content: string, payload: MoveJsxElementPayload): FileCommandResult;
+export function patchSetProp(content: string, payload: UpdateJsxPropPayload): FileCommandResult;
+export function validateAllowedChild(...): FileCommandResult | null;
+// File history: createFileHistory, pushFileHistory, undoFileHistory, redoFileHistory, canUndoFile, canRedoFile
+```
+
+**Peer dependencies:** `@viewfoundry/core@^0.7.0`
+
+## `@viewfoundry/board`
+
+Board fixtures for isolated component editing.
+
+```ts
+export function createBoard<TProps>(options: CreateBoardOptions<TProps>): BoardDefinition<TProps>;
+export function renderBoardElement(board: BoardDefinition): ReactElement;
+export type BoardDefinition;
+export type BoardViewport;
+export type BoardCatalogEntry;
+```
+
+Subpath `@viewfoundry/board/testing`: `renderBoardToString(board)`.
+
+**Peer dependencies:** `@viewfoundry/core@^0.7.0`, `react`, `react-dom`
 
 ## `@viewfoundry/codegen`
 
@@ -308,13 +365,19 @@ export type ViewFoundryCodegenOptions = {
 };
 
 export type ViewFoundryViteOptions = {
+  mode?: 'embed' | 'code-first';
   document?: string;
   codegen?: ViewFoundryCodegenOptions;
+  boards?: string;
 };
 
 export const VIRTUAL_DOCUMENT_ID = 'virtual:viewfoundry/document';
+export const VIRTUAL_BOARDS_ID = 'virtual:viewfoundry/boards';
 
 export function viewfoundry(options?: ViewFoundryViteOptions): Plugin;
+export function viewfoundryCodeFirst(options?: CodeFirstPluginOptions): Plugin;
+export function viewfoundryLocInjection(): Plugin;
+export function viewfoundryAll(options?: ViewFoundryViteOptions): Plugin[];
 ```
 
-**Peer dependencies:** `vite@^5 || ^6`, `@viewfoundry/core@^0.6.0`, `@viewfoundry/codegen@^0.6.0` (codegen when using watch)
+**Peer dependencies:** `vite@^5 || ^6`, `@viewfoundry/core@^0.7.0`, `@viewfoundry/codegen@^0.7.0` (codegen when using watch)

@@ -1,4 +1,26 @@
 export type {
+  SourceLocation,
+  SourceElementId,
+  SourceSelection,
+  FilePatch,
+  FileCommandResult,
+  InsertJsxElementPayload,
+  DeleteJsxElementPayload,
+  MoveJsxElementPayload,
+  UpdateJsxPropPayload,
+  ReorderJsxChildrenPayload,
+  FileCommand,
+  FileHistoryState,
+} from './file-types.js';
+export {
+  createFileHistory,
+  pushFileHistory,
+  undoFileHistory,
+  redoFileHistory,
+  canUndoFile,
+  canRedoFile,
+} from './file-history.js';
+export type {
   ViewDocument,
   ViewDocumentMeta,
   ViewNode,

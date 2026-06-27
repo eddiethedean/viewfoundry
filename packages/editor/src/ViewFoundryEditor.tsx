@@ -13,7 +13,11 @@ import { useEditorStore, useEditorState } from './EditorContext.js';
 import { findNodeLocation, getPrimarySelection, isGridContainer } from '@viewfoundry/core';
 import { loadStoredTheme, saveStoredTheme, type EditorTheme } from './theme.js';
 
-export type ViewFoundryEditorProps = {
+import { CodeFirstEditorShell } from './code-first/CodeFirstEditorShell.js';
+import type { BoardDefinition } from '@viewfoundry/board';
+
+export type EmbedViewFoundryEditorProps = {
+  mode?: 'embed';
   registry: ComponentRegistry;
   document?: ViewDocument;
   onChange?: (document: ViewDocument) => void;
@@ -24,6 +28,19 @@ export type ViewFoundryEditorProps = {
   styleTokens?: Record<string, string | number>;
   defaultTheme?: EditorTheme;
 };
+
+export type CodeFirstViewFoundryEditorProps = {
+  mode: 'code-first';
+  registry: ComponentRegistry;
+  board: BoardDefinition;
+  sourceFiles: Record<string, string>;
+  activeSourceFile: string;
+  onSourceFilesChange?: (files: Record<string, string>) => void;
+  className?: string;
+  defaultTheme?: EditorTheme;
+};
+
+export type ViewFoundryEditorProps = EmbedViewFoundryEditorProps | CodeFirstViewFoundryEditorProps;
 
 function KeyboardShortcuts() {
   const store = useEditorStore();
@@ -159,17 +176,32 @@ function EditorLayout({
   );
 }
 
-export function ViewFoundryEditor({
-  registry,
-  document,
-  onChange,
-  onExport,
-  className,
-  defaultStudioMode,
-  onStudioModeChange,
-  styleTokens,
-  defaultTheme = 'dark',
-}: ViewFoundryEditorProps) {
+export function ViewFoundryEditor(props: ViewFoundryEditorProps) {
+  if (props.mode === 'code-first') {
+    return (
+      <CodeFirstEditorShell
+        registry={props.registry}
+        board={props.board}
+        sourceFiles={props.sourceFiles}
+        activeSourceFile={props.activeSourceFile}
+        onSourceFilesChange={props.onSourceFilesChange}
+        className={props.className}
+      />
+    );
+  }
+
+  const {
+    registry,
+    document,
+    onChange,
+    onExport,
+    className,
+    defaultStudioMode,
+    onStudioModeChange,
+    styleTokens,
+    defaultTheme = 'dark',
+  } = props;
+
   return (
     <EditorProvider
       registry={registry}

@@ -2,6 +2,28 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.7.0] — June 2026
+
+### Added
+
+- **`@viewfoundry/sync`** — TSX parse, source maps, safe AST patches (`insert` / `delete` / `move` / `setProp`), validation, and file-level undo/redo helpers
+- **`@viewfoundry/board`** — `createBoard()`, `.board.tsx` convention, `renderBoardElement()`, and `@viewfoundry/board/testing` snapshot helpers
+- **Code-first editor mode** — dual-mode `ViewFoundryEditor` with Board tab, Stage, Elements panel, Properties panel, viewport controls, parent/child click modes, and file undo/redo
+- **`@viewfoundry/react`** — `CodeFirstProvider`, `SourceBoundary`, `BoardStage`, `AstStageRenderer` for code-first runtime
+- **`@viewfoundry/vite`** — `viewfoundryCodeFirst`, `viewfoundryLocInjection`, `virtual:viewfoundry/boards`, and `viewfoundry:source-update` HMR events
+- **Example** — code-first board path in `basic-react` via `?mode=code-first`
+- **E2e** — `e2e/code-first-board.spec.ts` for board load, prop edit, undo, and Live mode
+- **Docs** — code-first guide and API spec updates for sync/board packages
+
+### Changed
+
+- `@viewfoundry/core` exports file-edit types (`SourceLocation`, `FilePatch`, `FileCommand`, `FileHistoryState`) alongside frozen embed document commands
+- Example app supports embed (default) and code-first (`?mode=code-first`) in one build
+
+### Notes
+
+- Embed mode API and existing e2e suite remain unchanged — no breaking removals
+
 ## [0.6.0] — June 2026
 
 ### Added

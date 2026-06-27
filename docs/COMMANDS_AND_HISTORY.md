@@ -114,9 +114,36 @@ Style commands validate keys via `@viewfoundry/schema` (`validateStyleProp`). Us
 
 | Command / area         | Release | Purpose                                      |
 | ---------------------- | ------- | -------------------------------------------- |
-| File-edit (sync)       | v0.7.0  | TSX/CSS patches via `@viewfoundry/sync`      |
 | TSX interaction wiring | v0.11.0 | Code-first handler edits (not JSON commands) |
 | Route/page edits       | v0.10.0 | Code-first routing in source                 |
 | Embed `addInteraction` | backlog | JSON interactions for CMS embeds only        |
 
 See [INTERACTIONS.md](INTERACTIONS.md), [ROUTING.md](ROUTING.md), [CODE_FIRST.md](CODE_FIRST.md).
+
+## File-edit commands (v0.7.0, code-first)
+
+Code-first editing uses **file snapshots** instead of `ViewDocument`. Patches are applied via `@viewfoundry/sync`; the editor store calls these when you edit structure or props on the Stage.
+
+```ts
+export type FileCommandResult =
+  | { ok: true; patches: FilePatch[] }
+  | { ok: false; error: string };
+
+export type FileHistoryState = {
+  past: Record<string, string>[];
+  present: Record<string, string>;
+  future: Record<string, string>[];
+};
+```
+
+| Command              | Sync function        | Description                              |
+| -------------------- | -------------------- | ---------------------------------------- |
+| `insertJsxElement`   | `patchInsertElement` | Insert JSX under a parent element        |
+| `deleteJsxElement`   | `patchDeleteElement` | Remove a JSX element                     |
+| `moveJsxElement`     | `patchMoveElement`   | Reparent or reorder JSX children         |
+| `updateJsxProp`      | `patchSetProp`       | Set or replace a JSX attribute           |
+| `reorderJsxChildren` | `patchMoveElement`   | Reorder siblings (via move, v0.7)      |
+
+File undo/redo uses `createFileHistory`, `pushFileHistory`, `undoFileHistory`, and `redoFileHistory` from `@viewfoundry/core` (re-exported by `@viewfoundry/sync`).
+
+Embed `DocumentCommand` types are **frozen** — do not extend them for code-first features.

@@ -1,5 +1,13 @@
 export { ViewFoundryEditor } from './ViewFoundryEditor.js';
-export type { ViewFoundryEditorProps } from './ViewFoundryEditor.js';
+export type {
+  ViewFoundryEditorProps,
+  EmbedViewFoundryEditorProps,
+  CodeFirstViewFoundryEditorProps,
+} from './ViewFoundryEditor.js';
+export { CodeFirstEditorShell } from './code-first/CodeFirstEditorShell.js';
+export type { CodeFirstEditorShellProps } from './code-first/CodeFirstEditorShell.js';
+export { createCodeFirstStore } from './code-first/store.js';
+export type { CodeFirstEditorStore, CodeFirstStoreApi } from './code-first/store.js';
 export type { EditorTheme } from './theme.js';
 export { loadStoredTheme, saveStoredTheme, toggleTheme } from './theme.js';
 export { EditorProvider, useEditorStore, useEditorState } from './EditorContext.js';

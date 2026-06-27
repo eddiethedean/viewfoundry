@@ -1,7 +1,7 @@
 # Getting started
 
 ```{note}
-**Product direction:** v0.5/v0.6 use **embed mode** (JSON `ViewDocument`) — this guide reflects what ships today. From **v0.7**, the primary path is **code-first** (edits write to TSX/CSS). See [Roadmap & direction](roadmap-and-direction.md).
+**Dual mode:** v0.7 ships **embed mode** (JSON `ViewDocument`, below) and **code-first** (TSX source files, boards). See [Code-first mode](code-first.md) for the new path.
 ```
 
 ## Quick start (recommended)
@@ -25,12 +25,12 @@ Edit `viewfoundry/document.json` while the dev server runs — `@viewfoundry/vit
 - **React 18 or 19** with a bundler (Vite recommended)
 - **TypeScript** (examples use TS; JS works with typed imports from packages)
 
-Install all `@viewfoundry/*` packages at the **same version** (currently `0.6.0`).
+Install all `@viewfoundry/*` packages at the **same version** (currently `0.7.0`).
 
 ## Install
 
 ```bash
-npm install @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
+npm install @viewfoundry/core@0.7.0 @viewfoundry/schema@0.7.0 @viewfoundry/react@0.7.0 @viewfoundry/editor@0.7.0 @viewfoundry/codegen@0.7.0 @viewfoundry/cli@0.7.0 @viewfoundry/vite@0.7.0
 ```
 
 Or with pnpm:

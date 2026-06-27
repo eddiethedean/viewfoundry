@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@viewfoundry/board": "workspace:*",
     "@viewfoundry/codegen": "workspace:*",
     "@viewfoundry/core": "workspace:*",
     "@viewfoundry/editor": "workspace:*",

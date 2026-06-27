@@ -1,8 +1,17 @@
 # Basic React example
 
-A minimal ViewFoundry **embed-mode** integration: registered components, visual editor, localStorage persistence, and TSX export. A **code-first** path is planned in v0.7 — see [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html).
+A ViewFoundry integration with **embed mode** (JSON document editor) and **code-first mode** (board + TSX source editing, v0.7).
+
+## Modes
+
+| URL | Mode |
+| --- | ---- |
+| `http://localhost:5173/` | Embed — JSON `ViewDocument`, palette, layers, inspector |
+| `http://localhost:5173/?mode=code-first` | Code-first — Button board, Elements/Properties, file undo |
 
 ## What it demonstrates
+
+### Embed (default)
 
 - **Component registration** — Button, Card, Stack, Grid, Row, Heading, Text via `@viewfoundry/schema`
 - **Edit / Live** — single-viewport studio toggle in `ViewFoundryEditor`
@@ -11,6 +20,12 @@ A minimal ViewFoundry **embed-mode** integration: registered components, visual 
 - **Persistence** — document JSON saved to `localStorage` (dev seed in `viewfoundry/document.json`)
 - **Vite plugin (v0.5.0)** — `virtual:viewfoundry/document` HMR and optional codegen watch
 - **Codegen** — `generateTsx` with an import map matching `./components`
+
+### Code-first (`?mode=code-first`)
+
+- **Board fixture** — `src/boards/Button.board.tsx` via `@viewfoundry/board`
+- **TSX sync** — prop edits patch `src/code-first/fixture.tsx` via `@viewfoundry/sync`
+- **Elements / Properties / Stage** — dual-mode `ViewFoundryEditor` with file undo/redo
 
 ## Run locally
 
@@ -23,11 +38,14 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Key files
 
-| File                 | Purpose                                     |
-| -------------------- | ------------------------------------------- |
-| `src/App.tsx`        | Editor shell, persistence, export drawer    |
-| `src/definitions.ts` | Registry, component definitions, import map |
-| `src/components/`    | React components rendered on the canvas     |
+| File                      | Purpose                                      |
+| ------------------------- | -------------------------------------------- |
+| `src/App.tsx`             | Embed editor shell, persistence, export      |
+| `src/code-first/App.tsx`  | Code-first board editor                        |
+| `src/code-first/fixture.tsx` | Editable TSX source for the Button board  |
+| `src/boards/Button.board.tsx` | Board fixture definition                |
+| `src/definitions.ts`      | Registry, component definitions, import map  |
+| `src/components/`         | React components rendered on canvas/stage    |
 
 ## Import map
 

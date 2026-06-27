@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@viewfoundry/board": "^{{VERSION}}",
     "@viewfoundry/codegen": "^{{VERSION}}",
     "@viewfoundry/core": "^{{VERSION}}",
     "@viewfoundry/editor": "^{{VERSION}}",
