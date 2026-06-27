@@ -48,6 +48,7 @@ export function GridCellDroppable({
       role="button"
       aria-label={`Grid cell row ${row}, column ${column}`}
       aria-pressed={selected}
+      aria-disabled={disabled || undefined}
       data-grid-row={row}
       data-grid-column={column}
       onClick={(event) => {

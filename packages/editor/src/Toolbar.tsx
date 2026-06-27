@@ -114,9 +114,12 @@ export function Toolbar({ onExport, theme = 'dark', onThemeChange }: ToolbarProp
 
       <div className="vf-toolbar-spacer" aria-hidden="true" />
 
-      {isEdit && lastError && (
+      {lastError && (
         <div className="vf-toolbar-error" role="alert">
           {lastError}
+          <button type="button" onClick={() => store.getState().clearError()}>
+            Dismiss
+          </button>
         </div>
       )}
     </div>

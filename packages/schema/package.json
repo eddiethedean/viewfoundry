@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/schema",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Schema helpers for ViewFoundry component definitions",
   "type": "module",
   "main": "./dist/index.js",

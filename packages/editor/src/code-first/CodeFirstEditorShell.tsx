@@ -17,23 +17,36 @@ export type CodeFirstEditorShellProps = {
   className?: string;
 };
 
+function isKeyboardShortcutBlocked(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if (target.isContentEditable) return true;
+  return Boolean(target.closest('[contenteditable="true"]'));
+}
+
 function CodeFirstKeyboardShortcuts() {
   const store = useCodeFirstStore();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (store.getState().studioMode === 'live') return;
+      if (store.getState().isDragging) return;
       const mod = e.metaKey || e.ctrlKey;
       if (e.key === 'Escape') {
         store.getState().selectElement(null);
       }
-      if (mod && e.key === 'z' && !e.shiftKey) {
+      if (mod && e.key === 'z' && !e.shiftKey && !isKeyboardShortcutBlocked(e.target)) {
         if (store.getState().canUndo()) {
           e.preventDefault();
           store.getState().undo();
         }
       }
-      if (mod && ((e.key === 'z' && e.shiftKey) || e.key === 'y')) {
+      if (
+        mod &&
+        ((e.key === 'z' && e.shiftKey) || e.key === 'y') &&
+        !isKeyboardShortcutBlocked(e.target)
+      ) {
         if (store.getState().canRedo()) {
           e.preventDefault();
           store.getState().redo();

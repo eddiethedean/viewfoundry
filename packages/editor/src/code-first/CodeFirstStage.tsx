@@ -1,7 +1,7 @@
-import type { MouseEvent } from 'react';
+import { useMemo, type MouseEvent, type ReactNode } from 'react';
 import { AstStageRenderer, CodeFirstProvider } from '@viewfoundry/react';
 import { useCodeFirstState, useCodeFirstStore } from './CodeFirstContext.js';
-import { CodeFirstStageDnd } from './CodeFirstStageDnd.js';
+import { CodeFirstStageDnd, DraggableElement, DropSlot } from './CodeFirstStageDnd.js';
 
 export function CodeFirstStage() {
   const store = useCodeFirstStore();
@@ -14,6 +14,31 @@ export function CodeFirstStage() {
   const parsed = useCodeFirstState((s) => s.parsed);
 
   const mode = studioMode === 'edit' ? 'edit' : 'preview';
+
+  const dndRender = useMemo(
+    () =>
+      mode === 'edit'
+        ? {
+            wrapElement: ({
+              elementId,
+              tagName,
+              children,
+            }: {
+              elementId: string;
+              tagName: string;
+              children: ReactNode;
+            }) => (
+              <DraggableElement elementId={elementId} tagName={tagName}>
+                {children}
+              </DraggableElement>
+            ),
+            renderDropSlot: ({ parentId, index }: { parentId: string; index: number }) => (
+              <DropSlot parentId={parentId} index={index} />
+            ),
+          }
+        : undefined,
+    [mode],
+  );
 
   const handleStageClick = (e: MouseEvent) => {
     if (mode !== 'edit') return;
@@ -63,6 +88,7 @@ export function CodeFirstStage() {
               mode={mode}
               viewport={viewport}
               background={board.background}
+              dnd={dndRender}
             />
           ) : (
             <p className="vf-stage-empty">No source loaded</p>

@@ -15,7 +15,15 @@ export {
   patchMoveElement,
   applyPatchesToContent,
   validateAllowedChild,
+  isAncestor,
 } from './patch.js';
+
+export {
+  getElementIdentity,
+  reconcileElementId,
+  findElementByIdentity,
+  type ElementIdentity,
+} from './parse.js';
 
 export {
   createFileHistory,

@@ -46,7 +46,12 @@ export function GridDropLayer({ node, activeCell, canDrop }: GridDropLayerProps)
   const cells: ReactNode[] = [];
   for (let row = 1; row <= rows; row++) {
     for (let column = 1; column <= columns; column++) {
-      const disabled = draggingType ? (canDrop ? !canDrop(draggingType) : false) : false;
+      const disabledByRules = draggingType ? (canDrop ? !canDrop(draggingType) : false) : false;
+      const occupied = findChildAtGridCell(node, row, column);
+      const dragNodeId = active ? parseNodeDragId(String(active.id)) : null;
+      const occupiedByDragged = occupied && dragNodeId === occupied.id;
+      const disabledByOccupancy = Boolean(occupied) && !occupiedByDragged && isDragActive;
+      const disabled = disabledByRules || disabledByOccupancy;
       cells.push(
         <GridCellDroppable
           key={`${row}-${column}`}

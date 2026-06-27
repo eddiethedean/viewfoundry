@@ -2,9 +2,12 @@ export type EditorTheme = 'dark' | 'light';
 
 export const THEME_STORAGE_KEY = 'viewfoundry-editor-theme';
 
-export function loadStoredTheme(defaultTheme: EditorTheme = 'dark'): EditorTheme {
+export function loadStoredTheme(
+  defaultTheme: EditorTheme = 'dark',
+  storageKey: string = THEME_STORAGE_KEY,
+): EditorTheme {
   try {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    const stored = localStorage.getItem(storageKey);
     if (stored === 'light' || stored === 'dark') return stored;
   } catch {
     // ignore storage errors (private mode, iframe restrictions)
@@ -12,9 +15,9 @@ export function loadStoredTheme(defaultTheme: EditorTheme = 'dark'): EditorTheme
   return defaultTheme;
 }
 
-export function saveStoredTheme(theme: EditorTheme): void {
+export function saveStoredTheme(theme: EditorTheme, storageKey: string = THEME_STORAGE_KEY): void {
   try {
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    localStorage.setItem(storageKey, theme);
   } catch {
     // ignore
   }

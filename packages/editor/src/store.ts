@@ -79,6 +79,7 @@ export type EditorStore = {
   setDragging: (dragging: boolean) => void;
   setShowGrid: (show: boolean) => void;
   toggleShowGrid: () => void;
+  clearError: () => void;
 };
 
 function applyDocument(
@@ -165,11 +166,13 @@ export function createEditorStore(
   options?: {
     defaultStudioMode?: StudioMode;
     onStudioModeChange?: (mode: StudioMode) => void;
+    onSyncError?: (message: string) => void;
   },
 ) {
   const doc = initialDocument ?? createDocument();
   const defaultStudioMode = options?.defaultStudioMode ?? 'edit';
   const onStudioModeChange = options?.onStudioModeChange;
+  const onSyncError = options?.onSyncError;
 
   return create<EditorStore>((set, get) => ({
     document: doc,
@@ -187,7 +190,7 @@ export function createEditorStore(
 
     setStudioMode: (mode) => {
       if (get().studioMode === mode) return;
-      set({ studioMode: mode });
+      set({ studioMode: mode, lastError: mode === 'edit' ? get().lastError : null });
       onStudioModeChange?.(mode);
     },
 
@@ -228,9 +231,11 @@ export function createEditorStore(
       });
       if (!validation.valid) {
         const firstIssue = validation.issues[0];
+        const message = firstIssue?.message ?? 'Invalid document';
         set({
-          lastError: firstIssue?.message ?? 'Invalid document',
+          lastError: message,
         });
+        onSyncError?.(message);
         return;
       }
       const { history } = state;
@@ -248,6 +253,7 @@ export function createEditorStore(
 
     revertDocument: (document) => {
       const state = get();
+      if (documentTreeEqual(state.document, document)) return;
       set({
         document,
         history: { ...state.history, present: document },
@@ -534,6 +540,7 @@ export function createEditorStore(
     setShowGrid: (show) => set({ showGrid: show }),
 
     toggleShowGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+    clearError: () => set({ lastError: null }),
   }));
 }
 

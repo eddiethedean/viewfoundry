@@ -48,6 +48,23 @@ test.describe('code-first board', () => {
     await expect(page.getByRole('button', { name: 'Child first', pressed: true })).toBeVisible();
   });
 
+  test('parent-first second click selects parent in Elements tree', async ({ page }) => {
+    await page.goto(codeFirstUrl);
+    const stage = page.getByTestId('vf-code-first-stage');
+    await stage.locator('.demo-button').click();
+    await expect(
+      page
+        .getByRole('region', { name: 'Elements' })
+        .getByRole('button', { name: 'Button', pressed: true }),
+    ).toBeVisible();
+    await stage.locator('.demo-button').click();
+    await expect(
+      page
+        .getByRole('region', { name: 'Elements' })
+        .getByRole('button', { name: 'Stack', pressed: true }),
+    ).toBeVisible();
+  });
+
   test('switches to Live mode and hides edit panels', async ({ page }) => {
     await page.goto(codeFirstUrl);
     await page.getByRole('button', { name: 'Live' }).click();

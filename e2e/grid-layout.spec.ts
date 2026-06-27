@@ -7,6 +7,7 @@ import {
   insertFromPalette,
   inspector,
   layers,
+  palette,
   resetDocument,
   selectLayer,
   setShowGrid,
@@ -110,6 +111,27 @@ test.describe('grid layout', () => {
       'aria-pressed',
       'true',
     );
+  });
+
+  test('rejects drop on occupied grid cell when dragging from palette', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await setShowGrid(page, true);
+
+    const source = palette(page).getByRole('button', { name: 'Button', exact: true });
+    const sourceBox = await source.boundingBox();
+    if (!sourceBox) throw new Error('missing palette button');
+
+    await page.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(
+      sourceBox.x + sourceBox.width / 2 + 20,
+      sourceBox.y + sourceBox.height / 2,
+    );
+
+    const occupiedCell = page.locator('[data-grid-row="1"][data-grid-column="1"]');
+    await expect(occupiedCell).toHaveAttribute('aria-disabled', 'true');
+
+    await page.mouse.up();
   });
 
   test('hides Show Grid toggle in Live mode', async ({ page }) => {

@@ -9,6 +9,7 @@ export type SourceBoundaryProps = {
   tagName: string;
   children: ReactNode;
   elementId?: SourceElementId;
+  parentId?: SourceElementId | null;
 };
 
 export function SourceBoundary({
@@ -18,6 +19,7 @@ export function SourceBoundary({
   tagName,
   children,
   elementId,
+  parentId,
 }: SourceBoundaryProps) {
   const { mode, selectedElementId, clickMode, onSelectElement } = useCodeFirstContext();
   const id = elementId ?? `${file}:${start}`;
@@ -32,8 +34,8 @@ export function SourceBoundary({
       onSelectElement(id);
       return;
     }
-    if (selectedElementId === id) {
-      onSelectElement(id);
+    if (selectedElementId === id && parentId) {
+      onSelectElement(parentId);
     } else {
       onSelectElement(id);
     }
@@ -52,6 +54,7 @@ export function SourceBoundary({
       onClick={handleClick}
       role="group"
       aria-label={tagName}
+      style={{ display: 'contents' }}
     >
       {children}
     </div>
@@ -65,7 +68,8 @@ export function sourceLocFromTarget(target: EventTarget | null): SourceElementId
 }
 
 export function sourceLocFromAttribute(el: HTMLElement): SourceElementId | null {
+  if (el.dataset.vfElementId) return el.dataset.vfElementId;
   const parsed = parseSourceLoc(el.dataset.vfLoc);
-  if (!parsed) return el.dataset.vfElementId ?? null;
-  return formatSourceLoc(parsed.file, parsed.start, parsed.end);
+  if (!parsed) return null;
+  return `${parsed.file}:${parsed.start}`;
 }

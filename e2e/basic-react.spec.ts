@@ -125,6 +125,19 @@ test.describe('basic-react example', () => {
     await expect(palette(page).getByRole('button', { name: 'Button', exact: true })).toBeVisible();
   });
 
+  test('reset clears undo history after document replacement', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await toolbar(page).getByRole('button', { name: 'Duplicate' }).click();
+    await expect(toolbar(page).getByRole('button', { name: 'Undo' })).toBeEnabled();
+
+    await page.getByTestId('reset-document').click();
+
+    await expect(toolbar(page).getByRole('button', { name: 'Undo' })).toBeDisabled({
+      timeout: 5000,
+    });
+    await expect(toolbar(page).getByRole('button', { name: 'Redo' })).toBeDisabled();
+  });
+
   test('shows warning when saved document fails validation', async ({ page }) => {
     await page.goto('/');
     await page.evaluate((key) => {

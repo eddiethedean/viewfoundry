@@ -8,9 +8,20 @@ import type {
   SourceElementId,
   UpdateJsxPropPayload,
 } from '@viewfoundry/core';
+import {
+  findAttributeSpan,
+  findJsxNodeAtStart,
+  formatPropValueForJsx,
+  getOpeningTagEnd,
+  validateSourceContent,
+} from './ast-utils.js';
 import { parseSourceFile, type ParsedSourceFile } from './parse.js';
 
 function patchResult(file: string, content: string): FileCommandResult {
+  const validation = validateSourceContent(file, content);
+  if (!validation.valid) {
+    return { ok: false, error: validation.error };
+  }
   return { ok: true, patches: [{ file, content }] };
 }
 
@@ -19,17 +30,27 @@ function fail(error: string): FileCommandResult {
 }
 
 function getElement(parsed: ParsedSourceFile, id: SourceElementId) {
-  const el = parsed.elements.get(id);
-  if (!el) return undefined;
-  return el;
+  return parsed.elements.get(id);
+}
+
+function ensureValidInput(
+  file: string,
+  content: string,
+): { ok: true; parsed: ParsedSourceFile } | { ok: false; error: string } {
+  const validation = validateSourceContent(file, content);
+  if (!validation.valid) {
+    return { ok: false, error: validation.error };
+  }
+  return { ok: true, parsed: parseSourceFile(file, content) };
 }
 
 export function patchDeleteElement(
   content: string,
   payload: DeleteJsxElementPayload,
 ): FileCommandResult {
-  const parsed = parseSourceFile(payload.file, content);
-  const el = getElement(parsed, payload.elementId);
+  const input = ensureValidInput(payload.file, content);
+  if (!input.ok) return fail(input.error);
+  const el = getElement(input.parsed, payload.elementId);
   if (!el) return fail('Element not found');
 
   const s = new MagicString(content);
@@ -41,24 +62,25 @@ export function patchInsertElement(
   content: string,
   payload: InsertJsxElementPayload,
 ): FileCommandResult {
-  const parsed = parseSourceFile(payload.file, content);
-  const parent = getElement(parsed, payload.parentElementId);
+  const input = ensureValidInput(payload.file, content);
+  if (!input.ok) return fail(input.error);
+  const parent = getElement(input.parsed, payload.parentElementId);
   if (!parent) return fail('Parent element not found');
   if (parent.isSelfClosing) return fail('Cannot insert into a self-closing element');
 
-  const parsedFull = parseSourceFile(payload.file, content);
-  const parentNode = getElement(parsedFull, payload.parentElementId)!;
-  const insertIndex = payload.index ?? parentNode.childIds.length;
+  const insertIndex = payload.index ?? parent.childIds.length;
+  if (insertIndex < 0 || insertIndex > parent.childIds.length) {
+    return fail(`Invalid insert index: ${insertIndex}`);
+  }
 
   let insertPos: number;
-  if (parentNode.childIds.length === 0) {
-    const openEnd = findOpeningTagEnd(content, parent.location.start);
-    insertPos = openEnd;
-  } else if (insertIndex >= parentNode.childIds.length) {
-    const lastChild = parsedFull.elements.get(parentNode.childIds[parentNode.childIds.length - 1])!;
+  if (parent.childIds.length === 0) {
+    insertPos = parent.openingTagEnd;
+  } else if (insertIndex >= parent.childIds.length) {
+    const lastChild = input.parsed.elements.get(parent.childIds[parent.childIds.length - 1])!;
     insertPos = lastChild.location.end;
   } else {
-    const sibling = parsedFull.elements.get(parentNode.childIds[insertIndex])!;
+    const sibling = input.parsed.elements.get(parent.childIds[insertIndex])!;
     insertPos = sibling.location.start;
   }
 
@@ -69,28 +91,23 @@ export function patchInsertElement(
 }
 
 export function patchSetProp(content: string, payload: UpdateJsxPropPayload): FileCommandResult {
-  const parsed = parseSourceFile(payload.file, content);
-  const el = getElement(parsed, payload.elementId);
+  const input = ensureValidInput(payload.file, content);
+  if (!input.ok) return fail(input.error);
+  const el = getElement(input.parsed, payload.elementId);
   if (!el) return fail('Element not found');
 
-  const sourceFile = parsed.content;
-  const tagSlice = sourceFile.slice(el.location.start, el.location.end);
+  const node = findJsxNodeAtStart(input.parsed.sourceFile, el.location.start);
+  if (!node) return fail('Could not resolve JSX node for element');
+
   const propName = payload.propName;
-  const valueStr = formatPropValue(payload.value);
+  const valueStr = formatPropValueForJsx(payload.value);
+  const s = new MagicString(content);
+  const attrSpan = findAttributeSpan(node, input.parsed.sourceFile, propName);
 
-  const attrRegex = new RegExp(
-    `\\b${escapeRegExp(propName)}\\s*=\\s*(\\{[^}]*\\}|"[^"]*"|'[^']*')`,
-  );
-  const s = new MagicString(sourceFile);
-
-  if (attrRegex.test(tagSlice)) {
-    const match = tagSlice.match(attrRegex);
-    if (!match || match.index === undefined) return fail('Could not update prop');
-    const absStart = el.location.start + match.index;
-    const absEnd = absStart + match[0].length;
-    s.overwrite(absStart, absEnd, `${propName}=${valueStr}`);
+  if (attrSpan) {
+    s.overwrite(attrSpan.start, attrSpan.end, `${propName}=${valueStr}`);
   } else {
-    const insertAt = findPropInsertPoint(sourceFile, el.location.start, el.location.end);
+    const insertAt = getOpeningTagEnd(node);
     s.appendLeft(insertAt, ` ${propName}=${valueStr}`);
   }
 
@@ -101,9 +118,10 @@ export function patchMoveElement(
   content: string,
   payload: MoveJsxElementPayload,
 ): FileCommandResult {
-  const parsed = parseSourceFile(payload.file, content);
-  const el = getElement(parsed, payload.elementId);
-  const parent = getElement(parsed, payload.parentElementId);
+  const input = ensureValidInput(payload.file, content);
+  if (!input.ok) return fail(input.error);
+  const el = getElement(input.parsed, payload.elementId);
+  const parent = getElement(input.parsed, payload.parentElementId);
   if (!el) return fail('Element not found');
   if (!parent) return fail('Target parent not found');
   if (parent.isSelfClosing) return fail('Cannot move into a self-closing element');
@@ -133,42 +151,20 @@ export function applyPatchesToContent(
   patches: FilePatch[],
 ): Record<string, string> {
   const next = { ...files };
+  const byFile = new Map<string, FilePatch[]>();
   for (const patch of patches) {
-    next[patch.file] = patch.content;
+    const list = byFile.get(patch.file) ?? [];
+    list.push(patch);
+    byFile.set(patch.file, list);
+  }
+  for (const [file, filePatches] of byFile) {
+    let content = next[file] ?? '';
+    for (const patch of filePatches) {
+      content = patch.content;
+    }
+    next[file] = content;
   }
   return next;
-}
-
-function formatPropValue(value: unknown): string {
-  if (typeof value === 'string') return `{${JSON.stringify(value)}}`;
-  if (typeof value === 'number' || typeof value === 'boolean') return `{${String(value)}}`;
-  if (value === null || value === undefined) return '{undefined}';
-  return `{${JSON.stringify(value)}}`;
-}
-
-function escapeRegExp(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function findOpeningTagEnd(content: string, start: number): number {
-  let depth = 0;
-  for (let i = start; i < content.length; i++) {
-    if (content[i] === '<') depth++;
-    if (content[i] === '>' && content[i - 1] !== '-') {
-      depth--;
-      if (depth === 0) return i + 1;
-    }
-  }
-  return start;
-}
-
-function findPropInsertPoint(content: string, start: number, end: number): number {
-  const slice = content.slice(start, end);
-  const selfClose = slice.indexOf('/>');
-  if (selfClose >= 0) return start + selfClose;
-  const close = slice.lastIndexOf('>');
-  if (close >= 0) return start + close;
-  return end;
 }
 
 export function validateAllowedChild(
@@ -183,4 +179,17 @@ export function validateAllowedChild(
   const parentName = parentLabel ?? parentTag;
   const childName = childLabel ?? childTag;
   return fail(`${childName} cannot go inside ${parentName}`);
+}
+
+export function isAncestor(
+  parsed: ParsedSourceFile,
+  ancestorId: SourceElementId,
+  descendantId: SourceElementId,
+): boolean {
+  let current = parsed.elements.get(descendantId);
+  while (current?.parentId) {
+    if (current.parentId === ancestorId) return true;
+    current = parsed.elements.get(current.parentId);
+  }
+  return false;
 }

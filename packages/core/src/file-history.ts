@@ -1,16 +1,31 @@
 import type { FileHistoryState } from './file-types.js';
 
-export function createFileHistory(files: Record<string, string>): FileHistoryState {
+export const DEFAULT_FILE_HISTORY_DEPTH = 50;
+
+export type FileHistoryOptions = {
+  maxDepth?: number;
+};
+
+export function createFileHistory(
+  files: Record<string, string>,
+  _options?: FileHistoryOptions,
+): FileHistoryState {
   return { past: [], present: { ...files }, future: [] };
 }
 
 export function pushFileHistory(
   history: FileHistoryState,
   files: Record<string, string>,
+  options?: FileHistoryOptions,
 ): FileHistoryState {
   if (filesEqual(history.present, files)) return history;
+  const maxDepth = options?.maxDepth ?? DEFAULT_FILE_HISTORY_DEPTH;
+  const past = [...history.past, { ...history.present }];
+  while (past.length > maxDepth) {
+    past.shift();
+  }
   return {
-    past: [...history.past, { ...history.present }],
+    past,
     present: { ...files },
     future: [],
   };

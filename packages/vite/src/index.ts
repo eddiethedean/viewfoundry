@@ -169,8 +169,15 @@ export function viewfoundry(options: ViewFoundryViteOptions = {}): Plugin {
         if (!isWatchedPath(path)) return;
         const docPath = resolvePathWithinRoot(root, documentPath);
         const normalized = resolve(path);
-        const invalidate = docPath ? pathsEqual(normalized, docPath) : true;
-        reloadDocument(server, invalidate);
+        const isDocumentChange = docPath ? pathsEqual(normalized, docPath) : true;
+        const isCodegenDependency =
+          (options.codegen?.imports &&
+            resolvePathWithinRoot(root, options.codegen.imports) &&
+            pathsEqual(normalized, resolvePathWithinRoot(root, options.codegen.imports)!)) ||
+          (options.codegen?.tokens &&
+            resolvePathWithinRoot(root, options.codegen.tokens) &&
+            pathsEqual(normalized, resolvePathWithinRoot(root, options.codegen.tokens)!));
+        reloadDocument(server, isDocumentChange || Boolean(isCodegenDependency));
       };
       server.watcher.on('change', onWatch);
       server.watcher.on('add', onWatch);

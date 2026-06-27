@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/codegen",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "TSX code generation for ViewFoundry documents",
   "type": "module",
   "main": "./dist/index.js",

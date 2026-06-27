@@ -11,7 +11,7 @@ import { LayersPanel } from './LayersPanel.js';
 import { EditorDndShell } from './EditorDndShell.js';
 import { useEditorStore, useEditorState } from './EditorContext.js';
 import { findNodeLocation, getPrimarySelection, isGridContainer } from '@viewfoundry/core';
-import { loadStoredTheme, saveStoredTheme, type EditorTheme } from './theme.js';
+import { loadStoredTheme, saveStoredTheme, THEME_STORAGE_KEY, type EditorTheme } from './theme.js';
 
 import { CodeFirstEditorShell } from './code-first/CodeFirstEditorShell.js';
 import type { BoardDefinition } from '@viewfoundry/board';
@@ -27,6 +27,9 @@ export type EmbedViewFoundryEditorProps = {
   onStudioModeChange?: (mode: StudioMode) => void;
   styleTokens?: Record<string, string | number>;
   defaultTheme?: EditorTheme;
+  themeStorageKey?: string;
+  documentResetKey?: string | number;
+  onSyncError?: (message: string) => void;
 };
 
 export type CodeFirstViewFoundryEditorProps = {
@@ -38,6 +41,7 @@ export type CodeFirstViewFoundryEditorProps = {
   onSourceFilesChange?: (files: Record<string, string>) => void;
   className?: string;
   defaultTheme?: EditorTheme;
+  themeStorageKey?: string;
 };
 
 export type ViewFoundryEditorProps = EmbedViewFoundryEditorProps | CodeFirstViewFoundryEditorProps;
@@ -131,21 +135,24 @@ function EditorLayout({
   className,
   styleTokens,
   defaultTheme = 'dark',
+  themeStorageKey,
 }: {
   onExport?: () => void;
   className?: string;
   styleTokens?: Record<string, string | number>;
   defaultTheme?: EditorTheme;
+  themeStorageKey?: string;
 }) {
   const studioMode = useEditorState((s) => s.studioMode);
   const editSubMode = useEditorState((s) => s.editSubMode);
   const isEdit = studioMode === 'edit';
   const isStyleMode = isEdit && editSubMode === 'style';
-  const [theme, setTheme] = useState<EditorTheme>(() => loadStoredTheme(defaultTheme));
+  const storageKey = themeStorageKey ?? THEME_STORAGE_KEY;
+  const [theme, setTheme] = useState<EditorTheme>(() => loadStoredTheme(defaultTheme, storageKey));
 
   useEffect(() => {
-    saveStoredTheme(theme);
-  }, [theme]);
+    saveStoredTheme(theme, storageKey);
+  }, [theme, storageKey]);
 
   return (
     <div
@@ -200,6 +207,9 @@ export function ViewFoundryEditor(props: ViewFoundryEditorProps) {
     onStudioModeChange,
     styleTokens,
     defaultTheme = 'dark',
+    themeStorageKey,
+    documentResetKey,
+    onSyncError,
   } = props;
 
   return (
@@ -207,6 +217,8 @@ export function ViewFoundryEditor(props: ViewFoundryEditorProps) {
       registry={registry}
       document={document}
       onChange={onChange}
+      onSyncError={onSyncError}
+      documentResetKey={documentResetKey}
       defaultStudioMode={defaultStudioMode}
       onStudioModeChange={onStudioModeChange}
     >
@@ -215,6 +227,7 @@ export function ViewFoundryEditor(props: ViewFoundryEditorProps) {
         className={className}
         styleTokens={styleTokens}
         defaultTheme={defaultTheme}
+        themeStorageKey={themeStorageKey}
       />
     </EditorProvider>
   );

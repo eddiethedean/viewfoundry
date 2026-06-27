@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/cli",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "CLI for ViewFoundry — init, export, and validate",
   "type": "module",
   "bin": {

@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/react",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "React runtime for ViewFoundry documents",
   "type": "module",
   "main": "./dist/index.js",

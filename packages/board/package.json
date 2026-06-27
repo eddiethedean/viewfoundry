@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/board",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Board fixtures for isolated component editing in code-first mode",
   "type": "module",
   "main": "./dist/index.js",

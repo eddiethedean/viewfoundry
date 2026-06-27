@@ -19,9 +19,14 @@ export type CodeFirstPluginOptions = {
   boards?: string;
 };
 
+function escapeAttrValue(value: string): string {
+  return value.replace(/"/g, '&quot;');
+}
+
 export function viewfoundryCodeFirst(options: CodeFirstPluginOptions = {}): Plugin {
   const boardsGlob = options.boards ?? 'src/**/*.board.tsx';
   let catalog: BoardCatalogEntry[] = [];
+  let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
   return {
     name: 'viewfoundry-code-first',
@@ -47,9 +52,19 @@ export function viewfoundryCodeFirst(options: CodeFirstPluginOptions = {}): Plug
           data: { boards: catalog },
         });
       };
+
+      const debouncedRefresh = () => {
+        if (refreshTimer) clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          refreshTimer = null;
+          void refreshBoards();
+        }, 100);
+      };
+
       refreshBoards();
-      server.watcher.on('add', refreshBoards);
-      server.watcher.on('unlink', refreshBoards);
+      server.watcher.on('add', debouncedRefresh);
+      server.watcher.on('unlink', debouncedRefresh);
+      server.watcher.on('change', debouncedRefresh);
     },
   };
 }
@@ -58,9 +73,9 @@ function discoverBoards(server: ViteDevServer, _pattern: string): BoardCatalogEn
   const root = server.config.root;
   const files = findBoardFiles(root, '.board.tsx');
   return files.map((file) => {
-    const rel = relative(root, file);
+    const rel = relative(root, file).replace(/\\/g, '/');
     const name = rel.replace(/^.*\//, '').replace(/\.board\.tsx$/, '');
-    return { id: name, name, moduleId: `/${rel}`, sourceFile: rel };
+    return { id: rel, name, moduleId: `/${rel}`, sourceFile: rel };
   });
 }
 
@@ -91,16 +106,22 @@ function findBoardFiles(dir: string, suffix: string, results: string[] = []): st
 
 /** Inject data-vf-element-id on JSX opening elements in dev (code-first selection). */
 export function viewfoundryLocInjection(): Plugin {
+  let projectRoot = process.cwd();
+
   return {
     name: 'viewfoundry-loc-injection',
     enforce: 'pre',
+    configResolved(config) {
+      projectRoot = config.root;
+    },
     transform(code, id) {
       if (!/\.(tsx|jsx)$/.test(id)) return null;
       if (id.includes('node_modules')) return null;
       if (!code.includes('<')) return null;
 
+      const relFile = relative(projectRoot, id).replace(/\\/g, '/');
       const sourceFile = ts.createSourceFile(
-        id,
+        relFile,
         code,
         ts.ScriptTarget.Latest,
         true,
@@ -111,12 +132,12 @@ export function viewfoundryLocInjection(): Plugin {
       function visit(node: ts.Node) {
         if (ts.isJsxSelfClosingElement(node)) {
           const start = node.getStart(sourceFile);
-          const elementId = `${id}:${start}`;
+          const elementId = escapeAttrValue(`${relFile}:${start}`);
           const insertAt = node.tagName.getEnd();
           edits.push({ pos: insertAt, text: ` data-vf-element-id="${elementId}"` });
         } else if (ts.isJsxOpeningElement(node)) {
           const start = node.getStart(sourceFile);
-          const elementId = `${id}:${start}`;
+          const elementId = escapeAttrValue(`${relFile}:${start}`);
           const insertAt = node.tagName.getEnd();
           edits.push({ pos: insertAt, text: ` data-vf-element-id="${elementId}"` });
         }

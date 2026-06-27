@@ -9,6 +9,8 @@ export type EditorProviderProps = {
   registry: ComponentRegistry;
   document?: ViewDocument;
   onChange?: (document: ViewDocument) => void;
+  onSyncError?: (message: string) => void;
+  documentResetKey?: string | number;
   defaultStudioMode?: StudioMode;
   onStudioModeChange?: (mode: StudioMode) => void;
   children: ReactNode;
@@ -18,6 +20,8 @@ export function EditorProvider({
   registry,
   document,
   onChange,
+  onSyncError,
+  documentResetKey,
   defaultStudioMode,
   onStudioModeChange,
   children,
@@ -25,10 +29,14 @@ export function EditorProvider({
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  const onSyncErrorRef = useRef(onSyncError);
+  onSyncErrorRef.current = onSyncError;
+
   const onStudioModeChangeRef = useRef(onStudioModeChange);
   onStudioModeChangeRef.current = onStudioModeChange;
 
   const lastEmittedDocumentRef = useRef<string | null>(null);
+  const lastResetKeyRef = useRef(documentResetKey);
 
   const store = useMemo(
     () =>
@@ -42,6 +50,7 @@ export function EditorProvider({
         {
           defaultStudioMode,
           onStudioModeChange: (mode) => onStudioModeChangeRef.current?.(mode),
+          onSyncError: (message) => onSyncErrorRef.current?.(message),
         },
       ),
     [],
@@ -60,11 +69,31 @@ export function EditorProvider({
       JSON.stringify(document.meta ?? null) !== JSON.stringify(state.document.meta ?? null);
 
     if (rootMatchesEmitted && !metaOrVersionChanged) return;
-    if (!rootMatchesEmitted && isStaleInboundDocument(document, state.document, state.history)) {
+
+    const resetKeyChanged =
+      documentResetKey !== undefined && documentResetKey !== lastResetKeyRef.current;
+    const rootIdentityChanged = document.root.id !== state.document.root.id;
+    const isFullReplacement = resetKeyChanged || rootIdentityChanged;
+
+    if (resetKeyChanged) {
+      lastResetKeyRef.current = documentResetKey;
+    }
+
+    if (
+      !rootMatchesEmitted &&
+      !isFullReplacement &&
+      isStaleInboundDocument(document, state.document, state.history)
+    ) {
       return;
     }
+
+    if (isFullReplacement) {
+      store.getState().setDocument(document);
+      return;
+    }
+
     store.getState().syncDocument(document);
-  }, [document, store]);
+  }, [document, documentResetKey, store]);
 
   return <EditorStoreContext.Provider value={store}>{children}</EditorStoreContext.Provider>;
 }

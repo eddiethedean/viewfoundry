@@ -19,4 +19,13 @@ describe('file history', () => {
     history = redoFileHistory(history);
     expect(history.present['a.tsx']).toBe('v2');
   });
+
+  it('caps past depth at default limit', () => {
+    let history = createFileHistory({ 'a.tsx': 'v0' });
+    for (let i = 1; i <= 55; i++) {
+      history = pushFileHistory(history, { 'a.tsx': `v${i}` });
+    }
+    expect(history.past.length).toBeLessThanOrEqual(50);
+    expect(history.present['a.tsx']).toBe('v55');
+  });
 });

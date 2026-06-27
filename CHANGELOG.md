@@ -2,6 +2,16 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.7.1] — June 2026
+
+### Bug fixes — audit remediation
+
+- **`@viewfoundry/sync`** — AST-only patch layer replaces regex heuristics; validates TSX parse diagnostics; handles nested props, shorthand booleans, fragments, and conditional JSX; caps sequential patch application
+- **Code-first editor** — provider prop sync, callback ref, external sync history reset, selection reconciliation, ancestor move validation, keyboard/drag guards, wired Stage DnD, parent-first selection
+- **Embed editor** — document reset clears undo history (`documentResetKey`); sync error callback; occupied grid cell rejection; revert skips redundant onChange; live-mode error banner
+- **`@viewfoundry/vite`** — relative loc-injection paths, change watcher debounce, board catalog ids from relative paths
+- **`@viewfoundry/core`** — file history depth cap (default 50)
+
 ## [0.7.0] — June 2026
 
 ### Added

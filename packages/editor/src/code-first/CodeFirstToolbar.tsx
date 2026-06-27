@@ -67,9 +67,12 @@ export function CodeFirstToolbar() {
                 min={200}
                 max={1920}
                 value={viewport.width}
-                onChange={(e) =>
-                  store.getState().setViewport(Number(e.target.value), viewport.height)
-                }
+                onChange={(e) => {
+                  const w = Number(e.target.value);
+                  store
+                    .getState()
+                    .setViewport(Number.isNaN(w) ? viewport.width : w, viewport.height);
+                }}
               />
             </label>
             <label>
@@ -79,9 +82,12 @@ export function CodeFirstToolbar() {
                 min={200}
                 max={1200}
                 value={viewport.height}
-                onChange={(e) =>
-                  store.getState().setViewport(viewport.width, Number(e.target.value))
-                }
+                onChange={(e) => {
+                  const h = Number(e.target.value);
+                  store
+                    .getState()
+                    .setViewport(viewport.width, Number.isNaN(h) ? viewport.height : h);
+                }}
               />
             </label>
           </div>
@@ -102,6 +108,9 @@ export function CodeFirstToolbar() {
       {lastError && (
         <p className="vf-toolbar-error" role="alert">
           {lastError}
+          <button type="button" onClick={() => store.getState().clearError()}>
+            Dismiss
+          </button>
         </p>
       )}
     </div>
