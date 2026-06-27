@@ -25,8 +25,13 @@ export default function CodeFirstApp() {
   useEffect(() => {
     if (!import.meta.hot) return;
 
+    const reloadFixture = async () => {
+      const mod = await import('./fixture.tsx?raw');
+      setSourceFiles((prev) => ({ ...prev, [SOURCE_FILE]: mod.default }));
+    };
+
     import.meta.hot.on('viewfoundry:source-update', () => {
-      // Board catalog refresh — future: reload active board from virtual module
+      void reloadFixture();
     });
   }, []);
 

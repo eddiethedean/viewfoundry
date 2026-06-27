@@ -51,6 +51,7 @@ export default function App() {
   const [loadWarning, setLoadWarning] = useState<string | null>(
     initialLoad.ok ? null : initialLoad.message,
   );
+  const [documentResetKey, setDocumentResetKey] = useState(0);
   const [exportedCode, setExportedCode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -95,16 +96,27 @@ export default function App() {
 
   const dismissLoadWarning = () => setLoadWarning(null);
 
-  const resetDocument = () => {
+  const resetDocument = useCallback(() => {
     setDocument(seedRef.current);
+    setDocumentResetKey((k) => k + 1);
     setLoadWarning(null);
     localStorage.removeItem(STORAGE_KEY);
-  };
+  }, []);
+
+  useEffect(() => {
+    (window as Window & { __vfResetDocument?: () => void }).__vfResetDocument = resetDocument;
+    return () => {
+      delete (window as Window & { __vfResetDocument?: () => void }).__vfResetDocument;
+    };
+  }, [resetDocument]);
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>ViewFoundry {{ VERSION }} — Basic React</h1>
+        <button type="button" data-testid="reset-document" onClick={resetDocument}>
+          Reset document
+        </button>
       </header>
       {loadWarning && (
         <div className="load-warning" role="alert" data-testid="load-warning">
@@ -123,6 +135,7 @@ export default function App() {
         <ViewFoundryEditor
           registry={demoRegistry}
           document={document}
+          documentResetKey={documentResetKey}
           onChange={setDocument}
           onExport={handleExport}
           styleTokens={styleTokens}
