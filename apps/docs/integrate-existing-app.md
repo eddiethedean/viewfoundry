@@ -11,12 +11,12 @@ The reference implementation is [`examples/basic-react`](https://github.com/eddi
 ## Prerequisites
 
 - Node.js 20+, React 18 or 19, Vite 5 or 6
-- All `@viewfoundry/*` packages at the same version (currently `0.5.0`)
+- All `@viewfoundry/*` packages at the same version (currently `0.6.0`)
 
 ## 1. Install packages
 
 ```bash
-npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
+npm install @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
 ```
 
 Runtime-only preview apps may omit `@viewfoundry/editor`, `@viewfoundry/cli`, and `@viewfoundry/vite` — see [Production patterns](production-patterns.md).

@@ -10,7 +10,7 @@ See [Roadmap & direction](roadmap-and-direction.md).
 
 ## What is the difference between package version and document version?
 
-**Package semver** (e.g. `0.5.0` on npm) tracks the ViewFoundry libraries. **Document schema version** (`ViewDocument.version: '0.1'`) tracks the JSON shape of saved documents. They are independent — you can run `@viewfoundry/*@0.5.0` while documents still use `version: '0.1'`.
+**Package semver** (e.g. `0.6.0` on npm) tracks the ViewFoundry libraries. **Document schema version** (`ViewDocument.version: '0.1'`) tracks the JSON shape of saved documents. They are independent — you can run `@viewfoundry/*@0.6.0` while documents still use `version: '0.1'`.
 
 New optional fields (like `layout` in v0.3.0 and `style` in v0.4.0) are added without bumping the document schema version during `0.x`.
 
@@ -45,6 +45,10 @@ Style Editor sub-mode (Component | Style), `node.style` on documents, style comm
 ## What changed in 0.4.1?
 
 Bugfix and hardening release: grid move auto-grow, controlled embed sync history, schema/codegen/CLI fixes, and editor reliability improvements. Upgrade all `@viewfoundry/*` packages together. See the [changelog](changelog.md).
+
+## What changed in 0.6.0?
+
+Read the Docs documentation site with getting-started guides, package reference, FAQ, and migrations. An embedded browser **Studio** lets you try ViewFoundry without cloning the repo — Edit/Live toggle, TSX export, and JSON panel. No document schema or public API changes. See [Migration from 0.5 → 0.6](migration-0.5-0.6.md) and the [changelog](changelog.md).
 
 ## What changed in 0.5.0?
 

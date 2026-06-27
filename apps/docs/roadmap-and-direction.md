@@ -1,6 +1,6 @@
 # Roadmap & product direction
 
-ViewFoundry **v0.6.0** (npm `0.5.0`–`0.6.0`) ships an **embed-mode** visual editor: register React components, edit a JSON `ViewDocument`, render with `@viewfoundry/react`, export TSX.
+ViewFoundry **v0.6.0** (npm `0.6.0`) ships an **embed-mode** visual editor: register React components, edit a JSON `ViewDocument`, render with `@viewfoundry/react`, export TSX.
 
 From **v0.7.0**, the primary path becomes **code-first**: visual edits write to your **TSX and CSS files**; the JSON document remains supported as **embed mode** for CMS-style hosts and this docs Studio.
 

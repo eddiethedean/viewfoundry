@@ -24,7 +24,7 @@ export function getCliVersion(): string {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { version: string };
     return pkg.version;
   } catch {
-    return '0.5.0';
+    return '0.6.0';
   }
 }
 

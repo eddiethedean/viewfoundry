@@ -1,6 +1,6 @@
 # Landing page example
 
-Marketing single-page layout using **embed-mode** JSON editing — seeded from `viewfoundry/document.json`. **Code-first** page editing planned v0.10.
+Marketing single-page layout using **embed-mode** JSON editing: hero, feature cards, and CTA — seeded from `viewfoundry/document.json`. **Code-first** page editing is planned for v0.10 — see [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html).
 
 ## What it demonstrates
 

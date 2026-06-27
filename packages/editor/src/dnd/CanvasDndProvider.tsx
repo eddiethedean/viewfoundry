@@ -157,7 +157,6 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
       const cell = parseGridDropId(overId);
       if (!cell) return;
 
-      const layout = { column: cell.column, row: cell.row, colSpan: 1, rowSpan: 1 };
       const nodeId = parseNodeDragId(String(active.id));
       if (nodeId) {
         const document = store.getState().document;

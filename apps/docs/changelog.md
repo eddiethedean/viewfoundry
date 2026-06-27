@@ -2,6 +2,18 @@
 
 Package versions are lockstep-published under the same semver. The canonical changelog lives on GitHub: [CHANGELOG.md](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md).
 
+## [0.6.0] — June 2026
+
+Documentation site and embedded browser Studio. No document schema or public API changes. Upgrade all `@viewfoundry/*` packages together.
+
+### Added
+
+- Read the Docs site with getting started, guides, package reference, FAQ, and migrations
+- Embedded Studio on [Try the Studio](studio.md) — Edit/Live, TSX export, JSON panel, fullscreen
+- `pnpm docs:build` / `pnpm docs:preview`; RTD build via `.readthedocs.yaml`
+
+See [Migration from 0.5 → 0.6](migration-0.5-0.6.md). [Full changelog on GitHub →](https://github.com/eddiethedean/viewfoundry/blob/main/CHANGELOG.md)
+
 ## [0.5.0] — June 2026
 
 CLI scaffolding, Vite document HMR, new examples, and post-release hardening. Upgrade all `@viewfoundry/*` packages together.

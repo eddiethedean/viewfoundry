@@ -108,6 +108,7 @@ Browser tests for `examples/basic-react` live in `e2e/`.
 | `cli.spec.ts`              | CLI export with imports map; init scaffold smoke                                    |
 | `editor-workflows.spec.ts` | Layers selection, inspector edits, delete/duplicate, undo when history is available |
 | `grid-layout.spec.ts`      | Grid containers, palette insert into grid, layer labels                             |
+| `docs-studio.spec.ts`      | RTD embedded studio iframe, standalone bundle, Edit/Live, export, JSON, fullscreen  |
 
 Shared helpers: `e2e/helpers.ts`. Config: `playwright.config.ts` (10s action/expect timeouts).
 

@@ -6,7 +6,6 @@ import {
   inspector,
   layers,
   palette,
-  removeSelectedNode,
   resetDocument,
   selectLayer,
   setEditSubMode,

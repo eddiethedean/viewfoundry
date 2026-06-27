@@ -2,6 +2,26 @@
 
 All notable changes to ViewFoundry packages are documented here. Package versions are lockstep-published under the same semver.
 
+## [0.6.0] — June 2026
+
+### Added
+
+- **Read the Docs site** — getting started, integration guides, package reference, FAQ, migrations, and changelog at [viewfoundry.readthedocs.io](https://viewfoundry.readthedocs.io/en/latest/)
+- **Embedded browser Studio** — `apps/docs-studio` static bundle shipped in docs (`studio.md`) with Edit/Live toggle, TSX export drawer, JSON panel, and fullscreen embed
+- **`pnpm docs:build`** and **`pnpm docs:preview`** — builds packages, studio embed, and Sphinx HTML; RTD uses the same pipeline via `.readthedocs.yaml`
+- **Playwright e2e** for embedded and standalone docs studio (`e2e/docs-studio.spec.ts`)
+
+### Changed
+
+- Published docs replace README-only install pins for adopters; API spec synced from `specs/PACKAGE_API_SPEC.md` on each docs build
+- Example app headers and CLI init templates use `0.6.0` version tokens
+
+### Fixed
+
+- Docs build: corrected architecture cross-reference in grid layout guide
+- Editor DnD: removed unused variable in grid cell drop handler
+- E2e lint: unused imports in accessibility and theme specs
+
 ## [0.5.0] — June 2026
 
 ### Added
@@ -152,6 +172,7 @@ All notable changes to ViewFoundry packages are documented here. Package version
 - Visual editor MVP with palette, canvas, inspector, layers
 - TSX codegen and `examples/basic-react`
 
+[0.6.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/eddiethedean/viewfoundry/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/eddiethedean/viewfoundry/compare/v0.3.0...v0.4.0

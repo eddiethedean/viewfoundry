@@ -65,7 +65,7 @@ npx @viewfoundry/cli export ./page.json ./GeneratedView.tsx --strict
 | CI validation of saved JSON | `viewfoundry validate`                                           |
 | One-off TSX file from JSON  | `viewfoundry export` (add import paths manually or post-process) |
 
-Peer dependencies: `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0`.
+Peer dependencies: `@viewfoundry/core@^0.6.0`, `@viewfoundry/codegen@^0.6.0`.
 
 Full API reference: [Package API spec](../package-api-spec.md#viewfoundrycli).
 

@@ -120,5 +120,5 @@ The layers panel lists children in **grid reading order** (row-major by placemen
 ## See also
 
 - [Getting started](getting-started.md)
-- [Architecture — document model](architecture.md#document-model)
+- [Architecture — document model](architecture.md#embed-mode-document-model-shipped)
 - [Migration from 0.2 → 0.3](migration-0.2-0.3.md)

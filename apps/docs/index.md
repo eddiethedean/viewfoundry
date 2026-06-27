@@ -43,6 +43,7 @@ changelog
 migration-0.2-0.3
 migration-0.3-0.4
 migration-0.4-0.5
+migration-0.5-0.6
 ```
 
 ## I want to…
@@ -68,4 +69,4 @@ migration-0.4-0.5
 
 ## Status
 
-ViewFoundry **v0.6.0** is early-access software. **Today:** embed-mode JSON editing (see [Getting started](getting-started.md)). **From v0.7:** [code-first editing](roadmap-and-direction.md) (TSX/CSS as source of truth). Package semver (`0.5.0`) is separate from document schema (`ViewDocument.version: '0.1'`). Full milestone list: [Roadmap & direction](roadmap-and-direction.md) and [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
+ViewFoundry **v0.6.0** is early-access software. **Today:** embed-mode JSON editing (see [Getting started](getting-started.md)). **From v0.7:** [code-first editing](roadmap-and-direction.md) (TSX/CSS as source of truth). Package semver (`0.6.0`) is separate from document schema (`ViewDocument.version: '0.1'`). Full milestone list: [Roadmap & direction](roadmap-and-direction.md) and [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).

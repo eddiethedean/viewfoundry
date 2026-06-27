@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 import {
   THEME_STORAGE_KEY,
   bootstrapGridWithButton,
-  inspector,
   resetDocument,
   resetTheme,
   selectLayer,

@@ -68,7 +68,7 @@ export const GridDefinition = defineComponent(Grid, {
 
 The Style Editor uses `STYLE_FIELD_DEFS` from this package (spacing, colors, typography, etc.). Integrators rarely call these directly unless building custom style UIs.
 
-Peer dependency: `@viewfoundry/core@^0.5.0`.
+Peer dependency: `@viewfoundry/core@^0.6.0`.
 
 Full API reference: [Package API spec](../package-api-spec.md#viewfoundryschema).
 

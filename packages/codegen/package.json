@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/codegen",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "TSX code generation for ViewFoundry documents",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,7 +21,7 @@
     "dev": "tsup --watch"
   },
   "peerDependencies": {
-    "@viewfoundry/core": "^0.5.0"
+    "@viewfoundry/core": "^0.6.0"
   },
   "dependencies": {
     "@viewfoundry/core": "workspace:*"

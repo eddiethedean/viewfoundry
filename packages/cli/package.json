@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/cli",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "CLI for ViewFoundry — init, export, and validate",
   "type": "module",
   "bin": {
@@ -18,8 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@viewfoundry/core": "^0.5.0",
-    "@viewfoundry/codegen": "^0.5.0"
+    "@viewfoundry/core": "^0.6.0",
+    "@viewfoundry/codegen": "^0.6.0"
   },
   "dependencies": {
     "@viewfoundry/codegen": "workspace:*",

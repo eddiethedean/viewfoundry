@@ -86,7 +86,7 @@ Store state includes `lastError` — see [Errors and syncDocument](#errors-and-s
 
 Style mutations flow through `@viewfoundry/core` commands (`setStyleProp`, `updateNodeStyle`).
 
-Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.5.0` for ViewFoundry packages).
+Peer dependencies: `@viewfoundry/core`, `@viewfoundry/react`, `@viewfoundry/schema`, `react`, `react-dom` (all `^0.6.0` for ViewFoundry packages).
 
 Full API reference: [Package API spec](../package-api-spec.md#viewfoundryeditor).
 

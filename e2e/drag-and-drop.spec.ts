@@ -6,6 +6,7 @@ import {
   expectStoredDocument,
   insertFromPalette,
   resetDocument,
+  selectLayer,
 } from './helpers.js';
 
 test.describe('drag and drop', () => {
@@ -28,6 +29,7 @@ test.describe('drag and drop', () => {
   test('can still click-insert after multiple drags', async ({ page }) => {
     await dragFromPaletteToCanvas(page, page, 'Button');
     await dragFromPaletteToCanvas(page, page, 'Button');
+    await selectLayer(page, /^Grid\b/);
     await insertFromPalette(page, 'Heading');
     await expect(countLayers(page, /^Heading\b/)).toBeVisible();
   });

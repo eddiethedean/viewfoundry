@@ -5,7 +5,7 @@ Vite plugin for ViewFoundry — virtual document module, dev HMR, and optional c
 ## Install
 
 ```bash
-npm install @viewfoundry/vite@0.5.0
+npm install @viewfoundry/vite@0.6.0
 ```
 
 Peer dependencies: `vite@^5 || ^6`, `@viewfoundry/core`, `@viewfoundry/codegen` (when using codegen watch).

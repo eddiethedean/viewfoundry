@@ -18,7 +18,7 @@ Embed-mode APIs below remain stable through v1.0.
 
 ## Versioning policy (0.x)
 
-- **Package semver** (`0.5.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
+- **Package semver** (`0.6.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
 - **Document version** (`ViewDocument.version: '0.1'`) is separate from package semver. It identifies the JSON document schema.
 - During `0.x`, minor releases may add optional document fields and APIs. Patch releases are backward compatible within the minor.
 - `1.0.0` is reserved for stable **code-first** public API with embed mode frozen — see [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
@@ -26,7 +26,7 @@ Embed-mode APIs below remain stable through v1.0.
 Install all ViewFoundry packages at the **same version**:
 
 ```bash
-npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
+npm install @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
 ```
 
 ## `@viewfoundry/core`
@@ -220,7 +220,7 @@ export function getStyleFieldsByGroup(group: StyleFieldGroup): StyleFieldDef[];
 export function validateStyleProp(key: string, value: StyleValue | undefined): ValidationResult;
 ```
 
-**Peer dependency:** `@viewfoundry/core@^0.5.0`
+**Peer dependency:** `@viewfoundry/core@^0.6.0`
 
 ## `@viewfoundry/react`
 
@@ -240,7 +240,7 @@ export function useViewSelection(): SelectionState;
 
 Styles: `@viewfoundry/react/styles.css` (selection overlays, missing-component fallback).
 
-**Peer dependencies:** `@viewfoundry/core@^0.5.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.6.0`, `react`, `react-dom`
 
 ## `@viewfoundry/editor`
 
@@ -266,7 +266,7 @@ export function Toolbar(props: ToolbarProps): JSX.Element;
 
 Styles: `@viewfoundry/editor/styles.css` **and** `@viewfoundry/react/styles.css` when using the full editor.
 
-**Peer dependencies:** `@viewfoundry/core@^0.5.0`, `@viewfoundry/react@^0.5.0`, `@viewfoundry/schema@^0.5.0`, `react`, `react-dom`
+**Peer dependencies:** `@viewfoundry/core@^0.6.0`, `@viewfoundry/react@^0.6.0`, `@viewfoundry/schema@^0.6.0`, `react`, `react-dom`
 
 ## `@viewfoundry/codegen`
 
@@ -278,7 +278,7 @@ export function generateJson(document: ViewDocument): string;
 
 Sanitizes `componentName`, import paths, export names, and prop keys. Emits warnings for rejected values.
 
-**Peer dependency:** `@viewfoundry/core@^0.5.0`
+**Peer dependency:** `@viewfoundry/core@^0.6.0`
 
 ## `@viewfoundry/cli`
 
@@ -319,4 +319,4 @@ export const VIRTUAL_DOCUMENT_ID = 'virtual:viewfoundry/document';
 export function viewfoundry(options?: ViewFoundryViteOptions): Plugin;
 ```
 
-**Peer dependencies:** `vite@^5 || ^6`, `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0` (codegen when using watch)
+**Peer dependencies:** `vite@^5 || ^6`, `@viewfoundry/core@^0.6.0`, `@viewfoundry/codegen@^0.6.0` (codegen when using watch)

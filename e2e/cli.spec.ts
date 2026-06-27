@@ -4,6 +4,7 @@ import { chdir, cwd } from 'node:process';
 import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 import { runCli } from '../packages/cli/src/cli.js';
+import { getCliVersion } from '../packages/cli/src/init.js';
 
 const tempDirs: string[] = [];
 
@@ -69,7 +70,7 @@ test.describe('CLI', () => {
       const result = runCli(['init', 'my-app', '--template', 'default']);
       expect(result.exitCode).toBe(0);
       const app = readFileSync(join(dir, 'my-app/src/App.tsx'), 'utf-8');
-      expect(app).toMatch(/ViewFoundry 0\.5\.0/);
+      expect(app).toMatch(new RegExp(`ViewFoundry ${getCliVersion().replace(/\./g, '\\.')}`));
       expect(app).not.toContain('{{');
     });
   });

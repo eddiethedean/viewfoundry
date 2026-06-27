@@ -87,6 +87,13 @@ Embed-mode grid DnD (v0.3) should meet this bar where applicable; code-first JSX
 | Examples demonstrate author-realistic pages (dashboard, landing) | `viewfoundry init` produces runnable project in &lt;5 commands             |
 | —                                                                | `vite` dev server hot-reloads document JSON; clear error when JSON invalid |
 
+### v0.6 — Documentation site **(shipped)**
+
+| Studio user                                                                                              | React developer                                                            |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Try ViewFoundry without clone via [RTD Studio](https://viewfoundry.readthedocs.io/en/latest/studio.html) | `pnpm docs:build` compiles prose + embedded studio; RTD badge in README    |
+| Edit/Live, export TSX, and Show JSON in the browser embed                                                | Package API spec published on RTD; e2e covers embedded + standalone studio |
+
 ### v0.7 — Code-first foundation & boards
 
 | Studio user                                                  | React developer                                            |

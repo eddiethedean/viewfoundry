@@ -104,7 +104,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.5.0 — Dashboard Builder</h1>
+        <h1>ViewFoundry 0.6.0 — Dashboard Builder</h1>
       </header>
       {loadWarning && (
         <div className="load-warning" role="alert" data-testid="load-warning">

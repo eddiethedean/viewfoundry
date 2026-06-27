@@ -18,7 +18,7 @@ cli
 vite
 ```
 
-Install all packages you use at the **same version** (currently `0.5.0`).
+Install all packages you use at the **same version** (currently `0.6.0`).
 
 ## Shipped
 

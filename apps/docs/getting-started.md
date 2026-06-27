@@ -25,23 +25,23 @@ Edit `viewfoundry/document.json` while the dev server runs — `@viewfoundry/vit
 - **React 18 or 19** with a bundler (Vite recommended)
 - **TypeScript** (examples use TS; JS works with typed imports from packages)
 
-Install all `@viewfoundry/*` packages at the **same version** (currently `0.5.0`).
+Install all `@viewfoundry/*` packages at the **same version** (currently `0.6.0`).
 
 ## Install
 
 ```bash
-npm install @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
+npm install @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @viewfoundry/core@0.5.0 @viewfoundry/schema@0.5.0 @viewfoundry/react@0.5.0 @viewfoundry/editor@0.5.0 @viewfoundry/codegen@0.5.0 @viewfoundry/cli@0.5.0 @viewfoundry/vite@0.5.0
+pnpm add @viewfoundry/core@0.6.0 @viewfoundry/schema@0.6.0 @viewfoundry/react@0.6.0 @viewfoundry/editor@0.6.0 @viewfoundry/codegen@0.6.0 @viewfoundry/cli@0.6.0 @viewfoundry/vite@0.6.0
 ```
 
 Runtime-only apps (preview without the editor) may omit `@viewfoundry/editor`, `@viewfoundry/cli`, and `@viewfoundry/vite`. See [Production patterns](production-patterns.md).
 
-Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
+Package semver (`0.6.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [FAQ](faq.md).
 
 ## Minimal example
 

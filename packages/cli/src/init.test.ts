@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { afterEach, describe, expect, it } from 'vitest';
-import { runInit, parseInitArgs, TEMPLATE_IDS } from './init.js';
+import { runInit, parseInitArgs, TEMPLATE_IDS, getCliVersion } from './init.js';
 
 describe('parseInitArgs', () => {
   it('defaults to viewfoundry-app and default template', () => {
@@ -62,7 +62,7 @@ describe('runInit', () => {
       expect(pkg.name).toBe('app');
       expect(pkg.dependencies['@viewfoundry/core']).toMatch(/^\^/);
       const appSource = readFileSync(join(targetDir, 'src/App.tsx'), 'utf-8');
-      expect(appSource).toMatch(/ViewFoundry 0\.5\.0/);
+      expect(appSource).toMatch(new RegExp(`ViewFoundry ${getCliVersion().replace(/\./g, '\\.')}`));
       expect(appSource).not.toContain('{{');
     });
   }

@@ -91,7 +91,7 @@ useEffect(() => {
 
 The plugin resolves `virtual:viewfoundry/document` during `vite build` as well as dev, embedding the current JSON from disk.
 
-Peer dependencies: `vite@^5.0.0 || ^6.0.0`, `@viewfoundry/core@^0.5.0`, `@viewfoundry/codegen@^0.5.0` (codegen optional unless using `codegen` watch).
+Peer dependencies: `vite@^5.0.0 || ^6.0.0`, `@viewfoundry/core@^0.6.0`, `@viewfoundry/codegen@^0.6.0` (codegen optional unless using `codegen` watch).
 
 Full API reference: [Package API spec](../package-api-spec.md#viewfoundryvite).
 
