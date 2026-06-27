@@ -2,6 +2,7 @@ import type { PropField } from '@viewfoundry/core';
 import { findNode, getPrimarySelection } from '@viewfoundry/core';
 import { getSelectValues } from '@viewfoundry/schema';
 import { useEditorState, useEditorStore } from './EditorContext.js';
+import { SelectedNodeActions } from './SelectedNodeActions.js';
 
 function FieldControl({
   name,
@@ -144,6 +145,7 @@ export function Inspector(_props: InspectorProps) {
   return (
     <div className="vf-inspector">
       <div className="vf-panel-header">Inspector</div>
+      <SelectedNodeActions />
       <div className="vf-inspector-meta">
         <div>
           <strong>Type:</strong> {node.type}

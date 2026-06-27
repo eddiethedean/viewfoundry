@@ -1,5 +1,7 @@
 # Cursor Prompt: Build @viewfoundry/core
 
+> **Note:** Shipped embed-mode foundation. New work from v0.7 is code-first — see [docs/CODE_FIRST.md](../docs/CODE_FIRST.md), [docs/DND_AND_LAYOUT_RESEARCH.md](../docs/DND_AND_LAYOUT_RESEARCH.md).
+
 Implement `@viewfoundry/core` according to:
 
 - `docs/DOCUMENT_MODEL.md`

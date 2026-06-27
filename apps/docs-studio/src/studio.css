@@ -13,12 +13,14 @@ body,
 
 body {
   font-family:
+    'Inter',
     system-ui,
     -apple-system,
     Segoe UI,
     Roboto,
     sans-serif;
-  background: #f4f5f7;
+  background: #0d1117;
+  color: #e6edf3;
 }
 
 .docs-studio {
@@ -26,6 +28,8 @@ body {
   flex-direction: column;
   height: 100%;
   min-height: 640px;
+  padding: 12px;
+  gap: 0;
 }
 
 .docs-studio-editor {
@@ -36,39 +40,60 @@ body {
 .docs-studio-drawer-actions {
   display: flex;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-top: 1px solid #d8dee8;
-  background: #fff;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #30363d;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  background: #161b22;
 }
 
 .docs-studio-drawer-actions button,
 .docs-studio-panel-header button {
   font: inherit;
+  font-weight: 500;
   cursor: pointer;
-  border: 1px solid #c5cdd8;
-  border-radius: 6px;
-  background: #fff;
-  padding: 0.35rem 0.75rem;
+  border: 1px solid #30363d;
+  border-radius: 7px;
+  background: #1c2128;
+  color: #e6edf3;
+  padding: 0.4rem 0.8rem;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.docs-studio-drawer-actions button:hover,
+.docs-studio-panel-header button:hover {
+  background: #21262d;
+  border-color: #8b949e;
 }
 
 .docs-studio-panel {
   max-height: 220px;
   overflow: auto;
-  border-top: 1px solid #d8dee8;
-  background: #fff;
+  border: 1px solid #30363d;
+  border-top: none;
+  background: #161b22;
 }
 
 .docs-studio-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #e8ecf2;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid #21262d;
+  color: #e6edf3;
 }
 
 .docs-studio-panel pre {
   margin: 0;
-  padding: 0.75rem;
+  padding: 0.85rem;
   font-size: 12px;
   line-height: 1.45;
+  color: #c9d1d9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.vf-editor.docs-studio-editor {
+  border-radius: 10px 10px 0 0;
 }

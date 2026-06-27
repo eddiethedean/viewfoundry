@@ -80,13 +80,23 @@ File: `packages/codegen/src/codegen.test.ts`
 
 File: `packages/cli/src/cli.test.ts`
 
-## Future coverage (deferred)
+## Future coverage (v0.7+)
+
+- `@viewfoundry/sync` — AST patch, selection map, file-level undo
+- `@viewfoundry/board` — render fixtures, board file conventions
+- Code-first Stage DnD e2e (ghost, drop zones, snap, invalid target messages) per [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md)
+- Add Elements drag insert, Alt+swap (v0.9)
+- Breakpoint override UI (v0.13)
+
+## Deferred
 
 - Visual regression / layout tests
 
+## Embed mode (shipped)
+
 Vite plugin, init scaffold, and CLI e2e coverage shipped in v0.5.0 hardening (`packages/vite/src/plugin.test.ts`, `packages/cli/src/init.test.ts`, `e2e/cli.spec.ts`).
 
-Grid layout and canvas drag-and-drop are covered by unit tests in `@viewfoundry/core` / `@viewfoundry/editor` and e2e specs (`grid-layout.spec.ts`).
+Grid layout and canvas drag-and-drop are covered by unit tests in `@viewfoundry/core` / `@viewfoundry/editor` and e2e specs (`grid-layout.spec.ts`). Code-first Stage DnD must meet the [global DnD bar](UX_AND_DX.md#global-dnd-quality-bar-v07) when implemented.
 
 ## E2E tests (Playwright)
 
@@ -119,6 +129,7 @@ Author-facing flows should be exercisable without reading JSON:
 - Palette search and insert update layers and canvas
 - Inspector labels match schema metadata (not raw prop keys)
 - Edit / Live toggle preserves document; Live hides chrome
+- Stage drag-and-drop (when shipped): ghost, valid targets, invalid messages, undo — [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md)
 - Errors from validation or commands surface readable messages
 
 Before shipping a milestone, use the checklist in [UX_AND_DX.md](UX_AND_DX.md) and manually smoke-test in `examples/basic-react` or the docs Studio embed.

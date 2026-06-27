@@ -2,14 +2,14 @@
 
 ## Architecture principles
 
-1. **Registered components first**: ViewFoundry edits components that developers explicitly register.
-2. **Schema-driven editing**: all prop controls are generated from metadata.
-3. **Runtime and editor separated**: rendering a document should not require the full editor UI.
-4. **Pure document model**: documents must be serializable JSON.
-5. **Command-based mutation**: editing operations should flow through commands to support history, validation, and plugins.
-6. **Framework adapter boundary**: core should not depend on React.
-7. **Embeddable by default**: apps should be able to use the editor as a component.
-8. **Dual-audience UX**: every feature must be approachable in the studio and ergonomic for React integrators — see [UX_AND_DX.md](UX_AND_DX.md).
+1. **Registered components first**: ViewFoundry edits components that developers explicitly register or that are discovered from the host project.
+2. **Schema-driven editing**: prop controls are generated from metadata and/or TypeScript inference.
+3. **Runtime and editor separated**: rendering should not require the full editor UI.
+4. **Code-first source of truth** (v0.7+): visual edits write to TSX and CSS files; Git-friendly diffs. **Embed mode** (v0.1–v0.6): serializable `ViewDocument` JSON for CMS-style hosts — see [CODE_FIRST.md](CODE_FIRST.md).
+5. **Command-based mutation**: editing operations flow through commands (file patches or document updates) to support history, validation, and plugins.
+6. **Framework adapter boundary**: sync/core parsing should not hard-code React in ways that block adapters.
+7. **Embeddable by default**: apps embed the editor as a React component — unlike desktop-only visual IDEs.
+8. **Dual-audience UX**: every feature must be approachable in the studio and ergonomic for React integrators — see [UX_AND_DX.md](UX_AND_DX.md). Editor UX follows Codux panel patterns and Figma/Wix Stage DnD conventions — see [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
 
 ## Monorepo layout
 
@@ -27,6 +27,9 @@ viewfoundry/
     codegen/
     vite/
     cli/
+    board/          # planned v0.7 — createBoard, fixtures
+    sync/           # planned v0.7 — AST patch, selection map
+    discover/       # planned v0.9 — component scan
 
   examples/
     basic-react/
@@ -78,19 +81,49 @@ Framework-agnostic engine.
 
 Owns:
 
-- `ViewDocument`
-- `ViewNode`
+- `ViewDocument` / `ViewNode` (**embed mode**, frozen)
 - component registry types
-- commands
+- commands (document and, from v0.7, file-edit command types)
 - history
 - selection model
 - validation
 - clipboard model
 - plugin API
-- interaction model types and validation (planned **v0.8.0**)
-- site/route types and path matching (planned **v0.9.0**)
 
 Must not import React.
+
+### `@viewfoundry/sync` (planned **v0.7.0**)
+
+Source editing layer.
+
+Owns:
+
+- TSX/JSX/CSS parse and patch
+- DOM selection ↔ source location mapping
+- file-level undo snapshots
+- safe import insertion on structural edits
+
+See [CODE_FIRST.md](CODE_FIRST.md).
+
+### `@viewfoundry/board` (planned **v0.7.0**)
+
+Component isolation fixtures.
+
+Owns:
+
+- `createBoard()` API
+- `.board.tsx` conventions
+- board render helpers for tests
+
+### `@viewfoundry/discover` (planned **v0.9.0**)
+
+Project integration.
+
+Owns:
+
+- component scan (globs, exports)
+- registry stub generation
+- import map bootstrap
 
 ### `@viewfoundry/schema`
 
@@ -103,7 +136,7 @@ Owns:
 - slot definitions
 - prop validation helpers
 - default value generation
-- component `events` / `actions` metadata for interactions (planned **v0.8.0**)
+- component `events` metadata for interactions (planned **v0.11.0** code-first)
 - `routeRef` field builder for link components (planned **v0.9.0**)
 
 ### `@viewfoundry/react`
@@ -118,7 +151,7 @@ Owns:
 - editable wrappers
 - hooks
 - runtime context
-- interaction interpreter for Live mode (planned **v0.8.0**)
+- interaction handlers in source / optional embed interpreter (planned **v0.11.0**)
 - site router, `ViewRouter`, navigation hooks (planned **v0.9.0**)
 
 Should be usable without `@viewfoundry/editor`.
@@ -129,30 +162,35 @@ Visual editing UI.
 
 Owns:
 
-- canvas
-- palette
-- layers panel
-- inspector (prop inspector in Component Editor mode; style inspector in Style Editor mode)
-- toolbar with **Edit | Live** toggle (single viewport) and **Component | Style** edit sub-modes
-- **grid layout system** with canvas drag/drop for repositioning (**v0.3.0**)
-- drag/drop (palette insert + layout moves)
+- **Stage** (canvas) with viewport controls
+- **Add Elements panel** (planned **v0.9.0**) — categorized insert
+- **Elements panel** — DOM/component tree (evolves from Layers)
+- **Properties panel** — schema + TS-inferred prop controls
+- **Styles panel** (planned **v0.8.0**) — visual CSS on real stylesheets
+- **Theme Manager** (planned **v0.8.0**) — global CSS variables
+- toolbar with **Edit | Live** toggle and **Component | Style | Interactions** sub-modes
+- board / app page tabs (planned **v0.7.0** / **v0.10.0**)
+- grid layout drag/drop (embed mode; code-first uses JSX + CSS layout)
 - keyboard shortcuts
 - editor shell
 
-Depends on `@viewfoundry/core`, `@viewfoundry/schema`, and `@viewfoundry/react`.
+Depends on `@viewfoundry/core`, `@viewfoundry/schema`, `@viewfoundry/react`, and from v0.7 `@viewfoundry/sync`, `@viewfoundry/board`.
 
 **Editor modes:**
 
 | Mode | Purpose |
 |------|---------|
-| **Edit** | Studio chrome on; Component or Style sub-mode for mutations |
-| **Live** | Same canvas viewport; chrome off; interactive runtime render |
-| Component (edit sub-mode) | Structure, nesting, schema-driven props, grid layout drag/drop |
-| Style (edit sub-mode) | Visual styling via `node.style` tokens (**v0.4.0**) |
+| **Edit** | Studio chrome on; Component, Style, or Interactions sub-mode |
+| **Live** | Same Stage viewport; chrome off; interactive runtime |
+| Component (edit sub-mode) | Structure, nesting, props, Add Elements insert |
+| Style (edit sub-mode) | CSS classes, variables, computed styles (**v0.8.0** code-first) |
+| Interactions (edit sub-mode) | Handler wiring in TSX (**v0.11.0**) |
+
+**Embed mode (v0.1–v0.6):** JSON `ViewDocument`, Style sub-mode on `node.style`, grid on `layout.grid` — unchanged until v1.0 embed API freeze.
 
 ### `@viewfoundry/codegen`
 
-Export layer.
+Export layer for **embed mode**.
 
 Owns:
 
@@ -162,6 +200,8 @@ Owns:
 - import formatting
 - component import maps
 
+Not required when authoring code-first (source is already TSX).
+
 ### `@viewfoundry/vite`
 
 Vite integration.
@@ -169,9 +209,9 @@ Vite integration.
 Owns:
 
 - development plugin
-- SPA dev-server fallback for client routes (planned **v0.9.0**)
-- config loading
-- HMR helpers
+- embed: `virtual:viewfoundry/document` HMR
+- code-first: sync HMR, project root, board entry detection (**v0.7.0**)
+- SPA dev-server fallback for client routes (**v0.10.0**)
 
 ### `@viewfoundry/cli`
 
@@ -180,12 +220,27 @@ Scaffolding and developer commands.
 Owns:
 
 - `viewfoundry init`
-- `viewfoundry dev`
-- `viewfoundry validate` — document or site JSON
-- `viewfoundry export` — single page or multi-route site (v0.9.0)
-- `viewfoundry import` — load components from an existing React project (planned **v1.6.0**)
+- `viewfoundry validate` — embed document JSON
+- `viewfoundry export` — embed TSX codegen
+- `viewfoundry import` — open existing React project (**v0.9.0**)
 
 ## Data flow
+
+### Code-first (v0.7+, primary)
+
+```txt
+Host React project (TSX, CSS)
+        ↓
+@viewfoundry/discover (optional)
+        ↓
+Component Registry + boards
+        ↓
+@viewfoundry/sync ←→ @viewfoundry/editor (Stage, panels)
+        ↓
+Git / host file storage
+```
+
+### Embed mode (v0.1–v0.6, CMS / browser Studio)
 
 ```txt
 Registered Components
@@ -194,19 +249,37 @@ Component Registry
         ↓
 ViewDocument JSON
         ↓
-Renderer / Editor / Codegen
-````
+ViewRenderer / Editor / generateTsx
+```
 
 ## Editor mutation flow
+
+### Code-first
+
+```txt
+User action (Stage / panel)
+  ↓
+File-edit command
+  ↓
+Validation (AST + registry)
+  ↓
+Patch TSX / CSS files
+  ↓
+File-level history entry
+  ↓
+Vite HMR → Stage re-render
+```
+
+### Embed mode
 
 ```txt
 User action
   ↓
-Command
+Document command
   ↓
 Validation
   ↓
-Document update
+ViewDocument update
   ↓
 History entry
   ↓
@@ -225,3 +298,4 @@ Subscribers re-render
 - dnd-kit for drag/drop
 - Zustand or internal store for editor state
 - Prettier for codegen formatting
+````

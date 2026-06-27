@@ -1,6 +1,8 @@
 # Example applications
 
-ViewFoundry ships three reference applications in the monorepo. Each maps to a **`viewfoundry init`** template so you can scaffold the same layout without cloning the repo.
+ViewFoundry ships three **embed-mode** reference applications (JSON document editing). **Code-first** examples are planned from v0.7 — see [Roadmap & direction](roadmap-and-direction.md).
+
+Each maps to a **`viewfoundry init`** template:
 
 | Example / template                                                                                               | Init flag                      | What it demonstrates                                                                   |
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------- |

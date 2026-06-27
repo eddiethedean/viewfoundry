@@ -43,11 +43,13 @@ packages/          @viewfoundry/* libraries
 examples/          Demo apps (basic-react, landing-page, dashboard-builder)
 apps/docs/         Published Sphinx/MyST docs (Read the Docs)
 apps/docs-studio/  Vite bundle embedded in docs
-docs/              Planning specs (roadmap, editor spec — may lag code)
+docs/              Planning specs (roadmap, code-first, DnD research — may lag code)
 specs/             Public API contract (PACKAGE_API_SPEC.md)
 ```
 
-**User-facing docs** live in `apps/docs/` and publish to [Read the Docs](https://viewfoundry.readthedocs.io/). **API changes** should update `specs/PACKAGE_API_SPEC.md` and relevant `apps/docs/` pages.
+**User-facing docs** live in `apps/docs/` and publish to [Read the Docs](https://viewfoundry.readthedocs.io/). **Product direction:** [docs/CODE_FIRST.md](docs/CODE_FIRST.md), [docs/DND_AND_LAYOUT_RESEARCH.md](docs/DND_AND_LAYOUT_RESEARCH.md), [docs/ROADMAP.md](docs/ROADMAP.md), mirrored on RTD as [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html).
+
+**API changes** should update `specs/PACKAGE_API_SPEC.md` and relevant `apps/docs/` pages.
 
 ## Making changes
 
@@ -59,10 +61,10 @@ specs/             Public API contract (PACKAGE_API_SPEC.md)
 
 ### UX & DX review (user-facing changes)
 
-ViewFoundry serves **studio users** (non-technical authors) and **React developers** (integrators). For any change that touches the editor, embed API, or author workflows, check [docs/UX_AND_DX.md](docs/UX_AND_DX.md):
+ViewFoundry serves **studio users** (non-technical authors) and **React developers** (integrators). For any change that touches the editor, embed API, or author workflows, check [docs/UX_AND_DX.md](docs/UX_AND_DX.md) and [docs/DND_AND_LAYOUT_RESEARCH.md](docs/DND_AND_LAYOUT_RESEARCH.md) for Stage DnD requirements:
 
-- **Studio:** plain-language labels, safe defaults, undo where possible, empty/error states without jargon
-- **Developer:** typed public APIs, documented embed patterns, codegen snippets that compile, FAQ/troubleshooting if support burden is likely
+- **Studio:** plain-language labels, safe defaults, undo where possible, empty/error states without jargon; Stage DnD meets the [global DnD bar](docs/UX_AND_DX.md#global-dnd-quality-bar-v07) when drag behavior changes
+- **Developer:** typed public APIs, documented embed and (when shipped) code-first patterns, codegen snippets that compile
 - **Tests:** unit tests for core behavior; Playwright e2e when a primary author flow changes (see [docs/TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md))
 
 The PR checklist at the bottom of `UX_AND_DX.md` is the release bar for milestones.

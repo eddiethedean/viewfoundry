@@ -1,10 +1,12 @@
 # Repeat & lists
 
+> **Embed-mode backlog.** Code-first uses `.map()` and list components in TSX. See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Purpose
 
-Render a **template subtree** once per item in a list — nav menus, card grids, table rows, LessonKit block sequences.
+Render a **template subtree** once per item in a list — nav menus, card grids, table rows.
 
-**Planned: v0.12.0** (pre-1.0)
+**Planned: embed backlog** (was v0.12.0 JSON `repeat`)
 
 ## Model
 

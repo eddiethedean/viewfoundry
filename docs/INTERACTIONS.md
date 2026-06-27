@@ -1,5 +1,7 @@
 # Interactions & Triggers
 
+> **Direction (v0.7+):** Code-first interactions (**v0.11**) write TSX handlers in source. JSON `interactions[]` on `ViewDocument` is **embed-mode backlog** only. See [CODE_FIRST.md](CODE_FIRST.md), [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
 ViewFoundry documents today describe **structure** (tree), **props** (component data), **layout** (grid), and (planned) **style**. They do not yet describe **behavior** — what happens when a user clicks a button, submits a form, or when one component should update another.
@@ -19,7 +21,7 @@ This spec plans a JSON-serializable **interaction model**: triggers, actions, an
 - Arbitrary JavaScript expressions in the document.
 - Full state-machine or visual scripting language.
 - Server-side or async workflow orchestration.
-- Full **multi-route URL routing** — v0.8 ships `navigate` against a host callback; declarative site routing is **v0.9.0** (see [ROUTING.md](ROUTING.md)).
+- Full **multi-route URL routing** — code-first pages in **v0.10**; embed JSON routing is backlog. See [ROUTING.md](ROUTING.md).
 
 ## Concepts
 
@@ -187,43 +189,40 @@ Unsupported interactions produce codegen **warnings**, not silent omission.
 
 ## Relationship to other planned features
 
-| Feature       | Release | Relationship                                                         |
-| ------------- | ------- | -------------------------------------------------------------------- |
-| Style Editor  | v0.4.0  | Independent sub-mode; same toolbar pattern                           |
-| `node.style`  | v0.4.0  | Actions may set style tokens later (`setStyle`)                      |
-| Data bindings | v0.11.0 | Variables, bindings, conditions — [DATA_BINDING.md](DATA_BINDING.md) |
-| LessonKit     | v0.7.0  | Lesson blocks may map to custom events/actions via adapter           |
-| Routing       | v0.9.0  | `navigate` action; `ViewSite` multi-page — [ROUTING.md](ROUTING.md)  |
-| Slots         | v0.10.0 | Named composition — [SLOTS.md](SLOTS.md)                             |
-| Repeat        | v0.12.0 | List templates — [REPEAT.md](REPEAT.md)                              |
+| Feature       | Release       | Relationship                                                         |
+| ------------- | ------------- | -------------------------------------------------------------------- |
+| Style Editor  | v0.4.0        | Independent sub-mode; same toolbar pattern                           |
+| `node.style`  | v0.4.0        | Actions may set style tokens later (`setStyle`)                      |
+| Data bindings | v0.11.0       | Variables, bindings, conditions — [DATA_BINDING.md](DATA_BINDING.md) |
+| Routing       | v0.9.0        | `navigate` action; `ViewSite` multi-page — [ROUTING.md](ROUTING.md)  |
+| Slots         | embed backlog | JSX children in code-first — [SLOTS.md](SLOTS.md)                    |
+| Repeat        | embed backlog | `.map()` in code-first — [REPEAT.md](REPEAT.md)                      |
 
-## Phased delivery (v0.8.0)
+## Phased delivery (v0.11.0, code-first)
 
-### Phase A — Model & runtime
+### Phase A — TSX handlers
 
-- Types in `@viewfoundry/core`; validation; `addInteraction` / `updateInteraction` / `removeInteraction`
-- Built-in events/actions; registry metadata helpers in `@viewfoundry/schema`
-- Live-mode interpreter in `@viewfoundry/react`
+- Registry `events` metadata; sentence UI writes handler props / callbacks in source
+- Live-mode execution; Edit mode does not fire accidentally
 
 ### Phase B — Editor
 
 - Interactions sub-mode and list/detail UI
-- Wire from palette selection + inspector shortcuts
-- Undo/redo for all interaction commands
+- Pick source/target from Elements tree (labels, not ids)
+- File-level undo via `@viewfoundry/sync`
 
-### Phase C — Codegen & docs
+### Phase C — Docs & example
 
-- `generateTsx` interaction emission (runtime helper path first)
-- RTD guide + example in `examples/basic-react` (button → update heading)
+- RTD guide + `examples/basic-react` code-first path (button → update heading)
 
 ## Open questions
 
-- Whether `navigate` uses `routeId`, `path`, or both — support both; site router resolves in v0.9.0.
-- Global document state (variables) for multi-step flows — defer past MVP.
+- Whether `navigate` uses route id, path, or both — code-first pages in v0.10.
+- Global document state (variables) — embed backlog; use React state in code-first.
 
 ## See also
 
-- [ROADMAP.md](ROADMAP.md) — v0.8.0 milestone
+- [ROADMAP.md](ROADMAP.md) — v0.11.0 milestone
 - [DOCUMENT_MODEL.md](DOCUMENT_MODEL.md) — `bindings`, `conditions`
 - [EDITOR_SPEC.md](EDITOR_SPEC.md) — edit sub-modes
 - [PROP_SCHEMA.md](PROP_SCHEMA.md) — `action` field type for props vs interaction actions

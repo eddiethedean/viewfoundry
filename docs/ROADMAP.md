@@ -4,40 +4,43 @@ Releases are versioned **v0.X** milestones. Each version ships a coherent slice 
 
 ## Release overview
 
-| Version                                  | Status       | Theme                                          |
-| ---------------------------------------- | ------------ | ---------------------------------------------- |
-| [v0.1.0](#v010---sdk-foundation)         | **Released** | Core SDK, basic editor, codegen, example app   |
-| [v0.2.0](#v020---edit--live-studio)      | **Released** | Single-window Edit / Live toggle               |
-| [v0.3.0](#v030---grid-layout--dragdrop)  | **Released** | Grid system and satisfying layout drag/drop    |
-| [v0.4.0](#v040---style-editor)           | **Released** | Style Editor sub-mode and `node.style`         |
-| [v0.5.0](#v050---cli--examples)          | **Released** | `init`, Vite plugin, additional examples       |
-| [v0.6.0](#v060---documentation-site)     | **Released** | Read the Docs site with embedded studio        |
-| [v0.7.0](#v070---lessonkit-integration)  | Planned      | LessonKit adapter and flagship integration     |
-| [v0.8.0](#v080---interactions--triggers) | Planned      | Component interactions, triggers, and actions  |
-| [v0.9.0](#v090---routing--multi-page)    | Planned      | Multi-route sites, Pages panel, URL navigation |
-
-### Pre-1.0 (v0.10 – v0.15)
-
-| Version                                            | Status  | Theme                                           |
-| -------------------------------------------------- | ------- | ----------------------------------------------- |
-| [v0.10.0](#v0100---slots--composition)             | Planned | Named slots & compound components               |
-| [v0.11.0](#v0110---bindings-variables--conditions) | Planned | Data bindings, variables, visibility conditions |
-| [v0.12.0](#v0120---repeat--lists)                  | Planned | List/repeat templates                           |
-| [v0.13.0](#v0130---clipboard--saved-blocks)        | Planned | Copy/paste subtrees & saved block library       |
-| [v0.14.0](#v0140---forms)                          | Planned | Form patterns, validation, submit flows         |
-| [v0.15.0](#v0150---responsive--design-tokens)      | Planned | Breakpoint overrides & theme tokens             |
-| [v1.0.0](#v100---stable-api)                       | Planned | Stable public API & document contract           |
+| Version                                         | Status       | Theme                                            |
+| ----------------------------------------------- | ------------ | ------------------------------------------------ |
+| [v0.1.0](#v010---sdk-foundation)                | **Released** | Core SDK, basic editor, codegen, example app     |
+| [v0.2.0](#v020---edit--live-studio)             | **Released** | Single-window Edit / Live toggle                 |
+| [v0.3.0](#v030---grid-layout--dragdrop)         | **Released** | Grid system and satisfying layout drag/drop      |
+| [v0.4.0](#v040---style-editor)                  | **Released** | Style Editor sub-mode and `node.style`           |
+| [v0.5.0](#v050---cli--examples)                 | **Released** | `init`, Vite plugin, additional examples         |
+| [v0.6.0](#v060---documentation-site)            | **Released** | Read the Docs site with embedded studio          |
+| [v0.7.0](#v070---code-first-foundation--boards) | Planned      | Direct TSX/CSS editing, boards, sync layer       |
+| [v0.8.0](#v080---styles-panel--theme-manager)   | Planned      | Visual CSS editing, variables, computed styles   |
+| [v0.9.0](#v090---add-elements--discovery)       | Planned      | Add Elements panel, open existing React projects |
+| [v0.10.0](#v0100---app-pages--routing)          | Planned      | Full-page editing, Pages panel, client routing   |
+| [v0.11.0](#v0110---interactions--triggers)      | Planned      | Event handlers and declarative wiring in source  |
+| [v0.12.0](#v0120---clipboard--saved-blocks)     | Planned      | Copy/paste subtrees & saved block library        |
+| [v0.13.0](#v0130---responsive--design-tokens)   | Planned      | Breakpoint preview & theme tokens in CSS         |
+| [v1.0.0](#v100---stable-api)                    | Planned      | Stable code-first public API; embed mode frozen  |
 
 ### Post-1.0
 
-| Version                                   | Status      | Theme                                     |
-| ----------------------------------------- | ----------- | ----------------------------------------- |
-| [v1.1.0](#v110---nested-routes--layouts)  | Planned     | Nested routes & shared layouts            |
-| [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters         |
-| [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders                   |
-| [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API                    |
-| [v1.6.0](#v160---existing-project-import) | Planned     | Load existing React projects & components |
-| [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion         |
+| Version                                   | Status      | Theme                             |
+| ----------------------------------------- | ----------- | --------------------------------- |
+| [v1.1.0](#v110---nested-routes--layouts)  | Planned     | Nested routes & shared layouts    |
+| [v1.2.0](#v120---framework-adapters)      | Planned     | Next.js and other router adapters |
+| [v1.3.0](#v130---async-data--loaders)     | Planned     | Route/node data loaders           |
+| [v1.4.0](#v140---plugin-api)              | Planned     | Extension & plugin API            |
+| [v1.5.0+](#v150--collaboration--advanced) | Exploratory | Collaboration, i18n, a11y, motion |
+
+### Embed-mode backlog (JSON document path)
+
+Features below were planned on the JSON model. They ship **after v1.0** only if embed/CMS customers need them — not on the code-first critical path. See [CODE_FIRST.md](CODE_FIRST.md).
+
+| Former milestone | Topic                         | Status                                    |
+| ---------------- | ----------------------------- | ----------------------------------------- |
+| v0.10 slots      | Named slots in ViewDocument   | Backlog — JSX slots covered by code-first |
+| v0.11 bindings   | Variables, conditions in JSON | Backlog — use React state in source       |
+| v0.12 repeat     | List templates in JSON        | Backlog — `.map()` in source              |
+| v0.14 forms      | Form patterns in JSON         | Backlog — evaluate post-1.0               |
 
 See [POST_1_0.md](POST_1_0.md) for post-1.0 detail.
 
@@ -76,11 +79,11 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 
 - palette insert only; no grid layout drag/drop yet → **v0.3.0**
 - no Style Editor sub-mode → **v0.4.0**
-- no declarative interactions between components → **v0.8.0**
-- no multi-route / multi-page sites → **v0.9.0**
-- no named slots → **v0.10.0**
-- no data bindings or variables → **v0.11.0**
-- manual `defineComponent` registration for every component → **v1.6.0** (existing project import)
+- no declarative interactions between components → **v0.11.0** (code-first handlers)
+- no multi-route / multi-page sites → **v0.10.0** (source routes)
+- no named slots in embed JSON → embed backlog; JSX children in code-first
+- no data bindings or variables in embed JSON → embed backlog; React state in code-first
+- manual `defineComponent` registration for every component → **v0.9.0** (project discovery)
 
 ---
 
@@ -138,7 +141,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - repositioning updates document JSON with correct grid placement
 - palette drag lands in the intended cell in common cases
 - grid state round-trips through save/load and renders correctly in Live mode
-- interaction quality is demo-ready (RTD studio and LessonKit depend on this feel)
+- interaction quality is demo-ready (RTD studio depends on this feel)
 
 ---
 
@@ -176,7 +179,7 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 - `examples/dashboard-builder`
 - `examples/landing-page` — single-page first; multi-route in **v0.9.0** (see [ROUTING.md](ROUTING.md))
 - integration guides in repo docs — including **manual** wiring for existing React apps today
-- **planned follow-up:** automated load/discovery of components from existing projects → **v1.6.0**
+- **planned follow-up:** automated load/discovery of components from existing projects → **v0.9.0** (see [CODE_FIRST.md](CODE_FIRST.md))
 
 `viewfoundry export` and `viewfoundry validate` shipped in **v0.2.0**.
 
@@ -209,225 +212,209 @@ Ships the embeddable SDK: document engine, schema helpers, React runtime, visual
 
 ---
 
-## v0.7.0 — LessonKit integration
+## Strategic pivot (v0.7+)
 
-### Deliverables
+From **v0.7.0**, new work follows the **code-first** strategy in [CODE_FIRST.md](CODE_FIRST.md): React/TSX and CSS files are the source of truth; visual edits patch source. The v0.1–v0.6 **ViewDocument JSON** stack remains as **embed mode** for CMS-style products and the RTD Studio demo.
 
-- LessonKit component definitions mapped to ViewFoundry registry
-- LessonKit document adapter (blocks ↔ `ViewDocument`)
-- editor shell integration plan for LessonKit Studio
-- LXPack export adapter (later within this release cycle)
-
-### Acceptance criteria
-
-- a LessonKit lesson can be visually edited using ViewFoundry
-- LessonKit-specific schema is preserved via adapters
-- ViewFoundry core packages remain LessonKit-agnostic
+Editor UX takes lessons from **Codux** (boards, Stage, Elements/Properties/Styles panels, Add Elements, Theme Manager), **Figma** (auto layout semantics, smart guides, component swap), and **Wix Studio** (stacks/grids, responsive cascade, layers-driven DnD) while staying **embeddable** in host apps rather than a desktop IDE. See [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
 
 ---
 
-## v0.8.0 — Interactions & triggers
+## v0.7.0 — Code-first foundation & boards
 
 **Status: planned**
 
-**Priority: high.** Declarative wiring between components — triggers (events) and actions (effects) — without functions in document JSON.
-
-See [INTERACTIONS.md](INTERACTIONS.md) for the full model.
+**Priority: critical.** Establish direct source editing, component isolation boards, and **mature Stage drag-and-drop** (Figma/Wix feedback bar).
 
 ### Deliverables
 
-- **`interactions` on `ViewDocument`** — trigger → action lists with stable node id references
-- **registry metadata** — `events` and `actions` on `ComponentDefinition`; built-in `click`, `change`, `setProp`, `toggleVisibility`, …
-- **core commands** — `addInteraction`, `updateInteraction`, `removeInteraction` with validation and undo/redo
-- **runtime interpreter** in `@viewfoundry/react` — execute interactions in Live mode
-- **Interactions editor sub-mode** — list, create, and edit wiring in the studio (toolbar: Component | Style | Interactions)
-- **codegen** — emit runtime helper or handler module; warnings for unsupported actions
-- **example** — button click updates another component’s prop in `examples/basic-react`
+- **`@viewfoundry/sync`** — TSX/JSX parse, DOM selection ↔ source location map, safe AST patches, file-level undo snapshots
+- **`@viewfoundry/board`** — `createBoard()`, board types, test render helpers (`.board.tsx` convention)
+- **bi-directional sync** — visual and IDE edits reflect via Vite HMR; `@viewfoundry/vite` project-root detection
+- **Stage** — canvas rename; viewport width/height controls; board vs page tab model
+- **Stage DnD feedback** — drag ghost, dashed valid drop zones, smart alignment guides, distance hints, snap with modifier to disable, settle animation on drop ([DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md))
+- **Elements panel** — DOM/component tree; multi-select; drag-reorder; jump-to-source
+- **canvas click mode** — parent-first vs child-first selection (Wix Studio pattern)
+- **layout tools** — **Stack** (flex) and **Grid** registered components; drops reparent/reorder in JSX (not absolute X/Y)
+- **Properties panel** — auto-generated from component props (TypeScript inference + optional `defineComponent` schema)
+- **structure editing** — insert/reparent/delete/duplicate write JSX; plain-language invalid-drop errors
+- **embed mode preserved** — `ViewDocument` + `ViewFoundryEditor` + `generateTsx` unchanged; dual-mode docs on RTD
+- **example** — `examples/basic-react` code-first path alongside existing JSON demo
 
 ### Acceptance criteria
 
-- user can define “when Button A is clicked, set Heading B text” entirely in the editor
-- interaction JSON round-trips through save/load and runs in Live mode
-- invalid targets or unknown events surface validation errors in the editor
-- interaction edits undo/redo without corrupting structure or layout
-- codegen produces runnable output or explicit warnings
+- user edits a registered component on a board; saved `.tsx` diff is readable hand-written React
+- external IDE edit to the same file updates Stage within one HMR cycle
+- undo/redo restores prior file content for structure edits
+- drag from Elements or reparent on Stage shows ghost, highlights valid targets, and snaps; Escape cancels
+- parent-first / child-first click mode selectable; obscured child selectable from Elements tree
+- drop into Stack reorders siblings; drop into Grid updates placement in source
+- embed mode JSON flow still passes existing e2e suite
+- board renders with mocked props/providers documented in `.board.tsx`
 
 ### Known gaps (addressed in later releases)
 
-- visual canvas wiring overlay → later within v0.8.x
-- continuous data **bindings** → **v0.11.0**
-- document/site **variables** and **conditions** → **v0.11.0**
-- full **routing** and URL `navigate` → **v0.9.0**
+- Hug/Fill/Fixed sizing and padding scrub handles → **v0.8.0**
+- Add Elements panel + Alt+swap + project scan → **v0.9.0**
+- full app page / Section editing → **v0.10.0**
 
 ---
 
-## v0.9.0 — Routing & multi-page
+## v0.8.0 — Styles panel & Theme Manager
 
 **Status: planned**
 
-**Priority: high.** Multiple routes per app — each with its own `ViewDocument` — plus editor Pages panel and runtime navigation.
-
-See [ROUTING.md](ROUTING.md) for the full model.
+**Priority: high.** Codux-quality visual CSS editing on real stylesheets; Figma-style sizing vocabulary.
 
 ### Deliverables
 
-- **`ViewSite` / `ViewRoute`** — site container with path, label, and document per route
-- **Pages panel** in `@viewfoundry/editor` — add, switch, duplicate, delete routes
-- **`ViewFoundrySiteProvider` + `ViewRouter`** in `@viewfoundry/react` — match path, render active page
-- **`navigate` integration** — v0.8 interaction action drives site navigation; optional `NavLink` + `routeRef` field
-- **site commands** — `addRoute`, `updateRoute`, `removeRoute`, `duplicateRoute`
-- **codegen** — React Router (or adapter) route table + per-page components
-- **`@viewfoundry/vite`** — SPA fallback for dev preview of client routes
-- **example** — multi-page `examples/landing-page` (extends v0.5.0 scaffold)
+- **Styles panel** — spacing, size, color, typography, border, flex/grid controllers writing to CSS / CSS modules / SCSS
+- **Hug / Fill / Fixed** sizing controls on selected elements (Figma auto layout → CSS flex/grid)
+- **gap and padding scrub** — drag handles on Stage frame edges (Figma red-handle pattern) where applicable
+- **Computed styles** — read-only cascade view; click value → jump to Styles controller
+- **Theme Manager** — global CSS variables panel; create/edit/detach variables; optional Google Fonts import hook
+- **Style sub-mode** under Edit (Component | Style | …); class selector picker tied to source files
+- **CSS nesting** support where host project uses it
+- **embed mode** — existing `node.style` Style Inspector retained for JSON path; not extended
 
 ### Acceptance criteria
 
-- user can author Home and About as separate pages and switch between them in the editor
-- Live mode navigates between routes via interaction or link component
-- path patterns with params validate and resolve at runtime
-- single-document apps (no site config) continue to work unchanged
-- site + pages export to a runnable multi-route React app
+- margin change on Stage updates the correct rule in the host stylesheet
+- Hug/Fill/Fixed change writes expected flex/grid CSS (not absolute positioning)
+- theme variable edit reflects in all components using that variable
+- style edits undo/redo at file level without breaking JSX structure
+- Tailwind projects: classes visible in Elements panel; visual class editing deferred to post-1.0
 
-### Known gaps (addressed in later releases)
+---
 
+## v0.9.0 — Add Elements & project discovery
+
+**Status: planned**
+
+**Priority: high.** Open existing React projects and discover components (formerly v1.6.0).
+
+### Deliverables
+
+- **Add Elements panel** — categorized insert: HTML elements, **Stacks/Grids/Sections**, project components, third-party libs, board variants
+- **drag insert** — ghost on Stage, dashed drop zone, valid-parent enforcement (Figma Assets pattern)
+- **Alt/Option + drop** on selected element → **swap** component type (Figma instance swap)
+- **quick insert** keyboard shortcut (search Add Elements without mouse)
+- **overlap hint** — suggest “Stack these?” when adjacent siblings may overlap at smaller widths (Wix Studio pattern)
+- **`@viewfoundry/discover`** — scan configured globs; list exported components; bootstrap `defineComponent` stubs
+- **`viewfoundry import`** CLI — point at existing Vite/React/TS repo; generate registry + board templates
+- **Project library** — board variants marked “show in Add Elements” appear as reusable inserts
+- **component variants** — wrap configured prop/style permutations for drag-and-drop reuse
+- **gradual adoption** — only confirmed components enter Add Elements
+
+### Acceptance criteria
+
+- developer opens an existing app without hand-writing every `defineComponent`
+- drag from Add Elements inserts valid JSX with correct import; invalid parent shows blocked cursor + label
+- Alt+drop replaces selected component with dragged type where schema allows
+- variant from board appears in Add Elements after opt-in board setting
+- JSON embed mode unaffected
+
+---
+
+## v0.10.0 — App pages & routing
+
+**Status: planned**
+
+**Priority: high.** Edit full application pages, not only isolated boards.
+
+### Deliverables
+
+- **App tab** alongside Board tabs — edit route/page TSX files directly on Stage
+- **Section** layout component — page regions with inner grid/stack (Wix section model)
+- **Pages panel** — list routes (React Router config or conventional `pages/` scan); add, switch, duplicate
+- **cross-page section copy** — duplicate section JSX across routes with import rewrite
+- **client routing** — Live mode navigates between pages; link component href editing in Properties
+- **`@viewfoundry/vite`** — SPA dev fallback for multi-route preview
+- **example** — multi-page `examples/landing-page` on code-first path
+- **embed mode** — existing `ViewSite` / Pages panel on JSON deferred unless customer demand (see embed backlog)
+
+See [ROUTING.md](ROUTING.md) for routing concepts; code-first implementation edits route files in source.
+
+### Acceptance criteria
+
+- user authors Home and About as separate page files and switches between them in the editor
+- Live mode navigates via link or programmatic navigation in source
 - nested layouts / shared parent routes → **v1.1.0**
 - Next.js / file-based router adapters → **v1.2.0**
-- route-level data loaders → **v1.3.0**
 
 ---
 
-## v0.10.0 — Slots & composition
+## v0.11.0 — Interactions & triggers
 
 **Status: planned**
 
-**Priority: high.** Named slots for real React compound components.
+**Priority: high.** Wire component behavior in source — not JSON interaction arrays.
 
-See [SLOTS.md](SLOTS.md).
+See [INTERACTIONS.md](INTERACTIONS.md) for concepts; code-first implementation emits TSX handlers.
 
 ### Deliverables
 
-- `slots` on `ViewNode`; slot metadata on `ComponentDefinition`
-- slot-aware insert/reparent commands and validation
-- canvas drop targets and layers grouping per slot
-- codegen for slot props / subcomponents
+- **Interactions sub-mode** — sentence UI: “When [Button] clicked → …” writes handler props or `onClick` in TSX
+- **registry metadata** — `events` on `ComponentDefinition` for discoverable triggers
+- **safe patterns** — generated handlers use host conventions (e.g. lift state, callback props); no arbitrary `eval`
+- **Live preview** — handlers run in Live mode; Edit mode does not fire accidentally
+- **embed mode** — optional JSON `interactions[]` interpreter retained for CMS embeds only
 
 ### Acceptance criteria
 
-- user can place content into Card `header` and `footer` slots independently
-- invalid slot or child type is rejected with clear errors
-- exported TSX matches the host component’s slot API
+- user wires button click → update heading text; resulting TSX is idiomatic React
+- invalid target surfaces error with component label, not raw id
+- interaction edit undo/redo restores handler code
+- embed JSON interactions still work if enabled (no regression)
 
 ---
 
-## v0.11.0 — Bindings, variables & conditions
+## v0.12.0 — Clipboard & saved blocks
 
 **Status: planned**
 
-**Priority: high.** Continuous data flow and declarative visibility.
-
-See [DATA_BINDING.md](DATA_BINDING.md).
-
-### Deliverables
-
-- **bindings** — prop ← variable, route param, node prop, literal
-- **variables** on document/site for shared state
-- **conditions** on nodes for show/hide
-- runtime resolver in `@viewfoundry/react`; binding/variable commands
-- inspector UI: bind prop, edit variables, simple condition builder
-
-### Acceptance criteria
-
-- input bound to variable updates heading in Live mode
-- node hidden when condition is false; visible when true
-- route param binding works on parameterized paths (with v0.9)
-
----
-
-## v0.12.0 — Repeat & lists
-
-**Status: planned**
-
-**Priority: high.** Template subtrees rendered per list item.
-
-See [REPEAT.md](REPEAT.md).
-
-### Deliverables
-
-- `repeat` on `ViewNode` with static items array (MVP)
-- optional bind `repeat.source` to variable (with v0.11)
-- runtime list rendering; codegen `.map()` emission
-- editor: items editor + repeat preview
-
-### Acceptance criteria
-
-- user builds a 3-item nav from one template row
-- list round-trips JSON and renders in Live mode
-
----
-
-## v0.13.0 — Clipboard & saved blocks
-
-**Status: planned**
-
-**Priority: medium.** Author productivity.
+**Priority: medium.** Author productivity on JSX subtrees.
 
 See [CLIPBOARD_AND_BLOCKS.md](CLIPBOARD_AND_BLOCKS.md).
 
 ### Deliverables
 
-- copy/paste subtree (keyboard + toolbar); new ids on paste
-- cross-page paste within a site
-- **saved blocks** library on site or host; palette “Blocks” category
-- commands integrated with undo/redo
+- copy/paste JSX subtree (keyboard + toolbar); paste rewrites imports as needed
+- cross-page paste within app
+- **multi-select drag** on Stage — move group with shared ghost (Wix multi-element handles)
+- **saved blocks** — persist JSX snippets to project library; Add Elements “Blocks” category; drag to insert
+- file-level undo integration
 
 ### Acceptance criteria
 
-- copy Card subtree, paste into Grid cell on another page
-- save hero section as block and insert twice with independent edits
+- copy Card subtree, paste into Grid on another page; imports resolve
+- save hero section as block; insert twice; independent edits produce separate diffs
 
 ---
 
-## v0.14.0 — Forms
+## v0.13.0 — Responsive & design tokens
 
 **Status: planned**
 
-**Priority: medium.** Form UIs over registered inputs.
+**Priority: medium.** Breakpoint preview and token-aware CSS; Wix Studio responsive cascade.
 
-See [FORMS.md](FORMS.md).
-
-### Deliverables
-
-- form container conventions in registry
-- field ↔ variable bindings; validation metadata on props
-- submit trigger + interaction chain (validate → actions)
-- inspector validation editor; basic Live validation
-
-### Acceptance criteria
-
-- user builds contact form visually; submit updates state or navigates
-- required field blocks submit with visible error
-
----
-
-## v0.15.0 — Responsive & design tokens
-
-**Status: planned**
-
-**Priority: medium.** Breakpoints and theme-aware styling.
-
-See [RESPONSIVE.md](RESPONSIVE.md).
+See [RESPONSIVE.md](RESPONSIVE.md) and [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
 
 ### Deliverables
 
-- responsive `layout` / `style` overrides per breakpoint
-- editor breakpoint switcher; host breakpoint config
-- token registry; token picker in Style Editor
-- codegen resolves tokens to CSS variables or theme paths
+- **breakpoint switcher** on Stage (Mobile / Tablet / Desktop presets + custom)
+- **cascade vs override** indicators — inherited from desktop vs custom on this breakpoint (Wix Studio)
+- **reset override** to desktop values per element or section
+- **per-breakpoint stack order** — reorder flex items on smaller breakpoints without changing desktop
+- responsive edits write media queries or container queries to host CSS
+- Theme Manager token picker integrated with Styles panel
+- embed mode `node.style` breakpoint overrides — backlog unless requested
 
 ### Acceptance criteria
 
-- grid columns differ mobile vs desktop in Live preview
-- style uses `color.primary` token from host theme
+- grid/flex layout differs at mobile vs desktop breakpoint in Stage preview
+- override state visible in Properties/Styles; reset restores desktop cascade
+- token edit in Theme Manager updates all usages in CSS variables
 
 ---
 
@@ -439,17 +426,17 @@ See [RESPONSIVE.md](RESPONSIVE.md).
 
 ### Deliverables
 
-- freeze **document schema** `0.1` + optional fields shipped through v0.15
-- freeze **public package APIs** documented in `specs/PACKAGE_API_SPEC.md`
-- migration guides for any breaking changes from late v0.x
+- freeze **code-first public APIs** — `@viewfoundry/sync`, `@viewfoundry/board`, editor embed props, discover CLI
+- freeze **embed-mode APIs** — `ViewDocument` schema `0.1`, `generateTsx`, existing editor JSON path (no removal)
+- migration guide: JSON embed → code-first adoption
 - RTD “production readiness” guide; security & embedding notes
-- `1.0.0` git tag and npm publish policy
+- `1.0.0` git tag and npm publish policy documented in `specs/PACKAGE_API_SPEC.md`
 
 ### Acceptance criteria
 
 - no breaking API changes without 2.0.0
-- all v0.10–v0.15 features documented on RTD
-- CI green; e2e covers primary author flows (layout, style, interactions, routing, slots)
+- code-first flows documented on RTD: boards, styles, Add Elements, pages, interactions
+- CI green; e2e covers code-first author flows (including Stage DnD bar) + embed mode regression suite
 
 ---
 
@@ -487,31 +474,18 @@ Formal extension points for inspector, palette, interactions, codegen. See [POST
 
 ## v1.6.0 — Existing project import
 
-**Status: planned** (post-1.0)
-
-**Priority: high for adoption.** Today every component must be registered manually with `defineComponent`. This release adds workflows to **load an existing React project** and populate the editor palette from components already in that codebase.
-
-### Deliverables
-
-- **`viewfoundry import`** (or equivalent CLI) — point at an existing Vite/React (or adapter-supported) repo
-- **component discovery** — configurable scan paths (globs) for exported React components
-- **registry bootstrap** — generate starter `ComponentDefinition` entries and codegen **import maps** from project structure
-- **optional TypeScript inference** — stub prop schemas from component types where available; developer review before publish
-- **gradual adoption** — opt-in subset of components; explicit registration remains the safe default
-- integration docs: manual wiring (**v0.5.0**) vs automated import (**v1.6.0**)
-
-### Acceptance criteria
-
-- developer connects an existing app and gets a working palette without hand-writing every `defineComponent`
-- generated import paths match the host project layout; TSX export resolves correctly
-- undiscovered or unreviewed components do not appear in the palette until confirmed
-- LessonKit and other adapters can reuse the same discovery hooks for their vocabularies
-
-See [COMPONENT_REGISTRY.md](COMPONENT_REGISTRY.md) and [UX_AND_DX.md](UX_AND_DX.md).
+**Status: superseded by [v0.9.0](#v090---add-elements--discovery).** Component discovery and `viewfoundry import` moved earlier as part of the code-first pivot.
 
 ---
 
-## v1.5.0+ — Collaboration & advanced
+## Versioning notes
+
+- **v0.1.x – v0.6.x** — JSON embed-mode foundation; shipped and frozen for embed API
+- **v0.7+** — code-first milestones per [CODE_FIRST.md](CODE_FIRST.md)
+- **v0.X.0** — minor releases add capabilities; embed `ViewDocument` schema `0.1` unchanged unless explicitly versioned
+- **v1.0.0** — stable **code-first** public API; embed JSON API stable but secondary
+- **v1.1+** — platform adapters, loaders, plugins ([POST_1_0.md](POST_1_0.md))
+- **Embed backlog** — JSON-only slots, bindings, repeat, forms — post-1.0 if embed customers need them
 
 **Status: exploratory** (post-1.0)
 
@@ -519,10 +493,4 @@ Comments, real-time co-editing, i18n, a11y panel, motion — evaluate after 1.0 
 
 ---
 
-## Versioning notes
-
-- **v0.1.x** — patch fixes and non-breaking SDK improvements on the foundation release
-- **v0.X.0** — minor releases add capabilities; document model may gain optional fields (`layout`, `style`, `slots`, …) with backward-compatible defaults
-- **v0.10 – v0.15** — pre-1.0 composition, data, productivity, and polish milestones (see table above)
-- **v1.0.0** — stable public API and document contract; breaking changes require **v2.0.0**
-- **v1.1+** — platform adapters, loaders, plugins, existing project import, and exploratory features ([POST_1_0.md](POST_1_0.md))
+## v1.5.0+ — Collaboration & advanced

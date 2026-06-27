@@ -6,9 +6,9 @@ Maintainer runbook for ViewFoundry npm releases. Package versions are synced acr
 
 1. **Changelog** — move `[Unreleased]` entries in [`CHANGELOG.md`](../CHANGELOG.md) to a new `## [x.y.z]` section with date.
 2. **Migration docs** — if breaking or notable API changes, add or update pages under [`apps/docs/`](../apps/docs/) (e.g. `migration-*.md`).
-3. **API spec** — update [`specs/PACKAGE_API_SPEC.md`](../specs/PACKAGE_API_SPEC.md) for any public API changes.
-4. **Published docs** — update [`apps/docs/`](../apps/docs/) package pages, getting-started pins, and README version references.
-5. **Planning specs** — sync [`docs/COMMANDS_AND_HISTORY.md`](COMMANDS_AND_HISTORY.md), [`docs/CODEGEN_SPEC.md`](CODEGEN_SPEC.md), etc. if behavior changed.
+3. **API spec** — update [`specs/PACKAGE_API_SPEC.md`](../specs/PACKAGE_API_SPEC.md) for any public API changes; note planned code-first packages when adding v0.7+ APIs.
+4. **Published docs** — update [`apps/docs/`](../apps/docs/) including [roadmap-and-direction.md](../apps/docs/roadmap-and-direction.md) when direction or milestones change.
+5. **Planning specs** — sync [`docs/CODE_FIRST.md`](CODE_FIRST.md), [`docs/ROADMAP.md`](ROADMAP.md), [`docs/DND_AND_LAYOUT_RESEARCH.md`](DND_AND_LAYOUT_RESEARCH.md), and behavior specs if changed.
 6. **Sync CLI templates** — after example or template source changes:
 
 ```bash

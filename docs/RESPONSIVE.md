@@ -1,10 +1,12 @@
 # Responsive layout & design tokens
 
+> **Code-first: v0.13.0** — breakpoint switcher, cascade/override UI, media queries in host CSS. JSON `node.style` breakpoint overrides are embed backlog. See [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md), [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
 **Responsive** overrides for layout and style per breakpoint. **Design tokens** connect the Style Editor to host themes (brand colors, spacing scale).
 
-**Planned: v0.15.0** (pre-1.0)
+**Planned: v0.13.0** (code-first)
 
 Extends **v0.4 Style Editor** and **v0.3 grid**.
 
@@ -45,6 +47,6 @@ export type StyleTokenMap = Record<string, string | number | TokenReference>;
 
 ## See also
 
-- [ROADMAP.md](ROADMAP.md) — v0.15.0
+- [ROADMAP.md](ROADMAP.md) — v0.13.0
 - [EDITOR_SPEC.md](EDITOR_SPEC.md) — Style Editor sub-mode
 - [UX_AND_DX.md](UX_AND_DX.md) — breakpoint switcher and token labels

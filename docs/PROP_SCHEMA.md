@@ -1,5 +1,7 @@
 # Prop Schema Specification
 
+> **Shipped** for embed mode. Code-first (**v0.7+**) also uses TypeScript inference for Properties panel controls; schema enriches labels and validation. See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Purpose
 
 Prop schemas generate editor controls and validate document props.

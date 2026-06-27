@@ -1,6 +1,10 @@
 # Component registration
 
-ViewFoundry only edits components you explicitly register. This page covers patterns that keep the canvas, Style Editor, and codegen working together.
+```{note}
+**Today:** manual `defineComponent` for embed mode. **v0.9:** `@viewfoundry/discover` and `viewfoundry import` will bootstrap registry entries from your codebase. See [Roadmap & direction](roadmap-and-direction.md).
+```
+
+ViewFoundry only edits components you explicitly register (or discover).
 
 ## Basic registration
 

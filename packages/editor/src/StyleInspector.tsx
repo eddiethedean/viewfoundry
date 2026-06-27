@@ -9,6 +9,7 @@ import {
   type StyleFieldGroup,
 } from '@viewfoundry/schema';
 import { useEditorState, useEditorStore } from './EditorContext.js';
+import { SelectedNodeActions } from './SelectedNodeActions.js';
 
 const GROUP_LABELS: Record<StyleFieldGroup, string> = {
   spacing: 'Spacing',
@@ -386,6 +387,7 @@ export function StyleInspector({ styleTokens }: StyleInspectorProps) {
   return (
     <div className="vf-inspector vf-style-inspector">
       <div className="vf-panel-header">Style</div>
+      <SelectedNodeActions />
       <div className="vf-inspector-meta">
         <div>
           <strong>Type:</strong> {node.type}

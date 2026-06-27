@@ -54,6 +54,7 @@ export type EditorStore = {
   editSubMode: EditSubMode;
   lastError: string | null;
   isDragging: boolean;
+  showGrid: boolean;
   setRegistry: (registry: ComponentRegistry) => void;
   setDocument: (document: ViewDocument) => void;
   syncDocument: (document: ViewDocument) => void;
@@ -76,6 +77,8 @@ export type EditorStore = {
   canRedo: () => boolean;
   setPaletteFilter: (filter: string) => void;
   setDragging: (dragging: boolean) => void;
+  setShowGrid: (show: boolean) => void;
+  toggleShowGrid: () => void;
 };
 
 function applyDocument(
@@ -178,6 +181,7 @@ export function createEditorStore(
     editSubMode: 'component',
     lastError: null,
     isDragging: false,
+    showGrid: false,
 
     setRegistry: (registry) => set({ registry }),
 
@@ -526,6 +530,10 @@ export function createEditorStore(
     setPaletteFilter: (filter) => set({ paletteFilter: filter }),
 
     setDragging: (dragging) => set({ isDragging: dragging }),
+
+    setShowGrid: (show) => set({ showGrid: show }),
+
+    toggleShowGrid: () => set((state) => ({ showGrid: !state.showGrid })),
   }));
 }
 

@@ -1,6 +1,6 @@
 # Basic React example
 
-A minimal ViewFoundry integration: registered components, visual editor, localStorage persistence, and TSX export.
+A minimal ViewFoundry **embed-mode** integration: registered components, visual editor, localStorage persistence, and TSX export. A **code-first** path is planned in v0.7 — see [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html).
 
 ## What it demonstrates
 

@@ -2,26 +2,101 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  pointerWithin,
+  rectIntersection,
   useSensor,
   useSensors,
+  type Collision,
+  type CollisionDetection,
   type DragEndEvent,
   type DragStartEvent,
+  type UniqueIdentifier,
 } from '@dnd-kit/core';
 import {
   parseGridDropId,
   findNode,
+  findNodeLocation,
+  isGridContainer,
   resolveGridTracks,
   isPlacementInBounds,
   normalizePlacement,
 } from '@viewfoundry/core';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useEditorStore } from '../EditorContext.js';
-import { parseNodeDragId, parsePaletteDragId } from './types.js';
+import { parseCanvasDropId, parseNodeDragId, parsePaletteDragId } from './types.js';
 
 export type CanvasDndProviderProps = {
   children: ReactNode;
   renderDragOverlay?: (activeId: string | null) => ReactNode;
 };
+
+function filterCollisionsForDrag(activeId: UniqueIdentifier, collisions: Collision[]): Collision[] {
+  const activeStr = String(activeId);
+  const isPaletteDrag = parsePaletteDragId(activeStr) !== null;
+  const isNodeDrag = parseNodeDragId(activeStr) !== null;
+
+  const filtered = collisions.filter(({ id }) => {
+    const idStr = String(id);
+    if (isPaletteDrag) {
+      return parseCanvasDropId(idStr) || parseGridDropId(idStr) !== null;
+    }
+    if (isNodeDrag) {
+      return parseGridDropId(idStr) !== null;
+    }
+    return true;
+  });
+
+  if (!isPaletteDrag) return filtered;
+
+  const gridCells = filtered.filter(({ id }) => parseGridDropId(String(id)) !== null);
+  if (gridCells.length > 0) return gridCells;
+
+  return filtered.filter(({ id }) => parseCanvasDropId(String(id)));
+}
+
+const collisionDetection: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+  const filteredPointer = filterCollisionsForDrag(args.active.id, pointerCollisions);
+  if (filteredPointer.length > 0) return filteredPointer;
+
+  const rectCollisions = rectIntersection(args);
+  return filterCollisionsForDrag(args.active.id, rectCollisions);
+};
+
+function resolvePaletteInsertTarget(
+  document: ReturnType<ReturnType<typeof useEditorStore>['getState']>['document'],
+  overId: string,
+): {
+  parentId: string;
+  layout?: { column: number; row: number; colSpan: number; rowSpan: number };
+} | null {
+  const cell = parseGridDropId(overId);
+  if (cell) {
+    return {
+      parentId: cell.parentId,
+      layout: { column: cell.column, row: cell.row, colSpan: 1, rowSpan: 1 },
+    };
+  }
+
+  if (parseCanvasDropId(overId)) {
+    return { parentId: 'root' };
+  }
+
+  const overNodeId = parseNodeDragId(overId);
+  if (!overNodeId) return null;
+
+  const overNode = findNode(document.root, overNodeId);
+  if (overNode && isGridContainer(overNode.type)) {
+    return { parentId: overNode.id };
+  }
+
+  const location = findNodeLocation(document.root, overNodeId);
+  if (location?.parent && isGridContainer(location.parent.type)) {
+    return { parentId: location.parent.id };
+  }
+
+  return null;
+}
 
 export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProviderProps) {
   const store = useEditorStore();
@@ -61,19 +136,28 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
 
       if (!over) return;
 
-      const cell = parseGridDropId(String(over.id));
-      if (!cell) return;
-
-      const layout = { column: cell.column, row: cell.row, colSpan: 1, rowSpan: 1 };
+      const overId = String(over.id);
       const paletteType = parsePaletteDragId(String(active.id));
+
       if (paletteType) {
-        store.getState().insertComponent(paletteType, {
-          parentId: cell.parentId,
-          layout,
-        });
+        const target = resolvePaletteInsertTarget(store.getState().document, overId);
+        if (target) {
+          store
+            .getState()
+            .insertComponent(
+              paletteType,
+              target.layout
+                ? { parentId: target.parentId, layout: target.layout }
+                : { parentId: target.parentId === 'root' ? undefined : target.parentId },
+            );
+        }
         return;
       }
 
+      const cell = parseGridDropId(overId);
+      if (!cell) return;
+
+      const layout = { column: cell.column, row: cell.row, colSpan: 1, rowSpan: 1 };
       const nodeId = parseNodeDragId(String(active.id));
       if (nodeId) {
         const document = store.getState().document;
@@ -121,6 +205,7 @@ export function CanvasDndProvider({ children, renderDragOverlay }: CanvasDndProv
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={collisionDetection}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}

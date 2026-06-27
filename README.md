@@ -9,7 +9,7 @@
 
 ViewFoundry is an embeddable visual editor framework for React applications. **Documentation:** [viewfoundry.readthedocs.io](https://viewfoundry.readthedocs.io/en/latest/)
 
-Register your real components. ViewFoundry gives you a no-code editor, canvas, property inspector, document model, serialization, history, and code generation.
+Register your real components. **Today (v0.6):** edit pages as JSON, render with React, export TSX. **From v0.7:** [code-first editing](docs/CODE_FIRST.md) writes directly to TSX and CSS while staying embeddable in your app.
 
 **Fastest start:**
 
@@ -60,15 +60,17 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for PR expectations.
 
 See the [package overview](https://viewfoundry.readthedocs.io/en/latest/packages/index.html) for API details.
 
-| Package                | Description                                       |
-| ---------------------- | ------------------------------------------------- |
-| `@viewfoundry/core`    | Framework-agnostic document engine                |
-| `@viewfoundry/schema`  | Component definition and prop schema helpers      |
-| `@viewfoundry/react`   | React runtime renderer                            |
-| `@viewfoundry/editor`  | Visual editor UI                                  |
-| `@viewfoundry/codegen` | TSX code generation                               |
-| `@viewfoundry/vite`    | Vite plugin — document HMR and validation overlay |
-| `@viewfoundry/cli`     | `init`, `validate`, and `export` commands         |
+| Package                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `@viewfoundry/core`    | Document engine (embed); file-edit types (v0.7+) |
+| `@viewfoundry/schema`  | Component definition and prop schema helpers     |
+| `@viewfoundry/react`   | React runtime renderer                           |
+| `@viewfoundry/editor`  | Visual editor UI                                 |
+| `@viewfoundry/codegen` | TSX export (embed mode)                          |
+| `@viewfoundry/vite`    | Vite plugin — document HMR and validation        |
+| `@viewfoundry/cli`     | `init`, `validate`, and `export` commands        |
+
+**Planned (v0.7+):** `@viewfoundry/sync`, `@viewfoundry/board`, `@viewfoundry/discover` — see [CODE_FIRST.md](docs/CODE_FIRST.md).
 
 Install all `@viewfoundry/*` packages at the **same version**. See [CHANGELOG.md](CHANGELOG.md) and [specs/PACKAGE_API_SPEC.md](specs/PACKAGE_API_SPEC.md).
 
@@ -95,15 +97,17 @@ See [Example applications](https://viewfoundry.readthedocs.io/en/latest/examples
 
 ## Where to read what
 
-| Source                                                                                 | Audience                                   | Trust level                           |
-| -------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
-| [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/)                         | Adopters — install, embed, grid, FAQ       | **Primary user guides**               |
-| [Package API spec](https://viewfoundry.readthedocs.io/en/latest/package-api-spec.html) | Integrators — full public API              | **API contract** (synced from GitHub) |
-| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)                               | Source of truth for API spec on GitHub     | **API contract source**               |
-| [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                                               | Maintainers — studio + developer UX bars   | **Release acceptance**                |
-| [`docs/`](docs/)                                                                       | Maintainers — roadmap, editor spec, design | Planning specs (**may lag code**)     |
-| [`CHANGELOG.md`](CHANGELOG.md)                                                         | Everyone — release notes                   | Current                               |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md)                                                   | Contributors                               | Current                               |
+| Source                                                                                 | Audience                                        | Trust level                           |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------- |
+| [Read the Docs](https://viewfoundry.readthedocs.io/en/latest/)                         | Adopters — install, embed, grid, FAQ            | **Primary user guides**               |
+| [Package API spec](https://viewfoundry.readthedocs.io/en/latest/package-api-spec.html) | Integrators — full public API                   | **API contract** (synced from GitHub) |
+| [`specs/PACKAGE_API_SPEC.md`](specs/PACKAGE_API_SPEC.md)                               | Source of truth for API spec on GitHub          | **API contract source**               |
+| [`docs/CODE_FIRST.md`](docs/CODE_FIRST.md)                                             | Maintainers — code-first strategy               |
+| [`docs/DND_AND_LAYOUT_RESEARCH.md`](docs/DND_AND_LAYOUT_RESEARCH.md)                   | Maintainers — Figma/Wix DnD and layout patterns |
+| [`docs/UX_AND_DX.md`](docs/UX_AND_DX.md)                                               | Maintainers — studio + developer UX bars        | **Release acceptance**                |
+| [`docs/`](docs/)                                                                       | Maintainers — roadmap, editor spec, design      | Planning specs (**may lag code**)     |
+| [`CHANGELOG.md`](CHANGELOG.md)                                                         | Everyone — release notes                        | Current                               |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)                                                   | Contributors                                    | Current                               |
 
 ## Documentation
 
@@ -113,4 +117,4 @@ Build locally with `pnpm docs:build` and preview with `pnpm docs:preview`. Sourc
 
 Planning specs in [`docs/`](docs/) describe intent and roadmap; they may lag implementation. The implementation follows [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Planned (pre-1.0):** [v0.7–v0.9](docs/ROADMAP.md) Interactions · Routing · [v0.10–v0.15](docs/ROADMAP.md) Slots · Bindings · Repeat · Clipboard · Forms · Responsive · [v1.0.0](docs/ROADMAP.md) Stable API. **Shipped:** [v0.6 Documentation site](docs/ROADMAP.md#v060---documentation-site) · [v0.5 CLI & examples](docs/ROADMAP.md#v050---cli--examples) · [v0.4 Style Editor](docs/ROADMAP.md#v040---style-editor). **Post-1.0:** [v1.1+](docs/POST_1_0.md) nested layouts · adapters · loaders · plugins · [existing project import](docs/ROADMAP.md#v160---existing-project-import).
+**Planned (pre-1.0):** [Code-first editing](docs/CODE_FIRST.md) from [v0.7](docs/ROADMAP.md#v070---code-first-foundation--boards) · [v0.8–v0.13](docs/ROADMAP.md) Styles, discovery, pages, interactions · [v1.0](docs/ROADMAP.md#v100---stable-api) Stable API. **Shipped:** [v0.6 Documentation site](docs/ROADMAP.md#v060---documentation-site) · [v0.5 CLI & examples](docs/ROADMAP.md#v050---cli--examples) · [v0.4 Style Editor](docs/ROADMAP.md#v040---style-editor). **Post-1.0:** [v1.1+](docs/POST_1_0.md) adapters · plugins · collaboration.

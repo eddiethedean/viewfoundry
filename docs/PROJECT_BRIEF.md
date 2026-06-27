@@ -2,17 +2,19 @@
 
 ## One-line description
 
-ViewFoundry is an embeddable visual editor framework that makes real React components editable through a schema-driven no-code canvas.
+ViewFoundry is an embeddable visual editor framework that makes real React components editable — by writing directly to your TSX and CSS, or via a JSON embed mode for CMS-style products.
 
 ## Product thesis
 
-Most visual builders either require users to build inside a proprietary platform or require developers to rewrite components into a custom DSL. ViewFoundry should let developers keep their existing React components and expose them to visual editing through typed metadata.
+Most visual builders either trap users in a proprietary platform or force a custom DSL. **Codux** showed that React teams want visual editing with **source code as the output**. ViewFoundry applies that lesson while staying **embeddable** in your product (not a desktop IDE).
+
+From **v0.7**, the primary path is **code-first**: visual edits patch `.tsx` and stylesheet files; boards isolate components for focused editing. The v0.1–v0.6 **ViewDocument JSON** path remains **embed mode** for hosts that store pages as data (browser Studio, admin CMS).
 
 The core value proposition:
 
-> Install ViewFoundry, register your components, and your app becomes visually editable.
+> Embed ViewFoundry in your app — or open an existing React project — and edit components visually with changes you can commit.
 
-Arranging those components on an intuitive **grid** with satisfying **drag and drop** is essential to that promise — it should feel as good as the rest of the editor.
+See [CODE_FIRST.md](CODE_FIRST.md) for the full pivot.
 
 ## Target users
 
@@ -34,35 +36,35 @@ Examples:
 
 Non-technical editors who need a safe, constrained no-code UI over developer-approved components.
 
-Usability requirements for both audiences are defined in [UX_AND_DX.md](UX_AND_DX.md).
+Usability requirements for both audiences are defined in [UX_AND_DX.md](UX_AND_DX.md). Editor panels follow **Codux** patterns (Stage, Elements, Properties, Styles, Add Elements) and **Figma/Wix** drag-and-drop and layout conventions — see [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
 
 ## What ViewFoundry is
 
-- A component registry
-- A document model
+- A component registry (manual or discovered)
+- **Code-first sync** — AST patch layer writing TSX/CSS (**v0.7+**)
+- **Boards** — isolated component fixtures (**v0.7+**)
+- **Embed document model** — JSON `ViewDocument` for CMS hosts (v0.1–v0.6)
 - A React renderer
-- A visual editor UI
-- A property inspector generator
-- A drag/drop and selection system
-- A serialization layer
-- A code generation layer
+- A visual editor UI (embeddable)
+- Property and style panels generated from schema and/or TypeScript
+- Drag/drop and selection on the Stage
+- Optional TSX codegen (embed mode)
 - An extension/plugin foundation
 
-## What ViewFoundry is not, at least initially
+## What ViewFoundry is not
 
-- Not an arbitrary React source-code editor
+- Not a proprietary desktop IDE (contrast: Codux)
+- Not a hosted Wix-style platform
+- Not a CMS or design system by itself
 - Not a full Figma replacement
-- Not a hosted proprietary platform
-- Not a CMS by itself
-- Not a design system by itself
-- Not a replacement for Storybook
+- Not a replacement for Storybook (boards complement it)
 
-## MVP definition
+## MVP definition (v0.1 — shipped)
 
-The MVP is successful when a developer can:
+The original MVP used JSON documents. It remains valid as **embed mode**:
 
 1. Install ViewFoundry packages.
-2. Register a few React components with prop schemas.
+2. Register React components with prop schemas.
 3. Open a visual editor.
 4. Drag components onto a canvas.
 5. Select, reorder, delete, duplicate, and nest components.
@@ -71,20 +73,22 @@ The MVP is successful when a developer can:
 8. Render the JSON document as React.
 9. Export the JSON document to readable TSX.
 
-## Post-MVP editor modes
+## Post-MVP direction (v0.7+)
 
-After the MVP, the editor gains explicit modes (see `docs/EDITOR_SPEC.md`):
+| Capability                                          | Release     | Mode       |
+| --------------------------------------------------- | ----------- | ---------- |
+| Code-first TSX/CSS editing, boards, sync, Stage DnD | **v0.7.0**  | Code-first |
+| Styles panel, Hug/Fill/Fixed, Theme Manager         | **v0.8.0**  | Code-first |
+| Add Elements, Alt+swap, project discovery           | **v0.9.0**  | Code-first |
+| App pages, Sections, routing in source              | **v0.10.0** | Code-first |
+| Interactions as TSX handlers                        | **v0.11.0** | Code-first |
+| Clipboard & saved blocks                            | **v0.12.0** | Code-first |
+| Responsive preview, cascade/override UI             | **v0.13.0** | Code-first |
+| Stable API                                          | **v1.0.0**  | Both       |
+| Framework adapters, plugins                         | **v1.1+**   | Code-first |
 
-- **Edit / Live** — toggle in one browser window; same canvas viewport (**v0.2.0**, critical)
-- **Component Editor** — structure, nesting, and schema-driven props (Edit sub-mode; **v0.1.0**)
-- **Grid layout drag/drop** — intuitive CSS Grid–based arrangement with satisfying canvas moves (**v0.3.0**, critical)
-- **Style Editor** — visual styling via `node.style` tokens (Edit sub-mode; **v0.4.0**)
-- **Interactions** — triggers and actions (**v0.8.0**)
-- **Routing** — multi-page sites (**v0.9.0**)
-- **Slots, bindings, repeat, forms, responsive** — **v0.10 – v0.15** (pre-1.0); see `docs/ROADMAP.md`
-- **Stable API** — **v1.0.0**; platform adapters and plugins — **v1.1+** ([POST_1_0.md](POST_1_0.md))
-- **Existing project import** — load components from an existing React codebase into the registry and palette — **v1.6.0**
+Shipped embed-mode features (Edit/Live, grid, `node.style`, CLI, docs) remain supported. See [ROADMAP.md](ROADMAP.md).
 
 ## North star
 
-ViewFoundry should become the reusable visual editing engine that powers many specialized products. LessonKit Studio is one flagship app built on top of it.
+ViewFoundry becomes the **embeddable** visual editing engine for React products — code-first for developer teams, JSON embed for data-driven hosts.

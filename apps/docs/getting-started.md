@@ -1,5 +1,9 @@
 # Getting started
 
+```{note}
+**Product direction:** v0.5/v0.6 use **embed mode** (JSON `ViewDocument`) — this guide reflects what ships today. From **v0.7**, the primary path is **code-first** (edits write to TSX/CSS). See [Roadmap & direction](roadmap-and-direction.md).
+```
+
 ## Quick start (recommended)
 
 Scaffold a project with the CLI:

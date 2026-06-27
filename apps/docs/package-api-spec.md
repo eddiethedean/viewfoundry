@@ -2,14 +2,26 @@
 
 # Package API Spec
 
-This document describes the public API surface for ViewFoundry packages at **v0.5.x**.
+This document describes the public API surface for ViewFoundry packages at **v0.5.x** (embed mode).
+
+## Planned APIs (v0.7+, not yet shipped)
+
+Code-first packages and editor props will be documented here as they release. See [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html) and repository [CODE_FIRST.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CODE_FIRST.md).
+
+| Package                 | Status       |
+| ----------------------- | ------------ |
+| `@viewfoundry/sync`     | Planned v0.7 |
+| `@viewfoundry/board`    | Planned v0.7 |
+| `@viewfoundry/discover` | Planned v0.9 |
+
+Embed-mode APIs below remain stable through v1.0.
 
 ## Versioning policy (0.x)
 
 - **Package semver** (`0.5.0`, etc.) tracks npm releases. All `@viewfoundry/*` packages publish at the same version.
 - **Document version** (`ViewDocument.version: '0.1'`) is separate from package semver. It identifies the JSON document schema.
 - During `0.x`, minor releases may add optional document fields and APIs. Patch releases are backward compatible within the minor.
-- `1.0.0` is reserved for a stable public API after grid layout, docs site, and integrations are proven.
+- `1.0.0` is reserved for stable **code-first** public API with embed mode frozen — see [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).
 
 Install all ViewFoundry packages at the **same version**:
 

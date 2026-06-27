@@ -1,6 +1,12 @@
 # Integrate into an existing Vite + React app
 
-This guide walks through adding ViewFoundry to a project that already uses Vite and React. The reference implementation is [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react).
+```{note}
+**Today (v0.5/v0.6):** manual `defineComponent` registration and JSON embed mode — this guide. **v0.9:** `viewfoundry import` and component discovery will bootstrap the registry from your codebase. See [Roadmap & direction](roadmap-and-direction.md).
+```
+
+This guide walks through adding ViewFoundry to a project that already uses Vite and React.
+
+The reference implementation is [`examples/basic-react`](https://github.com/eddiethedean/viewfoundry/tree/main/examples/basic-react).
 
 ## Prerequisites
 

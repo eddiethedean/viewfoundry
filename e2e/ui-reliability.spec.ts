@@ -6,6 +6,7 @@ import {
   firstGridChild,
   insertFromPalette,
   layers,
+  removeSelectedNode,
   resetDocument,
   selectLayer,
   toolbar,
@@ -20,7 +21,7 @@ test.describe('UI reliability', () => {
   test('undo restores a deleted node', async ({ page }) => {
     await bootstrapGridWithButton(page);
     await selectLayer(page, /^Button\b/);
-    await toolbar(page).getByRole('button', { name: 'Delete' }).click();
+    await removeSelectedNode(page, 'Button');
 
     await expect(demoButton(page, 'Click me')).toBeHidden();
     await toolbar(page).getByRole('button', { name: 'Undo' }).click();

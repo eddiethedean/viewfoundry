@@ -1,5 +1,7 @@
 # Commands and History
 
+> **Dual mode:** Embed mode uses document commands (below). Code-first (**v0.7+**) adds **file-level** history via `@viewfoundry/sync`. See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Purpose
 
 All editor mutations should flow through commands so undo/redo, validation, collaboration, plugin hooks, and telemetry can be added cleanly.
@@ -110,13 +112,11 @@ Style commands validate keys via `@viewfoundry/schema` (`validateStyleProp`). Us
 
 ## Future commands (planned)
 
-| Command             | Release | Purpose                                  |
-| ------------------- | ------- | ---------------------------------------- |
-| `addInteraction`    | v0.8.0  | Add document-level trigger → action rule |
-| `updateInteraction` | v0.8.0  | Edit trigger, actions, or conditions     |
-| `removeInteraction` | v0.8.0  | Delete interaction by id                 |
-| `addRoute`          | v0.9.0  | Add route to site                        |
-| `updateRoute`       | v0.9.0  | Change path, label, or meta              |
-| `removeRoute`       | v0.9.0  | Delete route by id                       |
+| Command / area         | Release | Purpose                                      |
+| ---------------------- | ------- | -------------------------------------------- |
+| File-edit (sync)       | v0.7.0  | TSX/CSS patches via `@viewfoundry/sync`      |
+| TSX interaction wiring | v0.11.0 | Code-first handler edits (not JSON commands) |
+| Route/page edits       | v0.10.0 | Code-first routing in source                 |
+| Embed `addInteraction` | backlog | JSON interactions for CMS embeds only        |
 
-See [INTERACTIONS.md](INTERACTIONS.md) and [ROUTING.md](ROUTING.md).
+See [INTERACTIONS.md](INTERACTIONS.md), [ROUTING.md](ROUTING.md), [CODE_FIRST.md](CODE_FIRST.md).

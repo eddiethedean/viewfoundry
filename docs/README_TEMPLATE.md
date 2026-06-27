@@ -2,7 +2,7 @@
 
 ViewFoundry is an embeddable visual editor framework for React applications.
 
-Register your real components. ViewFoundry gives you a no-code editor, canvas, property inspector, document model, serialization, history, and code generation.
+Register your real components. **Embed mode (today):** JSON document, canvas editor, TSX export. **Code-first (v0.7+):** visual edits write to TSX/CSS — see [Roadmap & direction](https://viewfoundry.readthedocs.io/en/latest/roadmap-and-direction.html).
 
 ## Install
 

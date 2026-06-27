@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { ComponentRegistry, ViewDocument } from '@viewfoundry/core';
 import { EditorProvider } from './EditorContext.js';
 import type { StudioMode } from './store.js';
@@ -11,6 +11,7 @@ import { LayersPanel } from './LayersPanel.js';
 import { EditorDndShell } from './EditorDndShell.js';
 import { useEditorStore, useEditorState } from './EditorContext.js';
 import { findNodeLocation, getPrimarySelection, isGridContainer } from '@viewfoundry/core';
+import { loadStoredTheme, saveStoredTheme, type EditorTheme } from './theme.js';
 
 export type ViewFoundryEditorProps = {
   registry: ComponentRegistry;
@@ -21,6 +22,7 @@ export type ViewFoundryEditorProps = {
   defaultStudioMode?: StudioMode;
   onStudioModeChange?: (mode: StudioMode) => void;
   styleTokens?: Record<string, string | number>;
+  defaultTheme?: EditorTheme;
 };
 
 function KeyboardShortcuts() {
@@ -111,22 +113,30 @@ function EditorLayout({
   onExport,
   className,
   styleTokens,
+  defaultTheme = 'dark',
 }: {
   onExport?: () => void;
   className?: string;
   styleTokens?: Record<string, string | number>;
+  defaultTheme?: EditorTheme;
 }) {
   const studioMode = useEditorState((s) => s.studioMode);
   const editSubMode = useEditorState((s) => s.editSubMode);
   const isEdit = studioMode === 'edit';
   const isStyleMode = isEdit && editSubMode === 'style';
+  const [theme, setTheme] = useState<EditorTheme>(() => loadStoredTheme(defaultTheme));
+
+  useEffect(() => {
+    saveStoredTheme(theme);
+  }, [theme]);
 
   return (
     <div
       className={`vf-editor${isEdit ? '' : ' vf-editor--live'}${isStyleMode ? ' vf-editor--style' : ''}${className ? ` ${className}` : ''}`}
+      data-vf-theme={theme}
     >
       <KeyboardShortcuts />
-      <Toolbar onExport={onExport} />
+      <Toolbar onExport={onExport} theme={theme} onThemeChange={setTheme} />
       <EditorDndShell>
         <div className="vf-editor-body">
           {isEdit && (
@@ -158,6 +168,7 @@ export function ViewFoundryEditor({
   defaultStudioMode,
   onStudioModeChange,
   styleTokens,
+  defaultTheme = 'dark',
 }: ViewFoundryEditorProps) {
   return (
     <EditorProvider
@@ -167,7 +178,12 @@ export function ViewFoundryEditor({
       defaultStudioMode={defaultStudioMode}
       onStudioModeChange={onStudioModeChange}
     >
-      <EditorLayout onExport={onExport} className={className} styleTokens={styleTokens} />
+      <EditorLayout
+        onExport={onExport}
+        className={className}
+        styleTokens={styleTokens}
+        defaultTheme={defaultTheme}
+      />
     </EditorProvider>
   );
 }

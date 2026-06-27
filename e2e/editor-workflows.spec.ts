@@ -11,6 +11,7 @@ import {
   inspector,
   layers,
   palette,
+  removeSelectedNode,
   resetDocument,
   selectLayer,
   setEditSubMode,
@@ -82,7 +83,7 @@ test.describe('editor workflows', () => {
     await bootstrapGridWithButton(page);
     await selectLayer(page, /^Button\b/);
 
-    await toolbar(page).getByRole('button', { name: 'Delete' }).click();
+    await removeSelectedNode(page, 'Button');
 
     await expect(demoButton(page, 'Click me')).toBeHidden();
     await expect(layers(page).getByRole('button', { name: /^Button\b/ })).toBeHidden();

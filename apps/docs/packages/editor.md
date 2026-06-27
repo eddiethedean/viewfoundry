@@ -1,6 +1,6 @@
 # @viewfoundry/editor
 
-Visual editor UI — palette, canvas, inspector, layers, toolbar, Edit/Live toggle, Component/Style sub-modes.
+Visual editor UI — palette/canvas/inspector today; **Stage**, **Elements**, **Add Elements**, code-first DnD from v0.7. See [Roadmap & direction](../roadmap-and-direction.md).
 
 ## Primary export
 

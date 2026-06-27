@@ -1,6 +1,6 @@
 # ViewFoundry
 
-ViewFoundry is an embeddable visual editor framework for React applications. Register your real components with typed metadata and get a no-code canvas, property inspector, document model, undo/redo, and TSX export.
+ViewFoundry is an embeddable visual editor framework for React. Register your real components and edit visually — today via a JSON **embed mode** (shipped), tomorrow via **code-first** editing that writes directly to TSX and CSS (from v0.7).
 
 ```{toctree}
 :maxdepth: 2
@@ -8,6 +8,7 @@ ViewFoundry is an embeddable visual editor framework for React applications. Reg
 
 getting-started
 integrate-existing-app
+roadmap-and-direction
 studio
 examples
 ```
@@ -51,6 +52,7 @@ migration-0.4-0.5
 | Scaffold a new Vite + React app           | [Getting started — Quick start (CLI)](getting-started.md#quick-start-recommended)       |
 | Add ViewFoundry to an existing Vite app   | [Integrate into an existing app](integrate-existing-app.md)                             |
 | Try the editor without installing         | [Open the Studio](studio.md)                                                            |
+| Understand product direction (v0.7+)      | [Roadmap & direction](roadmap-and-direction.md)                                         |
 | Render saved JSON without the editor      | [Production patterns — runtime-only](production-patterns.md#editor-vs-runtime-packages) |
 | Export or validate TSX in CI              | [Production patterns — CI validation](production-patterns.md#ci-validation)             |
 | Understand package vs document versioning | [FAQ](faq.md)                                                                           |
@@ -66,4 +68,4 @@ migration-0.4-0.5
 
 ## Status
 
-ViewFoundry **v0.5.0** is early-access software. Package semver (`0.5.0`) is separate from the document schema version (`ViewDocument.version: '0.1'`). See the [roadmap](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for planned features.
+ViewFoundry **v0.6.0** is early-access software. **Today:** embed-mode JSON editing (see [Getting started](getting-started.md)). **From v0.7:** [code-first editing](roadmap-and-direction.md) (TSX/CSS as source of truth). Package semver (`0.5.0`) is separate from document schema (`ViewDocument.version: '0.1'`). Full milestone list: [Roadmap & direction](roadmap-and-direction.md) and [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).

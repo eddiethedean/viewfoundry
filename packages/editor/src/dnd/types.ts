@@ -33,3 +33,9 @@ export function parsePaletteDragId(id: string): string | null {
 export function parseNodeDragId(id: string): string | null {
   return id.startsWith('node:') ? id.slice('node:'.length) : null;
 }
+
+export const CANVAS_DROP_ID = 'canvas:root';
+
+export function parseCanvasDropId(id: string): boolean {
+  return id === CANVAS_DROP_ID;
+}

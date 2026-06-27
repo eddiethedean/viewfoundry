@@ -1,6 +1,10 @@
 # Grid layout
 
-ViewFoundry **v0.3.0** adds CSS Grid–based layout with canvas drag-and-drop. This guide covers the document model, layout components, editor behavior, and codegen.
+```{note}
+This guide describes **embed-mode** JSON grid layout (shipped v0.3). **Code-first** (v0.7+) uses **Stack** and **Grid** components in JSX with Stage DnD — see [Roadmap & direction](roadmap-and-direction.md) and [DnD research](https://github.com/eddiethedean/viewfoundry/blob/main/docs/DND_AND_LAYOUT_RESEARCH.md).
+```
+
+ViewFoundry **v0.3.0** adds CSS Grid–based layout with canvas drag-and-drop.
 
 ## Mental model
 

@@ -1,5 +1,7 @@
 export { ViewFoundryEditor } from './ViewFoundryEditor.js';
 export type { ViewFoundryEditorProps } from './ViewFoundryEditor.js';
+export type { EditorTheme } from './theme.js';
+export { loadStoredTheme, saveStoredTheme, toggleTheme } from './theme.js';
 export { EditorProvider, useEditorStore, useEditorState } from './EditorContext.js';
 export type { EditorProviderProps } from './EditorContext.js';
 export { Toolbar } from './Toolbar.js';

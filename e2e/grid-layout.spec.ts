@@ -1,12 +1,15 @@
 import { expect, test } from '@playwright/test';
 import {
   bootstrapGridWithButton,
+  expectInspectorShowsType,
   expectStoredDocument,
   firstGridChild,
   insertFromPalette,
+  inspector,
   layers,
   resetDocument,
   selectLayer,
+  setShowGrid,
   toolbar,
 } from './helpers.js';
 
@@ -89,5 +92,30 @@ test.describe('grid layout', () => {
     const drawer = page.getByRole('dialog', { name: 'Generated TSX' });
     const code = await drawer.locator('pre').textContent();
     expect(code).toMatch(/<Grid[^>]*style=\{\{[^}]*gridColumn/);
+  });
+
+  test('shows visible grid cells when Show Grid is enabled', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await setShowGrid(page, true);
+    await expect(page.locator('.vf-grid-drop-layer--visible')).toBeVisible();
+    await expect(page.locator('.vf-grid-cell-drop--visible').first()).toBeVisible();
+  });
+
+  test('selects a node by clicking a grid cell', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await setShowGrid(page, true);
+    await page.locator('[data-grid-row="1"][data-grid-column="1"]').click();
+    await expectInspectorShowsType(inspector(page), 'Button');
+    await expect(page.locator('[data-grid-row="1"][data-grid-column="1"]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  test('hides Show Grid toggle in Live mode', async ({ page }) => {
+    await bootstrapGridWithButton(page);
+    await setShowGrid(page, true);
+    await toolbar(page).getByRole('button', { name: 'Live', exact: true }).click();
+    await expect(toolbar(page).getByRole('button', { name: 'Show Grid' })).toBeHidden();
   });
 });

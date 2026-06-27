@@ -1,6 +1,6 @@
 # Dashboard builder example
 
-A grid-heavy dashboard layout: sidebar navigation, stat cards, chart placeholder, and table area — seeded from `viewfoundry/document.json`.
+Grid-heavy dashboard layout using **embed-mode** JSON editing — seeded from `viewfoundry/document.json`. **Code-first** editing planned from v0.7.
 
 ## What it demonstrates
 

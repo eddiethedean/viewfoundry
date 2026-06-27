@@ -1,10 +1,12 @@
 # Clipboard & saved blocks
 
+> **Code-first: v0.12.0** — JSX subtree copy/paste, saved blocks in Add Elements. See [ROADMAP.md](ROADMAP.md), [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
+
 ## Purpose
 
 Productivity features for authors: **copy/paste** subtrees (including across routes) and **saved blocks** — reusable template libraries.
 
-**Planned: v0.13.0** (pre-1.0)
+**Planned: v0.12.0** (code-first)
 
 ## Clipboard
 

@@ -1,9 +1,9 @@
 .vf-missing-component {
   padding: 12px 16px;
-  border: 2px dashed #e53e3e;
-  border-radius: 6px;
-  background: #fff5f5;
-  color: #c53030;
+  border: 2px dashed var(--vf-danger, #f85149);
+  border-radius: var(--vf-radius-sm, 7px);
+  background: var(--vf-danger-bg, rgba(248, 81, 73, 0.12));
+  color: var(--vf-danger, #f85149);
   font-family: system-ui, sans-serif;
   font-size: 14px;
 }
@@ -13,9 +13,9 @@
 }
 
 .vf-node-wrapper.vf-node-selected {
-  outline: 2px solid #3182ce;
+  outline: 2px solid var(--vf-accent, #539bf5);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .vf-root {
@@ -30,7 +30,7 @@
 
 .vf-grid-container {
   position: relative;
-  border-radius: 4px;
+  border-radius: var(--vf-radius-xs, 5px);
 }
 
 .vf-grid-child {
@@ -39,17 +39,35 @@
 
 .vf-node-wrapper.vf-node-dragging {
   opacity: 0.45;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--vf-shadow-md, 0 8px 24px rgba(0, 0, 0, 0.45));
 }
 
 .vf-grid-drop-target {
-  outline: 2px solid #3182ce;
-  background: rgba(49, 130, 206, 0.12);
+  outline: 2px solid var(--vf-accent, #539bf5);
+  background: var(--vf-accent-subtle, rgba(88, 166, 255, 0.14));
 }
 
 .vf-grid-cell-drop {
   min-height: 24px;
-  border-radius: 2px;
+  border-radius: var(--vf-radius-xs, 5px);
+}
+
+.vf-grid-cell-drop--visible {
+  border: 1px dashed var(--vf-border, #30363d);
+  background: var(--vf-accent-subtle, rgba(88, 166, 255, 0.06));
+  box-sizing: border-box;
+}
+
+.vf-grid-cell-drop--selected {
+  border-color: var(--vf-accent, #539bf5);
+  border-style: solid;
+  background: var(--vf-accent-subtle, rgba(88, 166, 255, 0.14));
+  outline: 2px solid var(--vf-accent, #539bf5);
+  outline-offset: -1px;
+}
+
+.vf-grid-drop-layer--visible {
+  pointer-events: none;
 }
 
 .vf-grid-drop-layer {

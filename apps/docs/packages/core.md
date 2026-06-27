@@ -1,6 +1,6 @@
 # @viewfoundry/core
 
-Framework-agnostic document engine.
+Framework-agnostic document engine (**embed mode**, shipped). Planned **v0.7+:** file-edit command types for `@viewfoundry/sync`. See [Roadmap & direction](../roadmap-and-direction.md).
 
 ## Responsibilities
 

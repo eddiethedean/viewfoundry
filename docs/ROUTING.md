@@ -1,5 +1,7 @@
 # Routing
 
+> **Direction (v0.7+):** Code-first routing (**v0.10**) edits route/page TSX in source. JSON `ViewSite` multi-document model is **embed-mode backlog**. See [CODE_FIRST.md](CODE_FIRST.md), [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
 ViewFoundry today edits a **single page** — one `ViewDocument` per editor session. Real apps have **multiple routes**: `/`, `/about`, `/dashboard/:id`, each with its own layout and components.
@@ -11,7 +13,7 @@ This spec plans **multi-route support**: defining routes, switching pages in the
 - Model multiple pages/routes in a **site** container (or equivalent) that references one `ViewDocument` per route.
 - Edit any route in the studio with a **Pages** panel (route switcher).
 - Resolve and render the active route in Live mode and exported apps.
-- Integrate with **interactions** (`navigate` action from v0.8.0) for in-app navigation.
+- Integrate with **interactions** (`navigate` in TSX or handler props, **v0.11**) for in-app navigation.
 - Codegen route tables and per-page components for React Router (or host adapter).
 - Stay embeddable: single-route apps keep working with no routing config.
 
@@ -220,11 +222,10 @@ Document mutations (`insertNode`, etc.) apply to the **active route’s** docume
 
 ## Relationship to other releases
 
-| Release | Relationship                                                                     |
-| ------- | -------------------------------------------------------------------------------- |
-| v0.5.0  | `examples/landing-page` may ship as single-page first; multi-route added in v0.9 |
-| v0.8.0  | `navigate` interaction action; full routing lands in v0.9                        |
-| v0.7.0  | LessonKit may map lessons/pages to routes via adapter                            |
+| Release | Relationship                                                                                   |
+| ------- | ---------------------------------------------------------------------------------------------- |
+| v0.5.0  | `examples/landing-page` may ship as single-page first; multi-route added in v0.10 (code-first) |
+| v0.11.0 | `navigate` / link handlers; full routing in v0.10                                              |
 
 ## Open questions
 

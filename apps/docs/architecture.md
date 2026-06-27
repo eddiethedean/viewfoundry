@@ -1,42 +1,48 @@
 # Architecture
 
-ViewFoundry is a layered monorepo designed for embeddable visual editing.
+ViewFoundry is a layered, embeddable monorepo for visual React editing.
 
 ## Principles
 
-1. **Registered components first** — only explicitly registered React components are editable.
-2. **Schema-driven editing** — prop controls are generated from metadata.
-3. **Runtime and editor separated** — rendering a document does not require the editor UI.
-4. **Pure document model** — documents are JSON-serializable trees.
-5. **Command-based mutation** — edits flow through commands for history and validation.
-6. **Dual-audience UX** — features must work for studio authors and React integrators; see [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md) in the repo.
+1. **Registered components first** — only explicitly registered (or discovered) React components are editable.
+2. **Schema-driven editing** — prop controls from metadata and/or TypeScript inference.
+3. **Runtime and editor separated** — rendering does not require the full editor UI.
+4. **Dual authoring modes** — **embed mode** (JSON `ViewDocument`, shipped) and **code-first** (TSX/CSS source of truth, from v0.7). See [Roadmap & direction](roadmap-and-direction.md).
+5. **Command-based mutation** — edits flow through commands (document or file patches) for history and validation.
+6. **Structured layout** — Stack (flex) and Grid containers, not absolute X/Y as default ([DnD research](https://github.com/eddiethedean/viewfoundry/blob/main/docs/DND_AND_LAYOUT_RESEARCH.md)).
+7. **Dual-audience UX** — studio authors and React integrators; see [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md).
 
-## Package layers
+## Package layers (shipped)
 
 ```text
 @viewfoundry/schema   →  component metadata helpers
 @viewfoundry/core     →  document engine (framework-agnostic)
 @viewfoundry/react    →  React runtime renderer
 @viewfoundry/editor   →  visual editor UI
-@viewfoundry/codegen  →  TSX export
+@viewfoundry/codegen  →  TSX export (embed mode)
+@viewfoundry/vite     →  Vite plugin (document HMR)
+@viewfoundry/cli      →  init, validate, export
 ```
 
 The editor depends on core, schema, and react. React depends only on core. Core has no React dependency.
 
-## Document model
+## Planned packages (v0.7+)
+
+| Package                 | Role                                             |
+| ----------------------- | ------------------------------------------------ |
+| `@viewfoundry/sync`     | TSX/CSS parse, selection map, AST patches        |
+| `@viewfoundry/board`    | `createBoard()`, `.board.tsx` isolation fixtures |
+| `@viewfoundry/discover` | Component scan and registry bootstrap (v0.9)     |
+
+## Embed-mode document model (shipped)
+
+Used by [Getting started](getting-started.md), the [Studio](studio.md), and CMS-style hosts:
 
 ```ts
 type ViewDocument = {
   version: '0.1';
   root: ViewNode;
   meta?: { name?: string; description?: string };
-};
-
-type GridPlacement = {
-  column?: number;
-  row?: number;
-  colSpan?: number;
-  rowSpan?: number;
 };
 
 type ViewNode = {
@@ -49,34 +55,56 @@ type ViewNode = {
 };
 ```
 
-Documents are validated with `validateDocument()` and mutated through `applyCommand()` for registry-aware inserts and updates. Grid placement is validated for bounds and overlaps within layout containers.
+Documents are validated with `validateDocument()` and mutated through `applyCommand()`. See [Grid layout](grid-layout.md).
 
-See the [Grid layout guide](grid-layout.md) for editor and codegen behavior.
+## Code-first data flow (v0.7+)
 
-## Data flow
+```text
+Host React project (TSX, CSS)
+        ↓
+Optional @viewfoundry/discover
+        ↓
+Registry + boards (.board.tsx)
+        ↓
+@viewfoundry/sync ↔ @viewfoundry/editor (Stage, Elements, Properties, Styles)
+        ↓
+Git / host persistence
+```
+
+Visual edits patch source files; Vite HMR keeps Stage and external IDE in sync.
+
+## Embed-mode data flow (shipped)
 
 ```text
 Registered components → Registry → ViewDocument JSON → Renderer / Editor / Codegen
 ```
 
+## Editor panels (target, code-first)
+
+| Panel            | Role                                       |
+| ---------------- | ------------------------------------------ |
+| **Stage**        | Canvas, DnD, viewport sizing               |
+| **Elements**     | Component tree, multi-select, drag-reorder |
+| **Properties**   | Prop controls                              |
+| **Styles**       | CSS controllers (v0.8)                     |
+| **Add Elements** | Categorized insert (v0.9)                  |
+| **Pages**        | Routes when editing full app (v0.10)       |
+
+Embed mode uses Palette, Canvas, Layers, and Inspector names today; behavior converges on the Stage DnD quality bar over time.
+
 ## Documentation site
 
-This site is built with Sphinx and MyST. The [embedded Studio](studio.md) is a static Vite bundle copied into `_static/studio/` during `pnpm docs:build`, so it loads from the same Read the Docs deployment without a separate server.
+This site is built with Sphinx and MyST. The [embedded Studio](studio.md) is a static Vite bundle (embed-mode demo) copied into `_static/studio/` during `pnpm docs:build`.
 
 ## Roadmap
 
-| Version     | Status       | Theme                                                                                                                              |
-| ----------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| v0.3.0      | **Released** | Grid layout and canvas drag-and-drop                                                                                               |
-| v0.4.0      | **Released** | Style Editor sub-mode                                                                                                              |
-| v0.5.0      | **Released** | `viewfoundry init`, Vite plugin, more examples                                                                                     |
-| v0.6.0      | **Released** | Read the Docs site with embedded Studio                                                                                            |
-| v0.7.0      | Planned      | LessonKit integration                                                                                                              |
-| v0.8.0      | Planned      | Interactions & triggers between components                                                                                         |
-| v0.9.0      | Planned      | Multi-route sites and URL navigation                                                                                               |
-| v0.10–v0.15 | Planned      | Slots, bindings, repeat, clipboard, forms, responsive (pre-1.0)                                                                    |
-| v1.0.0      | Planned      | Stable public API                                                                                                                  |
-| v1.1+       | Planned      | Nested layouts, adapters, loaders, plugins ([POST_1_0.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/POST_1_0.md)) |
-| v1.6.0      | Planned      | Load existing React projects and components into the editor                                                                        |
+| Version     | Status       | Theme                                    |
+| ----------- | ------------ | ---------------------------------------- |
+| v0.3–v0.6   | **Released** | Grid, Style Editor, CLI, Vite, docs site |
+| v0.7        | Planned      | Code-first, boards, sync, Stage DnD      |
+| v0.8        | Planned      | Styles panel, Theme Manager              |
+| v0.9        | Planned      | Add Elements, project import             |
+| v0.10–v0.13 | Planned      | Pages, interactions, blocks, responsive  |
+| v1.0        | Planned      | Stable code-first + frozen embed API     |
 
-See the repository [`docs/ROADMAP.md`](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for full release notes.
+Details: [Roadmap & direction](roadmap-and-direction.md) and repository [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md).

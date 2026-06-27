@@ -1,5 +1,7 @@
 # Cursor Prompt: Build @viewfoundry/editor MVP
 
+> **Note:** Shipped embed-mode editor. Target from v0.7: Stage, Elements, code-first DnD — see [docs/EDITOR_SPEC.md](../docs/EDITOR_SPEC.md), [docs/DND_AND_LAYOUT_RESEARCH.md](../docs/DND_AND_LAYOUT_RESEARCH.md).
+
 Implement the initial visual editor package according to:
 
 - `docs/EDITOR_SPEC.md`

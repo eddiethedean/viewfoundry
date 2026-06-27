@@ -1,5 +1,13 @@
 # FAQ
 
+## What is code-first vs embed mode?
+
+**Embed mode** (shipped in v0.5/v0.6) stores pages as JSON `ViewDocument` files. You render with `@viewfoundry/react` and optionally export TSX via `@viewfoundry/codegen`.
+
+**Code-first** (from v0.7) treats your **TSX and CSS** as the source of truth — visual edits patch source files directly. JSON embed mode remains supported for CMS-style products and the docs Studio.
+
+See [Roadmap & direction](roadmap-and-direction.md).
+
 ## What is the difference between package version and document version?
 
 **Package semver** (e.g. `0.5.0` on npm) tracks the ViewFoundry libraries. **Document schema version** (`ViewDocument.version: '0.1'`) tracks the JSON shape of saved documents. They are independent — you can run `@viewfoundry/*@0.5.0` while documents still use `version: '0.1'`.
@@ -59,7 +67,7 @@ The authoritative API contract is published as the [Package API spec](package-ap
 
 ## What are the `docs/` files in the repo?
 
-The repository `docs/` folder holds **planning and design specs** (roadmap, editor spec, document model). They may lag implementation. **Published user docs** are this Read the Docs site (`apps/docs/`).
+The repository `docs/` folder holds **planning and design specs** (roadmap, code-first strategy, DnD research, editor spec). They may lag implementation. **Published user docs** are this Read the Docs site (`apps/docs/`). Start with [Roadmap & direction](roadmap-and-direction.md) for product direction.
 
 ## Is ViewFoundry stable?
 
@@ -69,11 +77,11 @@ ViewFoundry is **early-access** during `0.x`. Minor releases may add APIs and op
 
 **Both**, with different entry points:
 
-- **Studio users** (authors, designers) use Edit / Live, the palette, layers, and inspector to build pages without writing React. Success means plain-language UI, safe defaults, and undo for mistakes.
-- **React developers** embed `ViewFoundryEditor`, register real components with `defineComponent`, persist `ViewDocument` JSON, and export TSX. Success means typed APIs, copy-pasteable examples, and codegen you would ship.
+- **Studio users** (authors, designers) use Edit / Live, the palette or (future) Add Elements panel, Elements tree, and inspector to build UIs without writing React. Stage drag-and-drop must meet plain-language, forgiving UX — see the [DnD quality bar](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md#global-dnd-quality-bar-v07).
+- **React developers** embed `ViewFoundryEditor`, register components with `defineComponent` (or discovery in v0.9), persist JSON today or commit TSX/CSS in code-first mode, and export TSX when using embed mode.
 
-Usability bars for both audiences are defined in the repo planning doc [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md) (maintainers use this for release review).
+Usability bars: [UX_AND_DX.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/UX_AND_DX.md). Direction: [Roadmap & direction](roadmap-and-direction.md).
 
 ## How do I select a component on the grid canvas?
 
-Use the **Layers** panel for reliable selection when grid drop overlays are active. Canvas click selection can be ambiguous when multiple drop targets overlap — we are improving this in future releases.
+Use the **Layers** panel (becoming **Elements** in code-first UI) for reliable selection when grid drop overlays are active. **v0.7** adds parent-first / child-first canvas click mode (Wix Studio pattern).

@@ -1,5 +1,7 @@
 # Component Registry Specification
 
+> **Direction (v0.7+):** `@viewfoundry/discover` and `viewfoundry import` (**v0.9**) bootstrap registry entries from existing projects. Manual `defineComponent` remains the embed-mode default. See [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
 The registry maps document node types to real renderable components and editing metadata.

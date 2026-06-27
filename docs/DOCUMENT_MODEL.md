@@ -1,8 +1,10 @@
 # ViewFoundry Document Model
 
+> **Embed mode only.** From v0.7, the primary authoring path is **code-first** — TSX and CSS files are the source of truth. This document describes the JSON model used by v0.1–v0.6 embed workflows (CMS, RTD Studio, `generateTsx`). See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Goals
 
-The document model must be:
+The embed document model must be:
 
 - serializable
 - stable across versions
@@ -148,16 +150,16 @@ A document is valid when:
 7. Grid placements are in bounds and non-overlapping within layout containers.
 8. Style values conform to validation rules when `node.style` is present.
 
-## Future additions
+## Future additions (embed backlog)
 
-Potential future fields:
+The fields below were planned for JSON-only features. **New work targets code-first source instead.** Implement on the embed path only if CMS customers require them post-1.0.
 
 ```ts
 export type ViewDocument = {
   version: '0.1';
   root: ViewNode;
   meta?: ViewDocumentMeta;
-  interactions?: Interaction[]; // planned v0.8.0 — see INTERACTIONS.md
+  interactions?: Interaction[]; // embed backlog — code-first uses TSX handlers (v0.11)
 };
 
 export type ViewNode = {
@@ -165,40 +167,26 @@ export type ViewNode = {
   type: string;
   props?: Record<string, unknown>;
   children?: ViewNode[];
-  slots?: Record<string, ViewNode[]>;
-  bindings?: Record<string, DataBinding>;
-  conditions?: ConditionExpression[];
-  repeat?: RepeatExpression;
-  style?: StyleTokenMap;
-  layout?: NodeLayout;
+  slots?: Record<string, ViewNode[]>; // embed backlog — JSX children in code-first
+  bindings?: Record<string, DataBinding>; // embed backlog
+  conditions?: ConditionExpression[]; // embed backlog
+  repeat?: RepeatExpression; // embed backlog
+  style?: StyleTokenMap; // shipped embed mode (v0.4)
+  layout?: NodeLayout; // shipped embed mode (v0.3)
 };
 ```
 
-### Interactions & triggers (planned v0.8.0)
+### Interactions (embed backlog)
 
-Document-level `interactions` connect **triggers** (events on a source node) to **actions** (effects on target nodes) — e.g. button `click` → `setProp` on a heading. Serializable, validated, editable in an Interactions sub-mode, executed in Live mode by `@viewfoundry/react`.
+Document-level `interactions` were planned for JSON wiring. **Code-first (v0.11)** writes handler props and callbacks in TSX instead. See [INTERACTIONS.md](INTERACTIONS.md).
 
-See [INTERACTIONS.md](INTERACTIONS.md) for types, registry events/actions, commands, and codegen.
+### Routing (embed backlog)
 
-### Routing & multi-page (planned v0.9.0)
+`ViewSite` / multi-document routes were planned for JSON. **Code-first (v0.10)** edits route files in source. See [ROUTING.md](ROUTING.md).
 
-A **site** (`ViewSite`) holds multiple **routes** — each with a path and its own `ViewDocument`. The editor **Pages** panel switches routes; runtime matches URL to active page; interactions and link components call `navigate`.
+### Repeat, slots, bindings (embed backlog)
 
-Single-document embeds remain valid (one implicit `/` route).
-
-See [ROUTING.md](ROUTING.md).
-
-### Repeat & lists (planned v0.12.0)
-
-`repeat` on `ViewNode` renders child template per list item. See [REPEAT.md](REPEAT.md).
-
-### Slots (planned v0.10.0)
-
-Named slot trees on `ViewNode`. See [SLOTS.md](SLOTS.md).
-
-### Data bindings & variables (planned v0.11.0)
-
-Bindings, variables, and conditions. See [DATA_BINDING.md](DATA_BINDING.md).
+See [REPEAT.md](REPEAT.md), [SLOTS.md](SLOTS.md), [DATA_BINDING.md](DATA_BINDING.md). Code-first authors use standard React patterns (`.map()`, children, state).
 
 ### Style Editor mode (shipped v0.4.0)
 

@@ -1,10 +1,12 @@
 # Named slots & composition
 
+> **Embed-mode backlog.** Code-first uses JSX children and component APIs directly. Implement on JSON path only if embed customers need it post-1.0. See [CODE_FIRST.md](CODE_FIRST.md), [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
 Most real React components use **named slots** (header, footer, actions) or compound-component patterns — not a single `children` array. ViewFoundry must model slot content in JSON and support slot-aware editing and codegen.
 
-**Planned: v0.10.0** (pre-1.0)
+**Planned: embed backlog** (was v0.10.0 JSON model)
 
 ## Goals
 

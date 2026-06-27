@@ -1,37 +1,42 @@
 .studio-embed {
   margin: 1.5rem 0;
-  border: 1px solid #d8dee8;
-  border-radius: 8px;
+  border: 1px solid #30363d;
+  border-radius: 10px;
   overflow: hidden;
-  background: #f4f5f7;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+  background: #0d1117;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .studio-embed-header {
   display: flex;
   justify-content: flex-end;
-  padding: 0.4rem 0.65rem;
-  background: #fff;
-  border-bottom: 1px solid #e8ecf2;
+  padding: 0.45rem 0.75rem;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
 }
 
 .studio-fullscreen-btn {
   font: inherit;
   font-size: 0.875rem;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
-  background: #fff;
-  color: #2d3748;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #30363d;
+  border-radius: 7px;
+  background: #1c2128;
+  color: #e6edf3;
   cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
 }
 
 .studio-fullscreen-btn:hover {
-  background: #f7fafc;
+  background: #21262d;
+  border-color: #8b949e;
 }
 
 .studio-fullscreen-btn:focus-visible {
-  outline: 2px solid #3182ce;
+  outline: 2px solid #539bf5;
   outline-offset: 2px;
 }
 
@@ -40,15 +45,16 @@
   width: 100%;
   min-height: 720px;
   border: 0;
+  background: #0d1117;
 }
 
 .studio-embed-caption {
   margin: 0;
-  padding: 0.65rem 0.9rem;
+  padding: 0.7rem 0.95rem;
   font-size: 0.9rem;
-  color: #4a5568;
-  background: #fff;
-  border-top: 1px solid #e8ecf2;
+  color: #8b949e;
+  background: #161b22;
+  border-top: 1px solid #30363d;
 }
 
 .studio-embed--fullscreen {
@@ -75,7 +81,7 @@ body.studio-embed-fullscreen-active {
   margin: 0;
   border: none;
   border-radius: 0;
-  background: #f4f5f7;
+  background: #0d1117;
 }
 
 .studio-embed:fullscreen iframe,

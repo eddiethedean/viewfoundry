@@ -1,6 +1,10 @@
 # Try the Studio
 
-This page embeds a working **ViewFoundryEditor** build served from the same documentation site. No separate dev server is required.
+```{note}
+The embedded Studio uses **embed mode** (JSON document) as shipped in v0.5/v0.6. **Code-first** editing (TSX/CSS) is planned from v0.7 — see [Roadmap & direction](roadmap-and-direction.md).
+```
+
+This page embeds a working **ViewFoundryEditor** build served from the same documentation site.
 
 Use **Edit** mode to drag components from the palette, edit props in the **Component** inspector or **Style** sub-mode, and undo/redo. Switch to **Live** to interact with the rendered output in the same viewport.
 

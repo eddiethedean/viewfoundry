@@ -1,5 +1,7 @@
 # Cursor Prompt: Bootstrap ViewFoundry Monorepo
 
+> **Direction:** Embed-mode foundation shipped. v0.7+ adds `@viewfoundry/sync`, `@viewfoundry/board`, `@viewfoundry/discover` — [docs/CODE_FIRST.md](../docs/CODE_FIRST.md).
+
 You are building ViewFoundry, an embeddable visual editor framework for React applications.
 
 Read the docs in this repository first, especially:

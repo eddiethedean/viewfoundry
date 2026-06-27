@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   bootstrapGridWithButton,
   demoButton,
+  dragFromPaletteToCanvas,
   getStoredDocument,
   insertFromPalette,
   inspector,
@@ -27,6 +28,18 @@ test.describe('basic-react example', () => {
     await expect(toolbar(page).getByRole('button', { name: 'Edit', pressed: true })).toBeVisible();
     await expect(toolbar(page).getByRole('button', { name: 'Undo' })).toBeDisabled();
     await expect(toolbar(page).getByRole('button', { name: 'Redo' })).toBeDisabled();
+    await expect(page.locator('.vf-editor')).toHaveAttribute('data-vf-theme', 'dark');
+  });
+
+  test('toggles light mode from the toolbar', async ({ page }) => {
+    const editor = page.locator('.vf-editor');
+    await expect(editor).toHaveAttribute('data-vf-theme', 'dark');
+
+    await toolbar(page).getByRole('button', { name: 'Switch to light mode' }).click();
+    await expect(editor).toHaveAttribute('data-vf-theme', 'light');
+
+    await toolbar(page).getByRole('button', { name: 'Switch to dark mode' }).click();
+    await expect(editor).toHaveAttribute('data-vf-theme', 'dark');
   });
 
   test('inserts a component from the palette with grid bootstrap', async ({ page }) => {
@@ -38,6 +51,24 @@ test.describe('basic-react example', () => {
     expect(stored).not.toBeNull();
     expect(JSON.stringify(stored)).toContain('"layout"');
     expect(JSON.stringify(stored)).toContain('"grid"');
+  });
+
+  test('inserts a component by dragging from the palette onto an empty canvas', async ({
+    page,
+  }) => {
+    await dragFromPaletteToCanvas(page, page, 'Button');
+
+    await expect(layerButton(page, /^Button\b/)).toBeVisible();
+    await expect(layerButton(page, /^Grid\b/)).toBeVisible();
+    await expect(demoButton(page, 'Click me')).toBeVisible();
+  });
+
+  test('inserts a second component by dragging onto the grid', async ({ page }) => {
+    await dragFromPaletteToCanvas(page, page, 'Button');
+    await expect(layers(page).getByRole('button', { name: /^Button\b/ })).toHaveCount(1);
+
+    await dragFromPaletteToCanvas(page, page, 'Button');
+    await expect(layers(page).getByRole('button', { name: /^Button\b/ })).toHaveCount(2);
   });
 
   test('inserts into a selected grid container', async ({ page }) => {

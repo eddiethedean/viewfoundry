@@ -1,10 +1,12 @@
 # Data bindings, variables & conditions
 
+> **Embed-mode backlog.** Code-first uses React state, props, and hooks in source. See [CODE_FIRST.md](CODE_FIRST.md), [ROADMAP.md](ROADMAP.md).
+
 ## Purpose
 
-**Interactions** (v0.8) handle episodic events. **Bindings** keep props in sync with data sources continuously. **Variables** hold document/site state. **Conditions** show or hide nodes declaratively.
+**Interactions** (v0.11 code-first) handle episodic events. **Bindings** (embed backlog) kept props in sync with JSON variables.
 
-**Planned: v0.11.0** (pre-1.0)
+**Planned: embed backlog** (was v0.11.0 JSON model)
 
 ## Data bindings
 

@@ -1,15 +1,19 @@
 import { useEditorState, useEditorStore } from './EditorContext.js';
+import { toggleTheme, type EditorTheme } from './theme.js';
 
 export type ToolbarProps = {
   onExport?: () => void;
+  theme?: EditorTheme;
+  onThemeChange?: (theme: EditorTheme) => void;
 };
 
-export function Toolbar({ onExport }: ToolbarProps) {
+export function Toolbar({ onExport, theme = 'dark', onThemeChange }: ToolbarProps) {
   const store = useEditorStore();
   const studioMode = useEditorState((s) => s.studioMode);
   const editSubMode = useEditorState((s) => s.editSubMode);
   const canUndo = useEditorState((s) => s.canUndo());
   const canRedo = useEditorState((s) => s.canRedo());
+  const showGrid = useEditorState((s) => s.showGrid);
   const lastError = useEditorState((s) => s.lastError);
   const isEdit = studioMode === 'edit';
 
@@ -56,6 +60,15 @@ export function Toolbar({ onExport }: ToolbarProps) {
           >
             Style
           </button>
+          <button
+            type="button"
+            className={showGrid ? 'vf-toolbar-submode-active' : ''}
+            aria-pressed={showGrid}
+            aria-label="Show Grid"
+            onClick={() => store.getState().toggleShowGrid()}
+          >
+            Show Grid
+          </button>
         </div>
       )}
 
@@ -70,9 +83,6 @@ export function Toolbar({ onExport }: ToolbarProps) {
             </button>
           </div>
           <div className="vf-toolbar-group">
-            <button type="button" onClick={() => store.getState().deleteSelected()}>
-              Delete
-            </button>
             <button type="button" onClick={() => store.getState().duplicateSelected()}>
               Duplicate
             </button>
@@ -81,12 +91,28 @@ export function Toolbar({ onExport }: ToolbarProps) {
       )}
 
       {isEdit && onExport && (
-        <div className="vf-toolbar-group vf-toolbar-right">
+        <div className="vf-toolbar-group">
           <button type="button" onClick={onExport}>
             Export TSX
           </button>
         </div>
       )}
+
+      {onThemeChange && (
+        <div className="vf-toolbar-group">
+          <button
+            type="button"
+            className="vf-toolbar-theme-toggle"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={theme === 'light'}
+            onClick={() => onThemeChange(toggleTheme(theme))}
+          >
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
+        </div>
+      )}
+
+      <div className="vf-toolbar-spacer" aria-hidden="true" />
 
       {isEdit && lastError && (
         <div className="vf-toolbar-error" role="alert">

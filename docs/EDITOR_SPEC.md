@@ -2,7 +2,100 @@
 
 Studio usability standards (plain language, safe defaults, progressive disclosure) are in [UX_AND_DX.md](UX_AND_DX.md). This spec covers layout and behavior.
 
-## MVP editor layout
+**Modes:** v0.1–v0.6 shipped **embed mode** (JSON document). From **v0.7**, the target layout follows **code-first** editing with Codux-inspired panels and Figma/Wix-inspired Stage DnD. See [CODE_FIRST.md](CODE_FIRST.md) and [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
+
+## Target layout (code-first, v0.7+)
+
+```txt
+┌──────────────────────────────────────────────────────────────────┐
+│ Toolbar  [ Board ▾ | App ▾ ]  [ Edit ● | ○ Live ]  [ C | S | I ] │
+│          viewport W×H   [ Open in browser ]                       │
+├──────────────┬───────────────────────────────┬───────────────────┤
+│ Add Elements │         STAGE                 │ Properties        │
+│ (v0.9)       │   (canvas + overlays)         │ (props)           │
+│              │                               │                   │
+│ Elements     │                               │ Styles (v0.8)     │
+│ (tree)       │                               │ Theme Mgr (v0.8)  │
+├──────────────┴───────────────────────────────┴───────────────────┤
+│ Optional status / sync indicator                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Panel glossary (Codux-inspired)
+
+| Panel               | Role                                                              | Release                   |
+| ------------------- | ----------------------------------------------------------------- | ------------------------- |
+| **Stage**           | Render surface; selection overlays; drop targets; viewport sizing | v0.7 (rename from Canvas) |
+| **Elements**        | DOM/component tree; multi-select; reading order hints             | v0.7 (evolves Layers)     |
+| **Properties**      | Prop controls from TS types + schema; links, media pickers        | v0.7 (evolves Inspector)  |
+| **Styles**          | Visual CSS controllers on real stylesheets; class selector        | v0.8                      |
+| **Computed styles** | Read-only cascade; click-through to Styles                        | v0.8                      |
+| **Theme Manager**   | Global CSS variables, fonts                                       | v0.8                      |
+| **Add Elements**    | Categorized insert: HTML, layouts, components, blocks, libs       | v0.9                      |
+| **Pages**           | Route list when editing full app                                  | v0.10                     |
+| **Board settings**  | Viewport, background, tags, “show in Add Elements”                | v0.7                      |
+
+### Board vs App tabs
+
+- **Board tab** — isolated `.board.tsx` fixture (component development).
+- **App tab** — full page/route TSX (application editing, **v0.10**).
+
+Only one Stage viewport; tab switch preserves Edit/Live mode.
+
+## Code-first layout tools (v0.7+)
+
+ViewFoundry uses **registered layout components** — not absolute X/Y positioning. See [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
+
+| Tool        | CSS                            | Drop behavior                                 |
+| ----------- | ------------------------------ | --------------------------------------------- |
+| **Stack**   | Flex row/column                | Reorder siblings; fixed gap; prevents overlap |
+| **Grid**    | CSS Grid                       | Cell placement; col/row span                  |
+| **Section** | Section wrapper + inner layout | Page regions (**v0.10**)                      |
+| **Box**     | Generic container              | Reparent only                                 |
+
+### Stage drag-and-drop (code-first)
+
+All operations must satisfy the [global DnD bar](UX_AND_DX.md#global-dnd-quality-bar-v07).
+
+| Action                        | Behavior                                                 |
+| ----------------------------- | -------------------------------------------------------- |
+| Drag from Add Elements (v0.9) | Ghost + dashed valid zone; insert JSX + import           |
+| Alt/Option + drop (v0.9)      | Swap selected component type where schema allows         |
+| Drag existing element         | Reparent or reorder; lift animation + source placeholder |
+| Drag in Elements tree         | Reorder siblings; sync Stage                             |
+| Multi-select drag (v0.12)     | Shared ghost; group move                                 |
+| Hover valid Stack/Grid cell   | Border glow + insertion indicator                        |
+| Invalid target                | Blocked cursor + label (“Card cannot go inside Text”)    |
+| Cancel (Escape)               | Restore original structure                               |
+| Snap                          | Cell/edge snap; hold modifier to disable (Figma pattern) |
+| On drop success               | ~150–200ms settle animation                              |
+
+### Canvas click mode (v0.7)
+
+Toolbar or Settings toggle (Wix Studio pattern):
+
+- **Parent first** — click selects container; second click selects child
+- **Child first** — click selects deepest element under cursor
+
+### Smart guides (v0.7)
+
+While dragging or resizing on Stage:
+
+- Alignment lines to sibling edges and centers (Figma smart guides)
+- Optional distance labels (px) to nearest sibling or container edge
+- Faint grid lines on Grid containers in Edit mode (embed-mode parity)
+
+### Sizing vocabulary (v0.8)
+
+Properties or Styles panel exposes Figma-aligned labels:
+
+- **Hug contents** → `fit-content` / shrink-to-fit
+- **Fill container** → flex grow / `1fr`
+- **Fixed** → explicit width/height
+
+## Embed mode layout (shipped v0.1–v0.6)
+
+Legacy JSON document editing keeps the original three-column layout until hosts migrate:
 
 ```txt
 ┌───────────────────────────────────────────────┐
@@ -174,19 +267,16 @@ Use when tuning appearance without changing component identity or schema-backed 
 
 ### Interactions Editor mode
 
-Declarative behavior wiring between components. Planned in **v0.8.0**. See `docs/INTERACTIONS.md`.
+Behavior wiring in source. Planned in **v0.11.0** (code-first). See `docs/INTERACTIONS.md`.
 
 Features:
 
-- interactions list panel (all trigger → action rules in the document)
-- create flow: select source node → pick trigger event → add actions → pick targets
-- edit `ViewDocument.interactions` (not inline functions in props)
-- validation for unknown nodes, events, and action payloads
-- optional canvas overlay showing source/target links when an interaction is selected (later)
+- interactions list panel (rules written as TSX handlers)
+- create flow: select source → pick trigger → define effect → pick targets
+- validation cites component labels
+- handlers run in **Live** mode only
 
-Use when connecting component behavior — e.g. button click updates another node’s prop, toggles visibility, or navigates.
-
-Triggers fire in **Live mode** via the `@viewfoundry/react` interaction interpreter; disabled or no-op in Edit mode while wiring.
+Embed mode: optional JSON `interactions[]` interpreter retained for CMS hosts — not extended pre-1.0.
 
 ## Mode switching
 
@@ -194,7 +284,7 @@ Triggers fire in **Live mode** via the `@viewfoundry/react` interaction interpre
 Toolbar:  [ Edit | Live ]     ← primary toggle (single viewport)
 
 When Edit:
-  [ Component | Style | Interactions ]   ← edit sub-modes (Style v0.4, Interactions v0.8)
+  [ Component | Style | Interactions ]   ← Style v0.8 code-first; Interactions v0.11
   palette + inspector + overlays visible
 
 When Live:
@@ -209,9 +299,9 @@ Rules:
 - Live disables editor mutations and shortcuts; component interactivity and **interaction triggers** enabled
 - undo/redo history is shared across Component, Style, and Interaction edits (not cleared by Live toggle)
 
-## Grid layout and layout drag/drop
+## Grid layout and layout drag/drop (embed mode)
 
-**This is a core product requirement.** ViewFoundry should make arranging components on a grid feel intuitive, precise, and satisfying. **v0.1.0** ships basic palette → canvas insert; **v0.3.0** delivers the full grid system and layout drag/drop.
+**Embed mode requirement (shipped v0.3).** JSON documents use `layout.grid` and canvas drag/drop. Apply the [global DnD quality bar](UX_AND_DX.md#global-dnd-quality-bar-v07) on Canvas where applicable. **Code-first (v0.7+)** uses Stack/Grid JSX + Stage DnD above — not JSON `layout.grid`.
 
 ### Goals
 
@@ -266,11 +356,11 @@ Placement may live on `ViewNode.layout` (see `docs/DOCUMENT_MODEL.md`) or on gri
 - runtime renders grid containers with CSS Grid so WYSIWYG matches output
 - layers panel row order reflects grid reading order (row-major by default)
 
-### Out of scope for first grid pass
+### Out of scope
 
-- free-form absolute positioning (Figma-style)
-- fractional track resizing by dragging gutters (later)
-- multi-select drag (later)
+- free-form absolute positioning as default (Wix Classic) — conflicts with responsive React/CSS
+- fractional track resizing by dragging gutters — post-1.0
+- silent auto-layout rewrite without user confirm — suggest only
 
 ## Keyboard shortcuts
 

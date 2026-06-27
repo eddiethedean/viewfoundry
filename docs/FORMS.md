@@ -1,10 +1,12 @@
 # Forms
 
+> **Embed-mode backlog.** Code-first forms use registered input components and TSX validation/handlers. See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Purpose
 
 Conventions and editor affordances for **form UIs** built from registered inputs — field bindings, validation metadata, submit triggers.
 
-**Planned: v0.14.0** (pre-1.0)
+**Planned: embed backlog** (was v0.14.0 JSON forms)
 
 Builds on **v0.8 interactions** and **v0.11 variables/bindings**.
 

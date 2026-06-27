@@ -1,5 +1,7 @@
 # Code Generation Specification
 
+> **Embed mode.** Code-first authoring (v0.7+) does not require export — source is already TSX. This spec remains the contract for JSON embed workflows and CI. See [CODE_FIRST.md](CODE_FIRST.md).
+
 ## Goals
 
 Codegen should make ViewFoundry developer credible. It should produce readable TSX from a JSON document and a component import map.

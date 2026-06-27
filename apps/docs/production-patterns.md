@@ -1,6 +1,6 @@
 # Production patterns
 
-Guidance for shipping ViewFoundry beyond local development: split editor from runtime, persist documents safely, and validate in CI.
+Guidance for shipping ViewFoundry beyond local development. **Today:** embed-mode JSON persistence and runtime/editor split. **From v0.7:** code-first hosts persist TSX/CSS via Git — see [Roadmap & direction](roadmap-and-direction.md).
 
 ## Editor vs runtime packages
 

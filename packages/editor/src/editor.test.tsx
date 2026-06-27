@@ -5,6 +5,7 @@ import { createDocument, createNode, findNode } from '@viewfoundry/core';
 import { ViewFoundryEditor } from '../src/index.js';
 import { EditorProvider, useEditorState } from '../src/EditorContext.js';
 import { createDemoRegistry } from './test/fixtures.js';
+import { THEME_STORAGE_KEY } from '../src/theme.js';
 import { useEffect } from 'react';
 
 const registry = createDemoRegistry();
@@ -35,7 +36,26 @@ function latestDocument(onChange: ReturnType<typeof vi.fn>) {
 }
 
 describe('ViewFoundryEditor', () => {
-  afterEach(() => cleanup());
+  afterEach(() => {
+    cleanup();
+    try {
+      localStorage.removeItem(THEME_STORAGE_KEY);
+    } catch {
+      // jsdom may not expose full Storage API
+    }
+  });
+
+  it('opens in dark theme by default and toggles light mode', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    const editor = screen.getByRole('button', { name: 'Edit' }).closest('.vf-editor');
+    expect(editor).toHaveAttribute('data-vf-theme', 'dark');
+
+    await user.click(screen.getByRole('button', { name: 'Switch to light mode' }));
+    expect(editor).toHaveAttribute('data-vf-theme', 'light');
+    expect(screen.getByRole('button', { name: 'Switch to dark mode' })).toBeInTheDocument();
+  });
 
   it('opens in Edit mode by default', () => {
     renderEditor();
@@ -169,7 +189,7 @@ describe('ViewFoundryEditor', () => {
     expect(latestDocument(onChange).root.children).toHaveLength(1);
   });
 
-  it('deletes selected node from the toolbar', async () => {
+  it('removes selected node from the inspector', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderEditor(createDocument(), { onChange });
@@ -186,7 +206,7 @@ describe('ViewFoundryEditor', () => {
     if (!layers) throw new Error('layers missing');
     await user.click(within(layers).getByRole('button', { name: new RegExp(nodeId) }));
 
-    await user.click(screen.getByRole('button', { name: 'Delete' }));
+    await user.click(screen.getByRole('button', { name: 'Remove Button from canvas' }));
     expect(latestDocument(onChange).root.children?.[0]?.children ?? []).toHaveLength(0);
   });
 
@@ -306,6 +326,30 @@ describe('ViewFoundryEditor', () => {
     expect(screen.queryByText('Components')).toBeNull();
     expect(screen.getByRole('button', { name: 'Style' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByText('Layers')).toBeInTheDocument();
+  });
+
+  it('toggles Show Grid and selects a node from a visible grid cell', async () => {
+    const user = userEvent.setup();
+    renderEditor();
+
+    const palette = screen.getByText('Components').closest('.vf-palette');
+    if (!palette) throw new Error('palette missing');
+    await user.click(within(palette).getByRole('button', { name: 'Button' }));
+
+    const showGrid = screen.getByRole('button', { name: 'Show Grid' });
+    expect(showGrid).toHaveAttribute('aria-pressed', 'false');
+
+    await user.click(showGrid);
+    expect(showGrid).toHaveAttribute('aria-pressed', 'true');
+
+    const cell = document.querySelector('[data-grid-row="1"][data-grid-column="1"]');
+    expect(cell).toHaveClass('vf-grid-cell-drop--visible');
+
+    await user.click(cell!);
+
+    const inspector = screen.getByText('Inspector').closest('.vf-inspector');
+    expect(inspector).toHaveTextContent('Button');
+    expect(cell).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('preserves selection when switching sub-modes', async () => {

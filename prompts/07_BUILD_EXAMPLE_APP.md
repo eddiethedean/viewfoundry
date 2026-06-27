@@ -1,5 +1,7 @@
 # Cursor Prompt: Build Basic React Example
 
+> **Note:** Embed-mode demo. Code-first example path planned v0.7 — [docs/CODE_FIRST.md](../docs/CODE_FIRST.md).
+
 Create `examples/basic-react` as a working demo of ViewFoundry.
 
 The example should include:

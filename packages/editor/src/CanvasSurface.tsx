@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { ViewNode } from '@viewfoundry/core';
 import { ViewFoundryProvider, ViewRenderer } from '@viewfoundry/react';
 import { useEditorState, useEditorStore } from './EditorContext.js';
+import { CanvasDropZone } from './dnd/CanvasDropZone.js';
 
 export type CanvasSurfaceProps = {
   styleTokens?: Record<string, string | number>;
@@ -54,10 +55,15 @@ export function CanvasSurface({
         data-testid="vf-canvas-surface"
         onScroll={handleScroll}
       >
-        {isEdit && isEmpty && (
-          <div className="vf-canvas-empty">
-            Drag components here or click an item in the palette
-          </div>
+        {isEdit && (
+          <>
+            {isEmpty && (
+              <div className="vf-canvas-empty">
+                Drag components here or click an item in the palette
+              </div>
+            )}
+            <CanvasDropZone />
+          </>
         )}
         <ViewFoundryProvider
           document={document}

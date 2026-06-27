@@ -2,12 +2,31 @@
 
 ViewFoundry serves **two audiences** on every feature:
 
-| Audience            | Who                                                    | Success looks like                                                                          |
-| ------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| **Studio user**     | Non-technical author, marketer, instructional designer | Builds and previews UIs without reading JSON or React; mistakes are recoverable             |
-| **React developer** | Integrator embedding ViewFoundry in a product          | Registers real components once; embed, persist, and export with predictable TypeScript APIs |
+| Audience            | Who                                                    | Success looks like                                                                       |
+| ------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **Studio user**     | Non-technical author, marketer, instructional designer | Builds and previews UIs without reading JSON or React; mistakes are recoverable          |
+| **React developer** | Integrator embedding ViewFoundry in a product          | Registers or discovers real components; embed in product; commit visual edits as TSX/CSS |
 
-Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below plus the **per-feature** rows in this document. Implementation specs (INTERACTIONS, ROUTING, etc.) link here for acceptance review.
+Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below plus the **per-feature** rows in this document. From **v0.7**, code-first features take priority; embed JSON features are maintained but not extended unless listed in the embed backlog. See [CODE_FIRST.md](CODE_FIRST.md) and [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
+
+---
+
+## Global DnD quality bar (v0.7+)
+
+Inspired by Figma and Wix; required for every author-facing drag on the **Stage**. Full rationale in [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md).
+
+| #   | Requirement                                                                             |
+| --- | --------------------------------------------------------------------------------------- |
+| 1   | **Ghost** follows cursor (reduced opacity)                                              |
+| 2   | **Valid targets highlight** before release; active target uses dashed outline           |
+| 3   | **Invalid target** — blocked cursor + plain-language reason (component labels, not ids) |
+| 4   | **Snap** to cells/edges; modifier key **disables snap** for precision                   |
+| 5   | **Settle animation** on successful drop (~150–200ms)                                    |
+| 6   | **Elements tree** order syncs with Stage immediately                                    |
+| 7   | **Escape** cancels drag and restores placeholder                                        |
+| 8   | **Undo** restores prior layout in one step                                              |
+
+Embed-mode grid DnD (v0.3) should meet this bar where applicable; code-first JSX reparenting must meet all eight from **v0.7.0**.
 
 ---
 
@@ -15,25 +34,25 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 
 ### Studio user (UI)
 
-1. **Plain language** — Panel titles, errors, and empty states avoid jargon (`node id`, `payload`, `registry`). Use component **labels** from registration metadata.
+1. **Plain language** — Panel titles, errors, and empty states avoid jargon (`node id`, `payload`, `registry`, `AST`). Use component **labels** from registration metadata.
 2. **Safe by default** — Authors cannot insert invalid children, break the grid, or wire impossible interactions without a clear blocked state and explanation.
 3. **Forgiving** — Undo/redo for structural edits; Escape clears selection; destructive actions confirm when they remove substantial work.
 4. **WYSIWYG Live** — Live mode matches what authors expect from the published app for layout, props, interactions, and routing (within registered component fidelity).
 5. **Progressive disclosure** — Component editing first; Style, Interactions, Pages, and advanced binding UIs live in sub-modes or drawers — not one overwhelming inspector.
-6. **Discoverability** — Palette search, layers tree, and grid drop targets make the next action obvious; empty canvas shows a short hint.
-7. **Consistent chrome** — Edit / Live toggle always visible; sub-mode tabs use the same order everywhere (Component → Style → Interactions).
+6. **Discoverability** — Add Elements search, Elements tree, and drop targets on Stage make the next action obvious; empty board shows a short hint.
+7. **Consistent chrome** — Edit / Live toggle always visible; sub-mode tabs use the same order everywhere (Component → Style → Interactions); panel names match [EDITOR_SPEC.md](EDITOR_SPEC.md) (Stage, Elements, Properties, Styles).
 8. **Accessible basics** — Toolbar and palette operable by keyboard; inspector fields have labels; focus rings on interactive controls (WCAG-oriented, not a full audit).
 
 ### React developer (DX)
 
-1. **Real components** — No parallel component system; `defineComponent(YourButton, …)` uses the same React component as production.
+1. **Real components** — No parallel component system; edits land in the same React components and CSS files used in production.
 2. **Copy-pasteable docs** — Getting started and examples run without undefined symbols; dual CSS imports and version pins documented.
-3. **Typed, predictable APIs** — `CommandResult` with `ok` / `error`; embed props documented; no silent document mutation.
+3. **Typed, predictable APIs** — `CommandResult` with `ok` / `error`; file-edit results cite file path and range; no silent mutation.
 4. **Lockstep versions** — All `@viewfoundry/*` packages share semver; peer dependency story is one line in docs.
-5. **Codegen you would ship** — Generated TSX reads like hand-written code; warnings explain omissions; import maps are explicit.
-6. **Embed flexibility** — Controlled (`document` + `onChange`) and uncontrolled patterns documented, including known limitations (e.g. history when fully controlled — document workarounds).
-7. **Validation before save** — `validateDocument` / CLI `validate` give actionable paths (node id, prop key, rule id).
-8. **Testability** — Public behavior covered by unit tests; primary author flows covered by Playwright e2e.
+5. **Committable output** — Code-first diffs read like hand-written TSX/CSS; embed codegen still produces shippable TSX with warnings.
+6. **Embed flexibility** — Code-first (project files) and embed (controlled `document` + `onChange`) documented side by side.
+7. **Validation before save** — embed: `validateDocument` / CLI `validate`; code-first: patch validation with actionable file/line messages.
+8. **Testability** — Public behavior covered by unit tests; primary author flows covered by Playwright e2e (both modes where applicable).
 
 ---
 
@@ -68,79 +87,75 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 | Examples demonstrate author-realistic pages (dashboard, landing) | `viewfoundry init` produces runnable project in &lt;5 commands             |
 | —                                                                | `vite` dev server hot-reloads document JSON; clear error when JSON invalid |
 
-### v0.7 — LessonKit
+### v0.7 — Code-first foundation & boards
 
-| Studio user                                                                  | React developer                                                             |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Lesson authors use familiar block names; adapter preserves lesson vocabulary | Adapter package maps blocks ↔ registry without forking core                 |
-| —                                                                            | LessonKit types stay in adapter; ViewFoundry APIs unchanged for other hosts |
+| Studio user                                                  | React developer                                            |
+| ------------------------------------------------------------ | ---------------------------------------------------------- |
+| **Board** tab; Stage with viewport sizing                    | `@viewfoundry/board` + `.board.tsx`; `@viewfoundry/sync`   |
+| Drag shows **ghost**, **dashed drop zone**, alignment guides | Reparent/reorder writes JSX; Stack vs Grid rules enforced  |
+| **Parent-first / child-first** canvas click mode             | Selection map to source; obscured nodes from Elements tree |
+| **Elements** tree; multi-select; drag-reorder                | File-level undo; HMR sync with external IDE                |
+| Invalid drop explains _why_ in plain language                | No absolute X/Y positioning in code-first path             |
 
-### v0.8 — Interactions
+### v0.8 — Styles panel & Theme Manager
 
-| Studio user                                                                                 | React developer                                                        |
-| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Interactions** sub-mode: “When [Button] is clicked → set [Heading] text to …” sentence UI | `interactions[]` on document; registry `events` / `actions` metadata   |
-| Pick source and target from layers or canvas list — not raw ids                             | `addInteraction` commands; validation errors cite node labels          |
-| Preview behavior in **Live** only; Edit mode does not fire triggers accidentally            | Runtime interpreter in `@viewfoundry/react`; opt-out for custom shells |
-| Disabled interaction toggle with label                                                      | Codegen emits handler module or documents runtime helper               |
+| Studio user                                            | React developer                       |
+| ------------------------------------------------------ | ------------------------------------- |
+| **Style** sub-mode; Hug / Fill / Fixed sizing labels   | Patches flex/grid CSS and stylesheets |
+| Gap/padding **scrub handles** on Stage where supported | Class picker tied to source files     |
+| **Theme Manager** + computed styles (read-only)        | CSS variables in host stylesheet      |
 
-### v0.9 — Routing
+### v0.9 — Add Elements & discovery
 
-| Studio user                                                         | React developer                                                      |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| **Pages** panel: “Home”, “About” — paths shown as secondary detail  | `ViewSite` / `ViewRoute` types; single-doc apps still work           |
-| Switch page without losing Edit/Live mode; preview any page in Live | `ViewFoundrySiteProvider` + `ViewRouter`; `routeRef` field for links |
-| `navigate` interaction uses page names, not URL strings only        | React Router codegen adapter; path params via `useRouteParams()`     |
+| Studio user                                                     | React developer                               |
+| --------------------------------------------------------------- | --------------------------------------------- |
+| **Add Elements**: Stacks, Grids, Sections, components, blocks   | `@viewfoundry/discover`; `viewfoundry import` |
+| **Alt+drop** swaps selected component                           | Schema-valid swap only                        |
+| **Quick insert** shortcut; “Stack these?” overlap hint          | Gradual adoption for discovered components    |
+| Drag insert meets [global DnD bar](#global-dnd-quality-bar-v07) | Correct imports in TSX                        |
 
-### v0.10 — Slots
+### v0.10 — App pages & routing
 
-| Studio user                                                                    | React developer                                                 |
-| ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| Slot regions labeled on canvas (“Header”, “Footer”); drop only into valid slot | `slots` on `ComponentDefinition`; insert commands take `slotId` |
-| Layers indent by slot                                                          | Codegen matches host slot API (props vs subcomponents)          |
+| Studio user                                   | React developer         |
+| --------------------------------------------- | ----------------------- |
+| **Section** regions on pages; **Pages** panel | Route/page TSX editing  |
+| Copy section to another page                  | Import rewrite on paste |
+| Live navigates between pages                  | SPA vite fallback       |
 
-### v0.11 — Bindings & variables
+### v0.11 — Interactions
 
-| Studio user                                               | React developer                                              |
-| --------------------------------------------------------- | ------------------------------------------------------------ |
-| “Bind to…” on prop rows; variable sheet in plain language | `BindingSource` types; variables on document/site meta       |
-| “Show when …” rule builder (no code)                      | Conditions validated; runtime resolver testable in isolation |
-| Hidden nodes visually distinct in Edit mode               | Binding errors name source and target                        |
+| Studio user                           | React developer               |
+| ------------------------------------- | ----------------------------- |
+| **Interactions** sub-mode sentence UI | TSX handlers, not JSON wiring |
+| Pick targets from Elements tree       | Idiomatic React               |
 
-### v0.12 — Repeat
+### v0.12 — Clipboard & blocks
 
-| Studio user                                               | React developer                                          |
-| --------------------------------------------------------- | -------------------------------------------------------- |
-| “Repeat for each item” with list editor (add/remove rows) | `repeat` on node; static array MVP then variable binding |
-| Preview shows 2–3 sample items                            | Codegen `.map()` with stable keys                        |
+| Studio user                                  | React developer          |
+| -------------------------------------------- | ------------------------ |
+| Cmd/Ctrl+C/V; **multi-select drag** on Stage | JSX + imports            |
+| **Blocks** in Add Elements; drag to insert   | Project library snippets |
 
-### v0.13 — Clipboard & blocks
+### v0.13 — Responsive & tokens
 
-| Studio user                                                    | React developer                                        |
-| -------------------------------------------------------------- | ------------------------------------------------------ |
-| Cmd/Ctrl+C/V; “Saved blocks” in palette with thumbnails/labels | Clipboard JSON schema versioned; paste regenerates ids |
-| Insert block → editable copy, not locked instance              | Host can supply block library via API                  |
-
-### v0.14 — Forms
-
-| Studio user                                               | React developer                                 |
-| --------------------------------------------------------- | ----------------------------------------------- |
-| Form fields grouped; inline validation messages on submit | Conventions doc; variables for field values     |
-| Submit success/error feedback in Live                     | `submit` trigger + interaction chain documented |
-
-### v0.15 — Responsive & tokens
-
-| Studio user                                                          | React developer                                              |
-| -------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Breakpoint switcher (“Mobile / Desktop”) with obvious override state | Host `breakpoints` config; responsive fields on layout/style |
-| Token labels in style picker                                         | Token registry API; codegen → CSS variables                  |
+| Studio user                                           | React developer            |
+| ----------------------------------------------------- | -------------------------- |
+| Breakpoint switcher; **inherited vs override** badges | Media queries in host CSS  |
+| **Reset override** to desktop                         | Per-breakpoint stack order |
+| Token picker in Styles                                | CSS variables              |
 
 ### v1.0 — Stable API
 
-| Studio user                                        | React developer                                                  |
-| -------------------------------------------------- | ---------------------------------------------------------------- |
-| RTD “Author guide” and “Integrator guide” complete | Semver policy; migration guides; no breaking changes without 2.0 |
-| Embedded studio matches product behavior           | PACKAGE_API_SPEC frozen; e2e covers critical paths               |
+| Studio user                                               | React developer                            |
+| --------------------------------------------------------- | ------------------------------------------ |
+| RTD Author + Integrator guides cover code-first and embed | Semver policy; migration JSON → code-first |
+| Embedded studio matches product behavior                  | PACKAGE_API_SPEC frozen; e2e both modes    |
+
+### Embed mode only (shipped v0.1–v0.4, maintained through v1.0)
+
+| Feature                                      | Notes                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------ |
+| JSON grid, `node.style`, palette, export TSX | Unchanged; regression-tested; not extended with new JSON-only features pre-1.0 |
 
 ### Post-1.0 (v1.1+)
 
@@ -150,7 +165,7 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 | **Framework adapters** | —                                                    | Next.js README with RSC boundaries explicit          |
 | **Loaders**            | Loading skeletons in Live preview                    | Loader registration; binding loader fields to props  |
 | **Plugins**            | Custom panels use same chrome/labels conventions     | Plugin API typed; examples in repo                   |
-| **Existing projects**  | Palette shows familiar component names from host app | `viewfoundry import`; scan paths; registry bootstrap |
+| **Existing projects**  | Add Elements shows familiar component names          | `viewfoundry import` in **v0.9.0** (moved from v1.6) |
 | **Collaboration**      | Presence cursors, not raw locking jargon             | —                                                    |
 
 ---
@@ -159,6 +174,7 @@ Every release in [ROADMAP.md](ROADMAP.md) must satisfy the **global bars** below
 
 Before marking a milestone done:
 
+- [ ] Stage DnD meets [global DnD bar](#global-dnd-quality-bar-v07) when author flows changed
 - [ ] Studio: empty state, error state, and success path manually tested in `examples/basic-react` or docs Studio
 - [ ] Studio: no new raw-id-only UI without a human label
 - [ ] Developer: RTD or spec updated with embed + codegen snippet
@@ -170,6 +186,8 @@ Before marking a milestone done:
 
 ## See also
 
+- [CODE_FIRST.md](CODE_FIRST.md) — code-first strategy
+- [DND_AND_LAYOUT_RESEARCH.md](DND_AND_LAYOUT_RESEARCH.md) — Figma/Wix DnD and layout patterns
 - [EDITOR_SPEC.md](EDITOR_SPEC.md) — layout and modes
 - [PROJECT_BRIEF.md](PROJECT_BRIEF.md) — target users
 - [TESTING_STRATEGY.md](TESTING_STRATEGY.md) — behavioral and UX acceptance tests

@@ -1,6 +1,6 @@
 # Landing page example
 
-A single-page marketing layout built with ViewFoundry: hero, feature cards, and CTA — seeded from `viewfoundry/document.json`.
+Marketing single-page layout using **embed-mode** JSON editing — seeded from `viewfoundry/document.json`. **Code-first** page editing planned v0.10.
 
 ## What it demonstrates
 
