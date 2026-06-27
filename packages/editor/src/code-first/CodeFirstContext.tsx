@@ -36,7 +36,9 @@ export function CodeFirstEditorProvider({
   }
 
   return (
-    <CodeFirstEditorContext.Provider value={storeRef.current}>{children}</CodeFirstEditorContext.Provider>
+    <CodeFirstEditorContext.Provider value={storeRef.current}>
+      {children}
+    </CodeFirstEditorContext.Provider>
   );
 }
 

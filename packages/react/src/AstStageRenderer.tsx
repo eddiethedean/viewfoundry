@@ -1,4 +1,4 @@
-import { createElement, type ReactNode } from 'react';
+import { createElement, type CSSProperties, type ReactNode } from 'react';
 import type { ComponentRegistry } from '@viewfoundry/core';
 import type { ParsedJsxElement, ParsedSourceFile } from '@viewfoundry/sync';
 import { extractJsxProps } from '@viewfoundry/sync';
@@ -62,7 +62,7 @@ export type AstStageRendererProps = {
   mode?: 'preview' | 'edit';
   className?: string;
   viewport?: { width: number; height: number };
-  background?: string;
+  background?: CSSProperties['background'];
 };
 
 export function AstStageRenderer({

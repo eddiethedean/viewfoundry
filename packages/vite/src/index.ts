@@ -10,10 +10,7 @@ import {
   VIRTUAL_DOCUMENT_ID,
 } from './document-module.js';
 import { pathsEqual, resolvePathWithinRoot } from './paths.js';
-import {
-  viewfoundryCodeFirst,
-  viewfoundryLocInjection,
-} from './code-first-plugin.js';
+import { viewfoundryCodeFirst, viewfoundryLocInjection } from './code-first-plugin.js';
 
 export type ViewFoundryCodegenOptions = {
   output: string;

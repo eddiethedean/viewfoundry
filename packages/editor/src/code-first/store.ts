@@ -84,10 +84,7 @@ export function createCodeFirstStore(options: {
     board: options.board,
     sourceFiles: initialFiles,
     activeSourceFile: options.activeSourceFile,
-    parsed: parseSourceFile(
-      options.activeSourceFile,
-      initialFiles[options.activeSourceFile] ?? '',
-    ),
+    parsed: parseSourceFile(options.activeSourceFile, initialFiles[options.activeSourceFile] ?? ''),
     fileHistory: createFileHistory(initialFiles),
     selectedElementId: null,
     studioMode: 'edit',

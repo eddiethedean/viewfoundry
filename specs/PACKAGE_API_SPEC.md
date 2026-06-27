@@ -4,10 +4,10 @@ This document describes the public API surface for ViewFoundry packages at **v0.
 
 ## Code-first APIs (v0.7.0)
 
-| Package              | Status    |
-| -------------------- | --------- |
-| `@viewfoundry/sync`  | Shipped   |
-| `@viewfoundry/board` | Shipped   |
+| Package                 | Status       |
+| ----------------------- | ------------ |
+| `@viewfoundry/sync`     | Shipped      |
+| `@viewfoundry/board`    | Shipped      |
 | `@viewfoundry/discover` | Planned v0.9 |
 
 See [Code-first guide](https://viewfoundry.readthedocs.io/en/latest/code-first.html) and [CODE_FIRST.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/CODE_FIRST.md).

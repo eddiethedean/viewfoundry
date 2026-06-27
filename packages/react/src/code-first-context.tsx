@@ -61,7 +61,9 @@ export function useCodeFirstContext(): CodeFirstContextValue {
   return ctx;
 }
 
-export function parseSourceLoc(value: string | undefined): { file: string; start: number; end: number } | null {
+export function parseSourceLoc(
+  value: string | undefined,
+): { file: string; start: number; end: number } | null {
   if (!value) return null;
   const parts = value.split(':');
   if (parts.length < 3) return null;

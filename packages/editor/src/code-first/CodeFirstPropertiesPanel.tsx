@@ -114,15 +114,17 @@ export function CodeFirstPropertiesPanel() {
         <span className="vf-inspector-type">{def?.label ?? element.tagName}</span>
       </header>
       <div className="vf-inspector-fields">
-        {Object.entries(propsSchema).map(([key, field]) => (
-          <FieldControl
-            key={key}
-            name={key}
-            field={field}
-            value={liveProps[key] ?? defaultProps[key as keyof typeof defaultProps]}
-            onChange={(value) => store.getState().updateProp(key, value)}
-          />
-        ))}
+        {Object.entries(propsSchema).map(([key, field]) =>
+          field ? (
+            <FieldControl
+              key={key}
+              name={key}
+              field={field as PropField}
+              value={liveProps[key] ?? defaultProps[key as keyof typeof defaultProps]}
+              onChange={(value) => store.getState().updateProp(key, value)}
+            />
+          ) : null,
+        )}
         {Object.keys(propsSchema).length === 0 && (
           <p className="vf-inspector-empty">No schema props for {element.tagName}</p>
         )}

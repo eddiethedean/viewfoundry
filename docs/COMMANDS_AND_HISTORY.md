@@ -125,9 +125,7 @@ See [INTERACTIONS.md](INTERACTIONS.md), [ROUTING.md](ROUTING.md), [CODE_FIRST.md
 Code-first editing uses **file snapshots** instead of `ViewDocument`. Patches are applied via `@viewfoundry/sync`; the editor store calls these when you edit structure or props on the Stage.
 
 ```ts
-export type FileCommandResult =
-  | { ok: true; patches: FilePatch[] }
-  | { ok: false; error: string };
+export type FileCommandResult = { ok: true; patches: FilePatch[] } | { ok: false; error: string };
 
 export type FileHistoryState = {
   past: Record<string, string>[];
@@ -136,13 +134,13 @@ export type FileHistoryState = {
 };
 ```
 
-| Command              | Sync function        | Description                              |
-| -------------------- | -------------------- | ---------------------------------------- |
-| `insertJsxElement`   | `patchInsertElement` | Insert JSX under a parent element        |
-| `deleteJsxElement`   | `patchDeleteElement` | Remove a JSX element                     |
-| `moveJsxElement`     | `patchMoveElement`   | Reparent or reorder JSX children         |
-| `updateJsxProp`      | `patchSetProp`       | Set or replace a JSX attribute           |
-| `reorderJsxChildren` | `patchMoveElement`   | Reorder siblings (via move, v0.7)      |
+| Command              | Sync function        | Description                       |
+| -------------------- | -------------------- | --------------------------------- |
+| `insertJsxElement`   | `patchInsertElement` | Insert JSX under a parent element |
+| `deleteJsxElement`   | `patchDeleteElement` | Remove a JSX element              |
+| `moveJsxElement`     | `patchMoveElement`   | Reparent or reorder JSX children  |
+| `updateJsxProp`      | `patchSetProp`       | Set or replace a JSX attribute    |
+| `reorderJsxChildren` | `patchMoveElement`   | Reorder siblings (via move, v0.7) |
 
 File undo/redo uses `createFileHistory`, `pushFileHistory`, `undoFileHistory`, and `redoFileHistory` from `@viewfoundry/core` (re-exported by `@viewfoundry/sync`).
 

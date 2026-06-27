@@ -13,7 +13,10 @@ test.describe('code-first board', () => {
 
   test('selects element from Elements tree and edits prop in source', async ({ page }) => {
     await page.goto(codeFirstUrl);
-    await page.getByRole('region', { name: 'Elements' }).getByRole('button', { name: 'Button' }).click();
+    await page
+      .getByRole('region', { name: 'Elements' })
+      .getByRole('button', { name: 'Button' })
+      .click();
     await expect(page.getByRole('region', { name: 'Properties' })).toContainText('Button');
 
     const variantSelect = page.getByLabel('Variant');
@@ -26,7 +29,10 @@ test.describe('code-first board', () => {
 
   test('undo restores prior source after prop edit', async ({ page }) => {
     await page.goto(codeFirstUrl);
-    await page.getByRole('region', { name: 'Elements' }).getByRole('button', { name: 'Button' }).click();
+    await page
+      .getByRole('region', { name: 'Elements' })
+      .getByRole('button', { name: 'Button' })
+      .click();
     await page.getByLabel('Variant').selectOption('secondary');
     await expect(page.getByTestId('source-content')).toContainText('secondary');
 

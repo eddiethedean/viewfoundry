@@ -68,10 +68,7 @@ export function patchInsertElement(
   return patchResult(payload.file, s.toString());
 }
 
-export function patchSetProp(
-  content: string,
-  payload: UpdateJsxPropPayload,
-): FileCommandResult {
+export function patchSetProp(content: string, payload: UpdateJsxPropPayload): FileCommandResult {
   const parsed = parseSourceFile(payload.file, content);
   const el = getElement(parsed, payload.elementId);
   if (!el) return fail('Element not found');
@@ -81,7 +78,9 @@ export function patchSetProp(
   const propName = payload.propName;
   const valueStr = formatPropValue(payload.value);
 
-  const attrRegex = new RegExp(`\\b${escapeRegExp(propName)}\\s*=\\s*(\\{[^}]*\\}|"[^"]*"|'[^']*')`);
+  const attrRegex = new RegExp(
+    `\\b${escapeRegExp(propName)}\\s*=\\s*(\\{[^}]*\\}|"[^"]*"|'[^']*')`,
+  );
   const s = new MagicString(sourceFile);
 
   if (attrRegex.test(tagSlice)) {

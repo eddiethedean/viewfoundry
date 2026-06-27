@@ -4,10 +4,10 @@ ViewFoundry **code-first** editing treats TSX source files as the source of trut
 
 ## When to use code-first vs embed
 
-| Mode | Source of truth | Best for |
-| ---- | --------------- | -------- |
-| **Embed** (default) | `ViewDocument` JSON | CMS embeds, JSON-driven pages, RTD Studio |
-| **Code-first** | `.tsx` files | Component libraries, design systems, Git-friendly UI work |
+| Mode                | Source of truth     | Best for                                                  |
+| ------------------- | ------------------- | --------------------------------------------------------- |
+| **Embed** (default) | `ViewDocument` JSON | CMS embeds, JSON-driven pages, RTD Studio                 |
+| **Code-first**      | `.tsx` files        | Component libraries, design systems, Git-friendly UI work |
 
 Both modes share the same component registry and schema. Embed APIs are unchanged in v0.7.
 
@@ -45,7 +45,9 @@ import { viewfoundry, viewfoundryCodeFirst, viewfoundryLocInjection } from '@vie
 export default defineConfig({
   plugins: [
     react(),
-    viewfoundry({ /* embed document — optional */ }),
+    viewfoundry({
+      /* embed document — optional */
+    }),
     viewfoundryCodeFirst({ boards: 'src/**/*.board.tsx' }),
     viewfoundryLocInjection(),
   ],
@@ -80,16 +82,16 @@ pnpm --filter basic-react dev
 - **`@viewfoundry/react`** — `CodeFirstProvider`, `SourceBoundary`, `AstStageRenderer`
 - **`@viewfoundry/vite`** — board discovery (`virtual:viewfoundry/boards`), loc injection, HMR
 
-See [Package API Spec](../specs/PACKAGE_API_SPEC.md) for full exports.
+See [Package API spec](package-api-spec.md) for full exports.
 
 ## Editor UI (code-first)
 
-| Panel | Purpose |
-| ----- | ------- |
-| **Board** | Active board selector (single board in v0.7) |
-| **Stage** | Renders parsed JSX from the active source file |
-| **Elements** | JSX tree with selection and jump-to-source hints |
-| **Properties** | Schema-driven prop edits → `patchSetProp` |
+| Panel          | Purpose                                          |
+| -------------- | ------------------------------------------------ |
+| **Board**      | Active board selector (single board in v0.7)     |
+| **Stage**      | Renders parsed JSX from the active source file   |
+| **Elements**   | JSX tree with selection and jump-to-source hints |
+| **Properties** | Schema-driven prop edits → `patchSetProp`        |
 
 Toolbar: Edit/Live toggle, viewport W×H, parent-first / child-first click modes, file undo/redo.
 
@@ -103,4 +105,4 @@ External IDE edits to board source files trigger `viewfoundry:source-update` ove
 - Discover / Add Elements → v0.9
 - App tab, full-page editing → v0.10
 
-See [ROADMAP.md](../docs/ROADMAP.md) for the full plan.
+See [Roadmap & direction](roadmap-and-direction.md) and repository [ROADMAP.md](https://github.com/eddiethedean/viewfoundry/blob/main/docs/ROADMAP.md) for the full plan.

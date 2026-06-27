@@ -99,7 +99,13 @@ export function viewfoundryLocInjection(): Plugin {
       if (id.includes('node_modules')) return null;
       if (!code.includes('<')) return null;
 
-      const sourceFile = ts.createSourceFile(id, code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+      const sourceFile = ts.createSourceFile(
+        id,
+        code,
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TSX,
+      );
       const edits: { pos: number; text: string }[] = [];
 
       function visit(node: ts.Node) {

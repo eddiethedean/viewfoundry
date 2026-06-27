@@ -4,9 +4,9 @@ A ViewFoundry integration with **embed mode** (JSON document editor) and **code-
 
 ## Modes
 
-| URL | Mode |
-| --- | ---- |
-| `http://localhost:5173/` | Embed — JSON `ViewDocument`, palette, layers, inspector |
+| URL                                      | Mode                                                      |
+| ---------------------------------------- | --------------------------------------------------------- |
+| `http://localhost:5173/`                 | Embed — JSON `ViewDocument`, palette, layers, inspector   |
 | `http://localhost:5173/?mode=code-first` | Code-first — Button board, Elements/Properties, file undo |
 
 ## What it demonstrates
@@ -48,14 +48,14 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Key files
 
-| File                      | Purpose                                      |
-| ------------------------- | -------------------------------------------- |
-| `src/App.tsx`             | Embed editor shell, persistence, export      |
-| `src/code-first/App.tsx`  | Code-first board editor                        |
-| `src/code-first/fixture.tsx` | Editable TSX source for the Button board  |
-| `src/boards/Button.board.tsx` | Board fixture definition                |
-| `src/definitions.ts`      | Registry, component definitions, import map  |
-| `src/components/`         | React components rendered on canvas/stage    |
+| File                          | Purpose                                     |
+| ----------------------------- | ------------------------------------------- |
+| `src/App.tsx`                 | Embed editor shell, persistence, export     |
+| `src/code-first/App.tsx`      | Code-first board editor                     |
+| `src/code-first/fixture.tsx`  | Editable TSX source for the Button board    |
+| `src/boards/Button.board.tsx` | Board fixture definition                    |
+| `src/definitions.ts`          | Registry, component definitions, import map |
+| `src/components/`             | React components rendered on canvas/stage   |
 
 ## Import map
 

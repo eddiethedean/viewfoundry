@@ -33,7 +33,13 @@ function getJsxTagName(name: ts.JsxTagNameExpression): string {
 }
 
 export function parseSourceFile(file: string, content: string): ParsedSourceFile {
-  const sourceFile = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const sourceFile = ts.createSourceFile(
+    file,
+    content,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
   const elements = new Map<SourceElementId, ParsedJsxElement>();
   const rootIds: SourceElementId[] = [];
 
@@ -102,7 +108,10 @@ export function buildSourceMap(parsed: ParsedSourceFile): Map<SourceElementId, S
   return map;
 }
 
-export function validateSourceContent(file: string, content: string): { valid: true } | { valid: false; error: string } {
+export function validateSourceContent(
+  file: string,
+  content: string,
+): { valid: true } | { valid: false; error: string } {
   try {
     ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     return { valid: true };
@@ -135,7 +144,10 @@ function parseJsxPropValue(raw: string): unknown {
   return trimmed;
 }
 
-export function extractJsxProps(content: string, element: ParsedJsxElement): Record<string, unknown> {
+export function extractJsxProps(
+  content: string,
+  element: ParsedJsxElement,
+): Record<string, unknown> {
   const slice = content.slice(element.location.start, element.location.end);
   const openEnd = slice.indexOf('>');
   const openTag = openEnd >= 0 ? slice.slice(0, openEnd + 1) : slice;

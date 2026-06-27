@@ -4,7 +4,13 @@ import { defineComponent, select, text } from '@viewfoundry/schema';
 import { createBoard } from '@viewfoundry/board';
 import { createCodeFirstStore } from './store.js';
 
-const Button = ({ children, variant }: { children?: string; variant?: string }) => null;
+const Button = ({
+  children: _children,
+  variant: _variant,
+}: {
+  children?: string;
+  variant?: string;
+}) => null;
 
 const registry = createRegistry([
   defineComponent(Button, {
@@ -58,7 +64,9 @@ describe('createCodeFirstStore', () => {
       activeSourceFile: 'Demo.tsx',
     });
 
-    const button = [...store.getState().parsed!.elements.values()].find((e) => e.tagName === 'Button')!;
+    const button = [...store.getState().parsed!.elements.values()].find(
+      (e) => e.tagName === 'Button',
+    )!;
     store.getState().selectElement(button.id);
     store.getState().updateProp('variant', 'secondary');
     store.getState().undo();
