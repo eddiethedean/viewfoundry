@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/sync",
-  "version": "0.7.1",
+  "version": "0.7.0",
   "description": "TSX/JSX parse, source maps, and safe file patches for code-first editing",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@viewfoundry/vite",
-  "version": "0.7.1",
+  "version": "0.7.0",
   "description": "Vite integration for ViewFoundry — document HMR and optional codegen watch",
   "type": "module",
   "main": "./dist/index.js",

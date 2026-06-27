@@ -113,7 +113,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.7.1 — Basic React</h1>
+        <h1>ViewFoundry 0.7.0 — Basic React</h1>
         <button type="button" data-testid="reset-document" onClick={resetDocument}>
           Reset document
         </button>

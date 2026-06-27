@@ -42,7 +42,7 @@ export default function CodeFirstApp() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>ViewFoundry 0.7.1 — Code-first Board</h1>
+        <h1>ViewFoundry 0.7.0 — Code-first Board</h1>
       </header>
       <main className="app-main">
         <ViewFoundryEditor
